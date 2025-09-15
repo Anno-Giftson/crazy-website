@@ -1,13 +1,15 @@
 let usedTouch = false;
 let touchBlocked = false;
 let clones = [];
+let isFrozen = false;
+let hoverTimeout = null;
 
 function isMobileDevice() {
   const ua = navigator.userAgent || navigator.vendor || window.opera;
   return /android|iphone|ipad|ipod|mobile/i.test(ua);
 }
 
-// Detect actual touch only on non-phones
+// Detect touch, but only block laptops/chromebooks
 window.addEventListener('touchstart', () => {
   if (!touchBlocked && !isMobileDevice()) {
     usedTouch = true;
@@ -65,16 +67,47 @@ document.getElementById("spin-button").addEventListener("click", () => {
   alert("YOU PRESSED THE BUTTON. NOW YOU MUST DANCE. 💃🕺");
 });
 
-// Catch me if you can button
+// === Catch Me If You Can Button ===
 const runawayBtn = document.getElementById("runaway-button");
+
+// Move when hovered
 runawayBtn.addEventListener("mouseenter", () => {
-  if (usedTouch) return;
+  if (usedTouch || isFrozen) return;
   moveRandom(runawayBtn);
 });
+
+// Freeze on hover for 2 seconds
+runawayBtn.addEventListener("mouseover", () => {
+  if (usedTouch || isFrozen) return;
+  hoverTimeout = setTimeout(() => {
+    freezeButton();
+  }, 2000);
+});
+runawayBtn.addEventListener("mouseout", () => {
+  clearTimeout(hoverTimeout);
+});
+
+// Freeze on double-click
+runawayBtn.addEventListener("dblclick", () => {
+  if (!usedTouch && !isFrozen) {
+    freezeButton();
+  }
+});
+
+// Freeze on Shift key
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Shift" && !isFrozen && !usedTouch) {
+    freezeButton();
+  }
+});
+
+// Click to claim reward (if frozen)
 runawayBtn.addEventListener("click", () => {
   if (usedTouch) return;
-  showReward("🎉 You caught the button! You win! 🎉");
-  spawnConfetti(window.innerWidth / 2, window.innerHeight / 2, 100);
+  if (isFrozen) {
+    showReward("🎉 You outsmarted the button! You win! 🎉");
+    spawnConfetti(window.innerWidth / 2, window.innerHeight / 2, 100);
+  }
 });
 
 function moveRandom(el) {
@@ -83,7 +116,14 @@ function moveRandom(el) {
   el.style.top = Math.random() * (window.innerHeight - 100) + "px";
 }
 
-// Clone me!
+function freezeButton() {
+  isFrozen = true;
+  runawayBtn.textContent = "😳 You froze me!";
+  runawayBtn.style.backgroundColor = "lightblue";
+  runawayBtn.style.border = "3px solid blue";
+}
+
+// === Clone Button ===
 document.getElementById("clone-button").addEventListener("click", () => {
   const clone = document.getElementById("clone-button").cloneNode(true);
   clone.textContent = "I'm a clone!";
@@ -95,13 +135,13 @@ document.getElementById("clone-button").addEventListener("click", () => {
   clones.push(clone);
 });
 
-// Clear clones
+// Clear Clones
 document.getElementById("clear-clones-button").addEventListener("click", () => {
   clones.forEach(c => c.remove());
   clones = [];
 });
 
-// Invert button
+// Invert the world
 document.getElementById("invert-button").addEventListener("click", () => {
   document.body.classList.add('inverted-upside-down');
   setTimeout(() => {
@@ -109,7 +149,7 @@ document.getElementById("invert-button").addEventListener("click", () => {
   }, 3000);
 });
 
-// Glitch button
+// Glitch effect
 document.getElementById("glitch-button").addEventListener("click", () => {
   document.body.classList.add("glitching");
   setTimeout(() => {
@@ -117,7 +157,7 @@ document.getElementById("glitch-button").addEventListener("click", () => {
   }, 2000);
 });
 
-// Confetti storm button
+// Confetti Storm
 document.getElementById("confetti-storm-button").addEventListener("click", () => {
   const interval = setInterval(() => {
     const x = Math.random() * window.innerWidth;
@@ -126,7 +166,7 @@ document.getElementById("confetti-storm-button").addEventListener("click", () =>
   setTimeout(() => clearInterval(interval), 7000);
 });
 
-// Reward popup
+// Reward Popup
 function showReward(text) {
   const popup = document.getElementById('reward-popup');
   popup.textContent = text;
@@ -135,6 +175,7 @@ function showReward(text) {
     popup.style.display = 'none';
   }, 5000);
 }
+
 
 
 
