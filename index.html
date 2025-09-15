@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Totally Crazy Website</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <h1 id="crazy-title">💥 Welcome to CrazyTown 💥</h1>
@@ -15,22 +15,35 @@
   <button id="clear-clones-button">Clear clones</button>
   <button id="invert-button">Invert the world!</button>
   <button id="glitch-button">Make it Glitch!</button>
-  <button id="confetti-storm-button">Start Confetti Rain!</button>
-
-  <!-- New: Freeze code input + clue -->
-  <div id="freeze-code-container">
-    <input type="text" id="freeze-code" maxlength="52" placeholder="Enter the secret code" />
-    <button id="submit-code">Submit Code</button>
-    <button id="clue-button">Need a clue?</button>
-    <div id="clue-text" style="display: none; margin-top: 10px;">🔍 The code is the first 50 digits of π — starting with 3.</div>
-  </div>
+  <button id="confetti-rain-button">Start Confetti Rain!</button>
 
   <div id="confetti-container"></div>
   <div id="reward-popup" style="display: none;"></div>
 
+  <!-- Puzzle container with hidden input and clue -->
+  <div id="puzzle-container" style="position: fixed; left: 50px; top: 100px; background: #222; border: 3px dashed lime; padding: 20px; border-radius: 15px; max-width: 320px; color: white; font-family: 'Comic Sans MS', cursive; z-index: 10000;">
+    <button id="puzzle-toggle-button" style="background: hotpink; border: 3px dashed lime; padding: 10px 15px; font-size: 1.1em; cursor: pointer;">
+      Click here to do something and catch the running button
+    </button>
+    
+    <div id="puzzle-content" style="margin-top: 15px; display: none;">
+      <input type="text" id="freeze-code" placeholder="Enter code here..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" style="width: 100%; padding: 10px; font-size: 1em; border: 3px dashed lime; border-radius: 10px; background: black; color: white;" />
+      <button id="clue-button" style="margin-top: 10px; background: #333; border: 3px dashed lime; color: lime; padding: 8px 12px; cursor: pointer; font-size: 1em;">
+        Need a Clue?
+      </button>
+      <div id="clue-text" style="margin-top: 10px; display: none; font-size: 0.9em; color: cyan; line-height: 1.3em; background: #111; padding: 10px; border-radius: 10px;">
+        The first 50 digits of π (pi) is the code you seek.
+      </div>
+      <button id="submit-code" style="margin-top: 15px; background: hotpink; border: 3px dashed lime; padding: 10px 15px; font-size: 1.1em; cursor: pointer; width: 100%;">
+        Submit Code
+      </button>
+    </div>
+  </div>
+
   <script src="script.js"></script>
 </body>
 </html>
+
 
 
 
