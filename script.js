@@ -9,7 +9,7 @@ function isMobileDevice() {
   return /android|iphone|ipad|ipod|mobile/i.test(ua);
 }
 
-// Detect touch, but only block laptops/chromebooks
+// Detect touch
 window.addEventListener('touchstart', () => {
   if (!touchBlocked && !isMobileDevice()) {
     usedTouch = true;
@@ -67,41 +67,37 @@ document.getElementById("spin-button").addEventListener("click", () => {
   alert("YOU PRESSED THE BUTTON. NOW YOU MUST DANCE. 💃🕺");
 });
 
-// === Catch Me If You Can Button ===
+// === Runaway Button ===
 const runawayBtn = document.getElementById("runaway-button");
 
-// Move when hovered
 runawayBtn.addEventListener("mouseenter", () => {
   if (usedTouch || isFrozen) return;
   moveRandom(runawayBtn);
 });
 
-// Freeze on hover for 2 seconds
 runawayBtn.addEventListener("mouseover", () => {
   if (usedTouch || isFrozen) return;
   hoverTimeout = setTimeout(() => {
     freezeButton();
   }, 2000);
 });
+
 runawayBtn.addEventListener("mouseout", () => {
   clearTimeout(hoverTimeout);
 });
 
-// Freeze on double-click
 runawayBtn.addEventListener("dblclick", () => {
   if (!usedTouch && !isFrozen) {
     freezeButton();
   }
 });
 
-// Freeze on Shift key
 document.addEventListener("keydown", (e) => {
   if (e.key === "Shift" && !isFrozen && !usedTouch) {
     freezeButton();
   }
 });
 
-// Click to claim reward (if frozen)
 runawayBtn.addEventListener("click", () => {
   if (usedTouch) return;
   if (isFrozen) {
@@ -123,7 +119,7 @@ function freezeButton() {
   runawayBtn.style.border = "3px solid blue";
 }
 
-// === Clone Button ===
+// Clone Button
 document.getElementById("clone-button").addEventListener("click", () => {
   const clone = document.getElementById("clone-button").cloneNode(true);
   clone.textContent = "I'm a clone!";
@@ -175,6 +171,24 @@ function showReward(text) {
     popup.style.display = 'none';
   }, 5000);
 }
+
+// === Pi Code Unlock ===
+document.getElementById("submit-code").addEventListener("click", () => {
+  const input = document.getElementById("freeze-code").value.trim();
+  const correctCode = "3.14159265358979323846264338327950288419716939937510";
+
+  if (input === correctCode && !isFrozen) {
+    freezeButton();
+    showReward("🧊 Code accepted! Button frozen. Click it to claim your prize!");
+  } else if (!isFrozen) {
+    alert("❌ Incorrect code. Try again!");
+  }
+});
+
+document.getElementById("clue-button").addEventListener("click", () => {
+  document.getElementById("clue-text").style.display = "block";
+});
+
 
 
 
