@@ -93,6 +93,27 @@ button:hover {
   z-index: 99999;
 }
 
+#freeze-code-container {
+  margin: 20px auto;
+}
+
+#freeze-code {
+  padding: 10px;
+  font-size: 1.2em;
+  border: 2px solid lime;
+  border-radius: 5px;
+  width: 300px;
+}
+
+#submit-code, #clue-button {
+  padding: 10px 15px;
+  font-size: 1.1em;
+  margin-left: 10px;
+  background-color: lightgreen;
+  border: 2px solid green;
+  cursor: pointer;
+}
+
 /* Glitch animation */
 @keyframes glitch {
   0% { transform: translate(0); }
@@ -106,6 +127,7 @@ button:hover {
 .glitching {
   animation: glitch 0.2s steps(2, end) 10;
 }
+
 
 
 
