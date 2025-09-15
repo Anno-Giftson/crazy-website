@@ -1,117 +1,45 @@
 body {
   margin: 0;
   padding: 0;
-  overflow-x: hidden;
-  font-family: 'Comic Sans MS', cursive, sans-serif;
+  font-family: 'Comic Sans MS', cursive;
   background-color: black;
   color: white;
   text-align: center;
-  transition: background-color 2s ease, filter 0.3s ease, transform 0.7s ease;
-  cursor: url('https://cur.cursors-4u.net/symbols/sym-4/sym367.cur'), auto;
-}
-
-#crazy-title {
-  font-size: 5em;
-  margin-top: 100px;
-  animation: colorPulseScale 3s infinite alternate ease-in-out;
-  user-select: none;
-  text-shadow:
-    0 0 5px #fff,
-    0 0 10px #ff00de,
-    0 0 20px #ff00de,
-    0 0 40px #ff00de,
-    0 0 80px #ff00de;
+  overflow-x: hidden;
+  transition: filter 0.3s ease, transform 0.7s ease;
 }
 
 button {
-  font-size: 1.5em;
-  padding: 15px 30px;
-  margin: 15px 10px;
-  background: linear-gradient(45deg, hotpink, lime, cyan, magenta);
-  border: 5px dashed lime;
-  border-radius: 15px;
+  font-size: 1.2em;
+  padding: 10px 20px;
+  margin: 10px;
+  background-color: hotpink;
+  border: 3px dashed lime;
   cursor: pointer;
-  color: black;
-  font-weight: bold;
-  box-shadow:
-    0 0 10px hotpink,
-    0 0 20px lime,
-    0 0 40px cyan;
-  transition: transform 0.3s ease, background 0.3s ease;
-  user-select: none;
-  outline: none;
-  display: inline-block;
-  position: relative;
+  transition: transform 0.2s;
 }
 
-#spin-button {
-  font-size: 2em;
-  padding: 25px 40px;
-  animation: slowSpin 6s linear infinite;
+button:hover {
+  transform: scale(1.1);
 }
 
-#spin-button:hover {
-  animation-play-state: paused;
-  transform: rotate(10deg) scale(1.1);
-  background: linear-gradient(45deg, cyan, magenta, hotpink, lime);
-  box-shadow:
-    0 0 15px cyan,
-    0 0 30px magenta,
-    0 0 50px hotpink;
+#crazy-title {
+  font-size: 4em;
+  animation: blinkRotate 1s infinite;
+  margin-top: 60px;
 }
 
-#spin-button:active {
-  animation-play-state: paused;
-  transform: scale(0.95) rotate(-5deg);
-}
-
-#runaway-button {
-  position: relative;
-}
-
-#confetti-storm-button {
-  background: linear-gradient(135deg, #ffde00, #ff5500);
-  border-color: #ffaa00;
-  color: #222;
-  box-shadow:
-    0 0 10px #ffde00,
-    0 0 20px #ff5500;
+@keyframes blinkRotate {
+  0% { opacity: 1; transform: rotate(0deg); color: red; }
+  25% { opacity: 0.5; transform: rotate(5deg); color: yellow; }
+  50% { opacity: 1; transform: rotate(-5deg); color: cyan; }
+  75% { opacity: 0.5; transform: rotate(10deg); color: magenta; }
+  100% { opacity: 1; transform: rotate(0deg); color: green; }
 }
 
 .inverted-upside-down {
-  filter: invert(1) hue-rotate(180deg);
+  filter: invert(1);
   transform: rotate(180deg);
-}
-
-#glitch-effect {
-  animation: glitchAnim 0.5s ease-in-out 5;
-}
-
-@keyframes glitchAnim {
-  0% {
-    clip-path: inset(10% 0 85% 0);
-    transform: translate(-3px, -3px) skew(5deg);
-  }
-  20% {
-    clip-path: inset(40% 0 43% 0);
-    transform: translate(3px, 3px) skew(-5deg);
-  }
-  40% {
-    clip-path: inset(20% 0 60% 0);
-    transform: translate(-3px, 2px) skew(3deg);
-  }
-  60% {
-    clip-path: inset(50% 0 15% 0);
-    transform: translate(3px, -3px) skew(-3deg);
-  }
-  80% {
-    clip-path: inset(10% 0 85% 0);
-    transform: translate(-3px, 3px) skew(5deg);
-  }
-  100% {
-    clip-path: inset(0 0 0 0);
-    transform: none;
-  }
 }
 
 #confetti-container {
@@ -121,90 +49,35 @@ button {
   width: 100vw;
   height: 100vh;
   pointer-events: none;
-  overflow: visible;
-  z-index: 9999;
+  z-index: 999;
 }
 
 .confetti {
   position: absolute;
-  width: var(--size);
-  height: var(--size);
-  background-color: var(--color);
-  opacity: 1;
-  border-radius: var(--shape-radius);
-  pointer-events: none;
-  animation: fall var(--duration) linear forwards;
-  filter: drop-shadow(0 0 2px var(--color));
-  will-change: transform, opacity;
-}
-
-.confetti.circle {
+  width: 10px;
+  height: 10px;
+  background-color: red;
   border-radius: 50%;
-}
-.confetti.square {
-  border-radius: 0;
-}
-.confetti.rounded {
-  border-radius: 20%;
+  animation: fall 3s linear forwards;
 }
 
 @keyframes fall {
-  0% {
-    transform: translate3d(var(--start-x), 0, 0) rotate(0deg);
-    opacity: 1;
-  }
-  100% {
-    transform: translate3d(calc(var(--start-x) + var(--x-drift)), 100vh, 720deg);
-    opacity: 0;
-  }
+  0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
 }
 
-@keyframes colorPulseScale {
-  0% {
-    color: #ff0066;
-    text-shadow: 0 0 5px #ff0066;
-    transform: scale(1);
-  }
-  50% {
-    color: #00ffff;
-    text-shadow: 0 0 20px #00ffff;
-    transform: scale(1.2);
-  }
-  100% {
-    color: #ffcc00;
-    text-shadow: 0 0 10px #ffcc00;
-    transform: scale(1);
-  }
-}
-
-@keyframes slowSpin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-#dance-emoji {
+#reward-popup {
   position: fixed;
-  font-size: 5em;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  animation: danceMove 0.8s infinite alternate ease-in-out;
-  pointer-events: none;
-  user-select: none;
-  z-index: 10000;
-}
-
-@keyframes danceMove {
-  0% {
-    transform: translate(-50%, -50%) rotate(-15deg) scale(1);
-  }
-  100% {
-    transform: translate(calc(-50% + 15px), calc(-50% - 10px)) rotate(15deg) scale(1.2);
-  }
+  background: white;
+  color: black;
+  padding: 20px 30px;
+  border-radius: 20px;
+  font-size: 2em;
+  z-index: 9999;
+  box-shadow: 0 0 20px hotpink;
 }
 
 #blocker {
@@ -212,37 +85,14 @@ button {
   top: 0; left: 0;
   width: 100vw; height: 100vh;
   background: black;
-  color: white;
-  font-size: 3em;
+  color: red;
+  font-size: 2em;
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 20000;
-  user-select: none;
-  text-align: center;
-  padding: 20px;
+  z-index: 99999;
 }
 
-#reward-popup {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  background: white;
-  color: black;
-  padding: 30px 40px;
-  border-radius: 20px;
-  box-shadow: 0 0 15px #ff00de;
-  transform: translate(-50%, -50%);
-  font-size: 2em;
-  z-index: 30000;
-  user-select: none;
-  animation: popupFade 0.5s ease forwards;
-}
-
-@keyframes popupFade {
-  from {opacity: 0; transform: translate(-50%, -40%) scale(0.7);}
-  to {opacity: 1; transform: translate(-50%, -50%) scale(1);}
-}
 
 
 
