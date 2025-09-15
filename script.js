@@ -1,256 +1,133 @@
-// Elements
-const spinBtn = document.getElementById('spin-button');
-const runawayBtn = document.getElementById('runaway-button');
-const cloneBtn = document.getElementById('clone-button');
-const clearClonesBtn = document.getElementById('clear-clones-button');
-const invertBtn = document.getElementById('invert-button');
-const glitchBtn = document.getElementById('glitch-button');
-const confettiStormBtn = document.getElementById('confetti-storm-button');
-const confettiContainer = document.getElementById('confetti-container');
-
-// Sounds
-const popSound = document.getElementById('pop-sound');
-const danceSound = document.getElementById('dance-sound');
-const prankSound = document.getElementById('prank-sound');
-const runawaySound = document.getElementById('runaway-sound');
-
-// Variables
-let cloneCount = 0;
-let confettiStormInterval = null;
-let clones = [];
+let usedTouch = false;
 let touchBlocked = false;
+let clones = [];
 
-// Prevent touch devices and show overlay blocker
-function blockTouchScreen() {
-  if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
-    if (!touchBlocked) {
-      touchBlocked = true;
-      const blocker = document.createElement('div');
-      blocker.id = 'blocker';
-      blocker.innerHTML = `🚫<br>Sorry, touch screen devices are not allowed.<br>Please use a mouse or trackpad.`;
-      document.body.appendChild(blocker);
-      // Prevent scrolling and interaction
-      document.body.style.overflow = 'hidden';
-    }
+// Touch detection
+window.addEventListener('touchstart', () => {
+  if (!touchBlocked) {
+    usedTouch = true;
+    blockTouchScreen();
   }
+}, { once: true });
+
+function blockTouchScreen() {
+  touchBlocked = true;
+  const blocker = document.createElement('div');
+  blocker.id = 'blocker';
+  blocker.textContent = "🚫 Touchscreen use is not allowed. Use a mouse or trackpad.";
+  document.body.appendChild(blocker);
 }
 
-// Run at start
-blockTouchScreen();
-
-// Background color changing every 1 second
+// Background color change every second
 setInterval(() => {
   if (!document.body.classList.contains('inverted-upside-down')) {
     document.body.style.backgroundColor = getRandomColor();
   }
 }, 1000);
 
+function getRandomColor() {
+  return `hsl(${Math.floor(Math.random() * 360)}, 100%, 50%)`;
+}
+
 // Confetti on mouse move
 document.addEventListener('mousemove', (e) => {
-  if (touchBlocked) return; // no confetti on touch devices
-
-  spawnConfetti(e.clientX, e.clientY, 1);
+  if (usedTouch) return;
+  spawnConfetti(e.pageX, e.pageY, 3);
 });
 
-// Spawn confetti helper
-function spawnConfetti(x, y, count = 5) {
+function spawnConfetti(x, y, count = 10) {
   for (let i = 0; i < count; i++) {
     const confetti = document.createElement('div');
     confetti.classList.add('confetti');
-
-    // Random size 7-15px
-    const size = Math.floor(Math.random() * 8) + 7;
-    confetti.style.setProperty('--size', `${size}px`);
-
-    // Random shape
-    const shapes = ['circle', 'square', 'rounded'];
-    confetti.classList.add(shapes[Math.floor(Math.random() * shapes.length)]);
-
-    // Random color
-    confetti.style.setProperty('--color', getRandomColor());
-
-    // Start X position relative to x with some randomness
-    confetti.style.setProperty('--start-x', `${x + (Math.random() * 30 - 15)}px`);
-
-    // X drift for falling (sideways float)
-    confetti.style.setProperty('--x-drift', `${Math.random() * 50 - 25}px`);
-
-    // Random animation duration between 3 and 6 seconds
-    confetti.style.setProperty('--duration', `${3 + Math.random() * 3}s`);
-
-    // Random border radius for shapes
-    confetti.style.setProperty('--shape-radius', confetti.classList.contains('circle') ? '50%' : confetti.classList.contains('square') ? '0' : '20%');
-
-    // Starting position absolute
     confetti.style.left = `${x}px`;
     confetti.style.top = `${y}px`;
+    confetti.style.backgroundColor = getRandomColor();
+    confetti.style.width = confetti.style.height = `${Math.random() * 10 + 5}px`;
 
-    confettiContainer.appendChild(confetti);
-
-    // Remove confetti after animation ends
-    confetti.addEventListener('animationend', () => {
-      confetti.remove();
-    });
+    document.getElementById('confetti-container').appendChild(confetti);
+    setTimeout(() => confetti.remove(), 3000);
   }
 }
 
-// Random color helper
-function getRandomColor() {
-  return `hsl(${Math.floor(Math.random() * 360)}, 100%, 65%)`;
-}
-
-// Spin button prank
-spinBtn.addEventListener('click', () => {
-  prankSound.currentTime = 0;
-  prankSound.volume = 0.5;
-  prankSound.play();
-
+// Spin button
+document.getElementById("spin-button").addEventListener("click", () => {
   alert("YOU PRESSED THE BUTTON. NOW YOU MUST DANCE. 💃🕺");
-  showDanceEmoji();
 });
 
-function showDanceEmoji() {
-  const danceEmoji = document.createElement('div');
-  danceEmoji.id = 'dance-emoji';
-  danceEmoji.textContent = '💃🕺';
-  document.body.appendChild(danceEmoji);
+// Runaway button
+const runawayBtn = document.getElementById("runaway-button");
+runawayBtn.addEventListener("mouseenter", () => {
+  if (usedTouch) return;
+  moveRandom(runawayBtn);
+});
 
-  danceSound.currentTime = 0;
-  danceSound.volume = 0.7;
-  danceSound.play();
+runawayBtn.addEventListener("click", () => {
+  if (usedTouch) return;
+  showReward("🎉 You caught the button! You win! 🎉");
+  spawnConfetti(window.innerWidth / 2, window.innerHeight / 2, 100);
+});
 
-  setTimeout(() => danceEmoji.remove(), 5000);
+function moveRandom(el) {
+  el.style.position = "fixed";
+  el.style.left = Math.random() * (window.innerWidth - 150) + "px";
+  el.style.top = Math.random() * (window.innerHeight - 100) + "px";
 }
 
-// Runaway button logic
-runawayBtn.addEventListener('mouseenter', () => {
-  if (touchBlocked) return;
-
-  runawaySound.currentTime = 0;
-  runawaySound.volume = 0.5;
-  runawaySound.play();
-
-  moveButtonRandomly(runawayBtn);
+// Clone button
+document.getElementById("clone-button").addEventListener("click", () => {
+  const clone = document.getElementById("clone-button").cloneNode(true);
+  clone.textContent = "I'm a clone!";
+  clone.style.position = "fixed";
+  clone.style.left = Math.random() * (window.innerWidth - 150) + "px";
+  clone.style.top = Math.random() * (window.innerHeight - 100) + "px";
+  clone.addEventListener("click", () => alert("Cloned button clicked!"));
+  document.body.appendChild(clone);
+  clones.push(clone);
 });
 
-runawayBtn.addEventListener('click', () => {
-  if (touchBlocked) return;
-
-  showRewardPopup("😎 You caught me! Here's your reward: 🎉 You're officially CrazyTown's champion! 🎉");
-});
-
-function moveButtonRandomly(button) {
-  const margin = 20;
-  const maxX = window.innerWidth - button.offsetWidth - margin;
-  const maxY = window.innerHeight - button.offsetHeight - margin;
-  const newX = Math.floor(Math.random() * maxX) + margin;
-  const newY = Math.floor(Math.random() * maxY) + margin;
-
-  button.style.position = 'fixed';
-  button.style.left = `${newX}px`;
-  button.style.top = `${newY}px`;
-  button.style.transition = 'left 0.3s ease, top 0.3s ease';
-}
-
-// Show reward popup
-function showRewardPopup(message) {
-  const popup = document.createElement('div');
-  popup.id = 'reward-popup';
-  popup.textContent = message;
-
-  document.body.appendChild(popup);
-
-  setTimeout(() => {
-    popup.style.opacity = '0';
-    setTimeout(() => popup.remove(), 500);
-  }, 5000);
-}
-
-// Clone button clones itself multiple times randomly
-cloneBtn.addEventListener('click', () => {
-  prankSound.currentTime = 0;
-  prankSound.volume = 0.4;
-  prankSound.play();
-
-  for (let i = 0; i < 7; i++) {
-    const clone = cloneBtn.cloneNode(true);
-    clone.textContent = 'Clone me!';
-    clone.style.position = 'fixed';
-    clone.style.left = `${randomRange(0, window.innerWidth - cloneBtn.offsetWidth)}px`;
-    clone.style.top = `${randomRange(0, window.innerHeight - cloneBtn.offsetHeight)}px`;
-    clone.style.transform = `rotate(${Math.floor(Math.random() * 360)}deg) scale(${0.7 + Math.random() * 0.6})`;
-    clone.style.zIndex = 10000;
-    clone.style.pointerEvents = 'auto';
-
-    clone.addEventListener('click', () => cloneBtn.click());
-
-    document.body.appendChild(clone);
-    clones.push(clone);
-    cloneCount++;
-  }
-});
-
-// Clear clones button - removes all clones and resets position/style of cloneBtn
-clearClonesBtn.addEventListener('click', () => {
+// Clear clones
+document.getElementById("clear-clones-button").addEventListener("click", () => {
   clones.forEach(c => c.remove());
   clones = [];
-  cloneCount = 0;
-
-  cloneBtn.style.position = '';
-  cloneBtn.style.left = '';
-  cloneBtn.style.top = '';
-  cloneBtn.style.transform = '';
 });
 
-// Invert button flips and inverts colors for 3 seconds
-invertBtn.addEventListener('click', () => {
-  prankSound.currentTime = 0;
-  prankSound.volume = 0.4;
-  prankSound.play();
-
+// Invert button
+document.getElementById("invert-button").addEventListener("click", () => {
   document.body.classList.add('inverted-upside-down');
-  alert("Whoa! The world flipped upside down and got inverted! Try not to get dizzy.");
-
   setTimeout(() => {
     document.body.classList.remove('inverted-upside-down');
   }, 3000);
 });
 
-// Glitch button triggers glitch animation on body for 2.5 seconds
-glitchBtn.addEventListener('click', () => {
-  prankSound.currentTime = 0;
-  prankSound.volume = 0.5;
-  prankSound.play();
-
-  document.body.id = 'glitch-effect';
-
+// Glitch button
+document.getElementById("glitch-button").addEventListener("click", () => {
+  document.body.style.animation = 'none';
+  document.body.offsetHeight; // force reflow
+  document.body.style.animation = 'glitch 0.5s steps(2, end) 3';
   setTimeout(() => {
-    document.body.id = '';
-  }, 2500);
+    document.body.style.animation = '';
+  }, 1500);
 });
 
-// Confetti Storm button - spawns tons of confetti raining all over for 10 seconds
-confettiStormBtn.addEventListener('click', () => {
-  alert("Confetti storm unleashed! Brace yourself!");
-
-  confettiStormInterval = setInterval(() => {
-    // Spawn ~20 confetti at random X at top of viewport
-    for (let i = 0; i < 20; i++) {
-      const x = Math.random() * window.innerWidth;
-      spawnConfetti(x, -20, 1);
-    }
+// Confetti storm
+document.getElementById("confetti-storm-button").addEventListener("click", () => {
+  const interval = setInterval(() => {
+    const x = Math.random() * window.innerWidth;
+    spawnConfetti(x, 0, 5);
   }, 100);
-
-  setTimeout(() => {
-    clearInterval(confettiStormInterval);
-    alert("Confetti storm is over! Hope you had fun!");
-  }, 10000);
+  setTimeout(() => clearInterval(interval), 7000);
 });
 
-// Utility: random number in range
-function randomRange(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+// Reward popup
+function showReward(text) {
+  const popup = document.getElementById('reward-popup');
+  popup.textContent = text;
+  popup.style.display = 'block';
+  setTimeout(() => {
+    popup.style.display = 'none';
+  }, 5000);
 }
+
 
 
 
