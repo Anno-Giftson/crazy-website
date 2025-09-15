@@ -1,4 +1,3 @@
-/* Reset and base */
 body {
   margin: 0;
   padding: 0;
@@ -7,11 +6,10 @@ body {
   background-color: black;
   color: white;
   text-align: center;
-  transition: background-color 2s ease;
+  transition: background-color 2s ease, filter 0.3s ease, transform 0.7s ease;
   cursor: url('https://cur.cursors-4u.net/symbols/sym-4/sym367.cur'), auto;
 }
 
-/* Crazy title */
 #crazy-title {
   font-size: 5em;
   margin-top: 100px;
@@ -25,7 +23,6 @@ body {
     0 0 80px #ff00de;
 }
 
-/* Shared button styles */
 button {
   font-size: 1.5em;
   padding: 15px 30px;
@@ -44,16 +41,15 @@ button {
   user-select: none;
   outline: none;
   display: inline-block;
+  position: relative;
 }
 
-/* Spin button */
 #spin-button {
   font-size: 2em;
   padding: 25px 40px;
   animation: slowSpin 6s linear infinite;
 }
 
-/* Spin button hover wiggle */
 #spin-button:hover {
   animation-play-state: paused;
   transform: rotate(10deg) scale(1.1);
@@ -64,18 +60,15 @@ button {
     0 0 50px hotpink;
 }
 
-/* Spin button active bounce */
 #spin-button:active {
   animation-play-state: paused;
   transform: scale(0.95) rotate(-5deg);
 }
 
-/* Runaway button special */
 #runaway-button {
   position: relative;
 }
 
-/* Confetti storm button style */
 #confetti-storm-button {
   background: linear-gradient(135deg, #ffde00, #ff5500);
   border-color: #ffaa00;
@@ -85,13 +78,42 @@ button {
     0 0 20px #ff5500;
 }
 
-/* Inverted colors class */
-.inverted {
+.inverted-upside-down {
   filter: invert(1) hue-rotate(180deg);
-  transition: filter 0.5s ease;
+  transform: rotate(180deg);
 }
 
-/* Confetti container */
+#glitch-effect {
+  animation: glitchAnim 0.5s ease-in-out 5;
+}
+
+@keyframes glitchAnim {
+  0% {
+    clip-path: inset(10% 0 85% 0);
+    transform: translate(-3px, -3px) skew(5deg);
+  }
+  20% {
+    clip-path: inset(40% 0 43% 0);
+    transform: translate(3px, 3px) skew(-5deg);
+  }
+  40% {
+    clip-path: inset(20% 0 60% 0);
+    transform: translate(-3px, 2px) skew(3deg);
+  }
+  60% {
+    clip-path: inset(50% 0 15% 0);
+    transform: translate(3px, -3px) skew(-3deg);
+  }
+  80% {
+    clip-path: inset(10% 0 85% 0);
+    transform: translate(-3px, 3px) skew(5deg);
+  }
+  100% {
+    clip-path: inset(0 0 0 0);
+    transform: none;
+  }
+}
+
 #confetti-container {
   position: fixed;
   top: 0;
@@ -103,7 +125,6 @@ button {
   z-index: 9999;
 }
 
-/* Confetti pieces */
 .confetti {
   position: absolute;
   width: var(--size);
@@ -117,7 +138,6 @@ button {
   will-change: transform, opacity;
 }
 
-/* Different shapes */
 .confetti.circle {
   border-radius: 50%;
 }
@@ -128,7 +148,6 @@ button {
   border-radius: 20%;
 }
 
-/* Animations */
 @keyframes fall {
   0% {
     transform: translate3d(var(--start-x), 0, 0) rotate(0deg);
@@ -167,7 +186,6 @@ button {
   }
 }
 
-/* Dancing emoji animation */
 #dance-emoji {
   position: fixed;
   font-size: 5em;
@@ -188,5 +206,22 @@ button {
     transform: translate(calc(-50% + 15px), calc(-50% - 10px)) rotate(15deg) scale(1.2);
   }
 }
+
+#blocker {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background: black;
+  color: white;
+  font-size: 3em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 20000;
+  user-select: none;
+  text-align: center;
+  padding: 20px;
+}
+
 
 
