@@ -7,7 +7,7 @@ function isMobileDevice() {
   return /android|iphone|ipad|ipod|mobile/i.test(ua);
 }
 
-// Touch detection only on laptops or non-mobile
+// Detect actual touch only on non-phones
 window.addEventListener('touchstart', () => {
   if (!touchBlocked && !isMobileDevice()) {
     usedTouch = true;
@@ -22,9 +22,14 @@ function blockTouchScreen() {
   blocker.innerHTML = `🚫<br>Sorry, touch screen use is not allowed on this device.<br>Please use a mouse or trackpad.`;
   document.body.appendChild(blocker);
   document.body.style.overflow = 'hidden';
+
+  setTimeout(() => {
+    blocker.remove();
+    document.body.style.overflow = '';
+  }, 3000);
 }
 
-// Background color change
+// Background color changer
 setInterval(() => {
   if (!document.body.classList.contains('inverted-upside-down')) {
     document.body.style.backgroundColor = getRandomColor();
@@ -55,18 +60,17 @@ function spawnConfetti(x, y, count = 10) {
   }
 }
 
-// Spin button
+// DO NOT PRESS button
 document.getElementById("spin-button").addEventListener("click", () => {
   alert("YOU PRESSED THE BUTTON. NOW YOU MUST DANCE. 💃🕺");
 });
 
-// Runaway button
+// Catch me if you can button
 const runawayBtn = document.getElementById("runaway-button");
 runawayBtn.addEventListener("mouseenter", () => {
   if (usedTouch) return;
   moveRandom(runawayBtn);
 });
-
 runawayBtn.addEventListener("click", () => {
   if (usedTouch) return;
   showReward("🎉 You caught the button! You win! 🎉");
@@ -79,7 +83,7 @@ function moveRandom(el) {
   el.style.top = Math.random() * (window.innerHeight - 100) + "px";
 }
 
-// Clone button
+// Clone me!
 document.getElementById("clone-button").addEventListener("click", () => {
   const clone = document.getElementById("clone-button").cloneNode(true);
   clone.textContent = "I'm a clone!";
@@ -97,7 +101,7 @@ document.getElementById("clear-clones-button").addEventListener("click", () => {
   clones = [];
 });
 
-// Invert world
+// Invert button
 document.getElementById("invert-button").addEventListener("click", () => {
   document.body.classList.add('inverted-upside-down');
   setTimeout(() => {
@@ -105,17 +109,15 @@ document.getElementById("invert-button").addEventListener("click", () => {
   }, 3000);
 });
 
-// Glitch effect
+// Glitch button
 document.getElementById("glitch-button").addEventListener("click", () => {
-  document.body.style.animation = 'none';
-  document.body.offsetHeight;
-  document.body.style.animation = 'glitch 0.5s steps(2, end) 3';
+  document.body.classList.add("glitching");
   setTimeout(() => {
-    document.body.style.animation = '';
-  }, 1500);
+    document.body.classList.remove("glitching");
+  }, 2000);
 });
 
-// Confetti storm
+// Confetti storm button
 document.getElementById("confetti-storm-button").addEventListener("click", () => {
   const interval = setInterval(() => {
     const x = Math.random() * window.innerWidth;
@@ -133,6 +135,7 @@ function showReward(text) {
     popup.style.display = 'none';
   }, 5000);
 }
+
 
 
 
