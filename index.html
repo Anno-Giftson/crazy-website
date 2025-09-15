@@ -17,12 +17,21 @@
   <button id="glitch-button">Make it Glitch!</button>
   <button id="confetti-storm-button">Start Confetti Storm!</button>
 
+  <!-- New: Freeze code input + clue -->
+  <div id="freeze-code-container">
+    <input type="text" id="freeze-code" maxlength="52" placeholder="Enter the secret code" />
+    <button id="submit-code">Submit Code</button>
+    <button id="clue-button">Need a clue?</button>
+    <div id="clue-text" style="display: none; margin-top: 10px;">🔍 The code is the first 50 digits of π — starting with 3.</div>
+  </div>
+
   <div id="confetti-container"></div>
   <div id="reward-popup" style="display: none;"></div>
 
   <script src="script.js"></script>
 </body>
 </html>
+
 
 
 
