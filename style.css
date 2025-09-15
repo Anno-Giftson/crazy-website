@@ -1,0 +1,53 @@
+style.css:
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  font-family: 'Comic Sans MS', cursive;
+  background-color: black;
+  color: white;
+  text-align: center;
+}
+
+#crazy-title {
+  font-size: 4em;
+  animation: blinkRotate 1s infinite;
+  margin-top: 100px;
+}
+
+#spin-button {
+  font-size: 1.5em;
+  padding: 20px;
+  margin-top: 50px;
+  background-color: hotpink;
+  border: 5px dashed lime;
+  cursor: grab;
+  animation: spin 4s linear infinite;
+}
+
+@keyframes blinkRotate {
+  0% { opacity: 1; transform: rotate(0deg); color: red; }
+  25% { opacity: 0.5; transform: rotate(5deg); color: yellow; }
+  50% { opacity: 1; transform: rotate(-5deg); color: cyan; }
+  75% { opacity: 0.5; transform: rotate(10deg); color: magenta; }
+  100% { opacity: 1; transform: rotate(0deg); color: green; }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg);}
+  100% { transform: rotate(360deg);}
+}
+
+.confetti {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: random;
+  animation: fall 3s linear infinite;
+}
+
+@keyframes fall {
+  0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+}
