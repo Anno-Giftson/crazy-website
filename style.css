@@ -1,53 +1,48 @@
-style.css:
-body {
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-  font-family: 'Comic Sans MS', cursive;
-  background-color: black;
-  color: white;
-  text-align: center;
-}
-
-#crazy-title {
-  font-size: 4em;
-  animation: blinkRotate 1s infinite;
-  margin-top: 100px;
-}
-
-#spin-button {
+/* Shared button styles */
+button {
   font-size: 1.5em;
-  padding: 20px;
-  margin-top: 50px;
-  background-color: hotpink;
+  padding: 15px 30px;
+  margin: 15px 10px;
+  background: linear-gradient(45deg, hotpink, lime, cyan, magenta);
   border: 5px dashed lime;
-  cursor: grab;
-  animation: spin 4s linear infinite;
+  border-radius: 15px;
+  cursor: pointer;
+  color: black;
+  font-weight: bold;
+  box-shadow:
+    0 0 10px hotpink,
+    0 0 20px lime,
+    0 0 40px cyan;
+  transition: transform 0.3s ease, background 0.3s ease;
+  user-select: none;
+  outline: none;
+  display: inline-block;
 }
 
-@keyframes blinkRotate {
-  0% { opacity: 1; transform: rotate(0deg); color: red; }
-  25% { opacity: 0.5; transform: rotate(5deg); color: yellow; }
-  50% { opacity: 1; transform: rotate(-5deg); color: cyan; }
-  75% { opacity: 0.5; transform: rotate(10deg); color: magenta; }
-  100% { opacity: 1; transform: rotate(0deg); color: green; }
+/* Different button sizes for emphasis */
+#spin-button {
+  font-size: 2em;
+  padding: 25px 40px;
+  animation: slowSpin 6s linear infinite;
 }
 
-@keyframes spin {
-  0% { transform: rotate(0deg);}
-  100% { transform: rotate(360deg);}
+/* Runaway button special */
+#runaway-button {
+  position: relative;
 }
 
-.confetti {
-  position: absolute;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background-color: random;
-  animation: fall 3s linear infinite;
+/* Clone buttons added later will inherit these styles */
+#confetti-storm-button {
+  background: linear-gradient(135deg, #ffde00, #ff5500);
+  border-color: #ffaa00;
+  color: #222;
+  box-shadow:
+    0 0 10px #ffde00,
+    0 0 20px #ff5500;
 }
 
-@keyframes fall {
-  0% { transform: translateY(0) rotate(0deg); opacity: 1; }
-  100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+.inverted {
+  filter: invert(1) hue-rotate(180deg);
+  transition: filter 0.5s ease;
 }
+
