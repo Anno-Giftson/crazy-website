@@ -1,3 +1,30 @@
+/* Reset and base */
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  font-family: 'Comic Sans MS', cursive, sans-serif;
+  background-color: black;
+  color: white;
+  text-align: center;
+  transition: background-color 2s ease;
+  cursor: url('https://cur.cursors-4u.net/symbols/sym-4/sym367.cur'), auto;
+}
+
+/* Crazy title */
+#crazy-title {
+  font-size: 5em;
+  margin-top: 100px;
+  animation: colorPulseScale 3s infinite alternate ease-in-out;
+  user-select: none;
+  text-shadow:
+    0 0 5px #fff,
+    0 0 10px #ff00de,
+    0 0 20px #ff00de,
+    0 0 40px #ff00de,
+    0 0 80px #ff00de;
+}
+
 /* Shared button styles */
 button {
   font-size: 1.5em;
@@ -19,11 +46,28 @@ button {
   display: inline-block;
 }
 
-/* Different button sizes for emphasis */
+/* Spin button */
 #spin-button {
   font-size: 2em;
   padding: 25px 40px;
   animation: slowSpin 6s linear infinite;
+}
+
+/* Spin button hover wiggle */
+#spin-button:hover {
+  animation-play-state: paused;
+  transform: rotate(10deg) scale(1.1);
+  background: linear-gradient(45deg, cyan, magenta, hotpink, lime);
+  box-shadow:
+    0 0 15px cyan,
+    0 0 30px magenta,
+    0 0 50px hotpink;
+}
+
+/* Spin button active bounce */
+#spin-button:active {
+  animation-play-state: paused;
+  transform: scale(0.95) rotate(-5deg);
 }
 
 /* Runaway button special */
@@ -31,7 +75,7 @@ button {
   position: relative;
 }
 
-/* Clone buttons added later will inherit these styles */
+/* Confetti storm button style */
 #confetti-storm-button {
   background: linear-gradient(135deg, #ffde00, #ff5500);
   border-color: #ffaa00;
@@ -41,8 +85,108 @@ button {
     0 0 20px #ff5500;
 }
 
+/* Inverted colors class */
 .inverted {
   filter: invert(1) hue-rotate(180deg);
   transition: filter 0.5s ease;
 }
+
+/* Confetti container */
+#confetti-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  overflow: visible;
+  z-index: 9999;
+}
+
+/* Confetti pieces */
+.confetti {
+  position: absolute;
+  width: var(--size);
+  height: var(--size);
+  background-color: var(--color);
+  opacity: 1;
+  border-radius: var(--shape-radius);
+  pointer-events: none;
+  animation: fall var(--duration) linear forwards;
+  filter: drop-shadow(0 0 2px var(--color));
+  will-change: transform, opacity;
+}
+
+/* Different shapes */
+.confetti.circle {
+  border-radius: 50%;
+}
+.confetti.square {
+  border-radius: 0;
+}
+.confetti.rounded {
+  border-radius: 20%;
+}
+
+/* Animations */
+@keyframes fall {
+  0% {
+    transform: translate3d(var(--start-x), 0, 0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(calc(var(--start-x) + var(--x-drift)), 100vh, 720deg);
+    opacity: 0;
+  }
+}
+
+@keyframes colorPulseScale {
+  0% {
+    color: #ff0066;
+    text-shadow: 0 0 5px #ff0066;
+    transform: scale(1);
+  }
+  50% {
+    color: #00ffff;
+    text-shadow: 0 0 20px #00ffff;
+    transform: scale(1.2);
+  }
+  100% {
+    color: #ffcc00;
+    text-shadow: 0 0 10px #ffcc00;
+    transform: scale(1);
+  }
+}
+
+@keyframes slowSpin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Dancing emoji animation */
+#dance-emoji {
+  position: fixed;
+  font-size: 5em;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  animation: danceMove 0.8s infinite alternate ease-in-out;
+  pointer-events: none;
+  user-select: none;
+  z-index: 10000;
+}
+
+@keyframes danceMove {
+  0% {
+    transform: translate(-50%, -50%) rotate(-15deg) scale(1);
+  }
+  100% {
+    transform: translate(calc(-50% + 15px), calc(-50% - 10px)) rotate(15deg) scale(1.2);
+  }
+}
+
 
