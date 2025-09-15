@@ -2,9 +2,14 @@ let usedTouch = false;
 let touchBlocked = false;
 let clones = [];
 
-// Touch detection
+function isMobileDevice() {
+  const ua = navigator.userAgent || navigator.vendor || window.opera;
+  return /android|iphone|ipad|ipod|mobile/i.test(ua);
+}
+
+// Touch detection only on laptops or non-mobile
 window.addEventListener('touchstart', () => {
-  if (!touchBlocked) {
+  if (!touchBlocked && !isMobileDevice()) {
     usedTouch = true;
     blockTouchScreen();
   }
@@ -14,11 +19,12 @@ function blockTouchScreen() {
   touchBlocked = true;
   const blocker = document.createElement('div');
   blocker.id = 'blocker';
-  blocker.textContent = "🚫 Touchscreen use is not allowed. Use a mouse or trackpad.";
+  blocker.innerHTML = `🚫<br>Sorry, touch screen use is not allowed on this device.<br>Please use a mouse or trackpad.`;
   document.body.appendChild(blocker);
+  document.body.style.overflow = 'hidden';
 }
 
-// Background color change every second
+// Background color change
 setInterval(() => {
   if (!document.body.classList.contains('inverted-upside-down')) {
     document.body.style.backgroundColor = getRandomColor();
@@ -91,7 +97,7 @@ document.getElementById("clear-clones-button").addEventListener("click", () => {
   clones = [];
 });
 
-// Invert button
+// Invert world
 document.getElementById("invert-button").addEventListener("click", () => {
   document.body.classList.add('inverted-upside-down');
   setTimeout(() => {
@@ -99,10 +105,10 @@ document.getElementById("invert-button").addEventListener("click", () => {
   }, 3000);
 });
 
-// Glitch button
+// Glitch effect
 document.getElementById("glitch-button").addEventListener("click", () => {
   document.body.style.animation = 'none';
-  document.body.offsetHeight; // force reflow
+  document.body.offsetHeight;
   document.body.style.animation = 'glitch 0.5s steps(2, end) 3';
   setTimeout(() => {
     document.body.style.animation = '';
@@ -127,6 +133,7 @@ function showReward(text) {
     popup.style.display = 'none';
   }, 5000);
 }
+
 
 
 
