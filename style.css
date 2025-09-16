@@ -9,18 +9,73 @@ body {
   transition: filter 0.3s ease, transform 0.7s ease;
 }
 
+/* Group main buttons container */
+#main-buttons {
+  position: fixed;
+  top: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  max-width: 90vw;
+  justify-content: center;
+  z-index: 1000;
+}
+
+/* Puzzle container fixed bottom-left */
+#puzzle-container {
+  position: fixed;
+  bottom: 15px;
+  left: 15px;
+  background: rgba(0,0,0,0.7);
+  border: 2px solid hotpink;
+  padding: 10px;
+  border-radius: 15px;
+  max-width: 320px;
+  color: white;
+  z-index: 10000;
+}
+
+#puzzle-container button, #puzzle-container input {
+  font-size: 1em;
+  padding: 8px 12px;
+  margin-top: 5px;
+  border: 2px solid hotpink;
+  border-radius: 8px;
+  background-color: black;
+  color: white;
+  width: 100%;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+
+#puzzle-container input:focus {
+  outline: none;
+  border-color: hotpink;
+}
+
+/* Running button styling to keep size */
+#runaway-button {
+  position: fixed;
+  width: 140px;
+  height: 40px;
+}
+
+/* Other buttons fixed size for consistency */
 button {
-  font-size: 1.2em;
-  padding: 10px 20px;
-  margin: 10px;
+  font-size: 1.1em;
+  padding: 10px 15px;
   background-color: hotpink;
   border: 3px dashed lime;
   cursor: pointer;
+  min-width: 140px;
+  height: 40px;
   transition: transform 0.2s;
 }
 
 button:hover {
-  transform: scale(1.1);
+  transform: scale(1.05);
 }
 
 #crazy-title {
@@ -107,57 +162,6 @@ button:hover {
   animation: glitch 0.2s steps(2, end) 10;
 }
 
-/* Puzzle Container */
-#puzzle-container {
-  position: fixed;
-  bottom: 15px;
-  left: 15px;
-  background: rgba(0,0,0,0.7);
-  border: 2px solid hotpink;
-  padding: 10px;
-  border-radius: 15px;
-  max-width: 320px;
-  color: white;
-  z-index: 10000;
-}
-
-#puzzle-content {
-  margin-top: 10px;
-}
-
-#freeze-code {
-  width: 100%;
-  padding: 8px;
-  font-size: 1em;
-  border: 2px solid lime;
-  border-radius: 8px;
-  margin-bottom: 10px;
-  background: black;
-  color: white;
-}
-
-#clue-button {
-  background-color: purple;
-  border: 2px solid magenta;
-  margin-bottom: 5px;
-}
-
-#clue-text {
-  background: #222;
-  border: 1px dashed magenta;
-  padding: 8px;
-  font-size: 0.9em;
-  border-radius: 8px;
-  margin-bottom: 10px;
-  user-select: none;
-  /* Prevent selection for extra anti-copy */
-}
-
-#submit-code {
-  background-color: hotpink;
-  border: 3px dashed lime;
-  width: 100%;
-}
 
 
 
