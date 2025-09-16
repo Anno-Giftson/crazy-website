@@ -98,46 +98,22 @@ function moveRandom(el) {
   el.style.top = (Math.random() * (maxHeight - minTop) + minTop) + "px";
 }
 
-// Move when hovered
+// Move when hovered — now *always* moves, even if touch used or frozen
 runawayBtn.addEventListener("mouseenter", () => {
-  if (usedTouch || isFrozen) return;
   moveRandom(runawayBtn);
 });
 
-// Freeze on hover for 2 seconds
-runawayBtn.addEventListener("mouseover", () => {
-  if (usedTouch || isFrozen) return;
-  hoverTimeout = setTimeout(() => {
-    freezeButton();
-  }, 2000);
-});
-runawayBtn.addEventListener("mouseout", () => {
-  clearTimeout(hoverTimeout);
-});
-
-// Freeze on double-click
-runawayBtn.addEventListener("dblclick", () => {
-  if (!usedTouch && !isFrozen) {
-    freezeButton();
-  }
-});
-
-// Freeze on Shift key
-document.addEventListener("keydown", (e) => {
-  if (e.key === "Shift" && !isFrozen && !usedTouch) {
-    freezeButton();
-  }
-});
+// Remove freeze on hover, double-click, shift key — no freezing except on correct code submission
 
 // Click to claim reward (if frozen)
 runawayBtn.addEventListener("click", () => {
-  if (usedTouch) return;
   if (isFrozen) {
     showReward("🎉 You outsmarted the button! You win! 🎉");
     spawnConfetti(window.innerWidth / 2, window.innerHeight / 2, 100);
   }
 });
 
+// Freeze function
 function freezeButton() {
   isFrozen = true;
   runawayBtn.textContent = "😳 You froze me!";
@@ -233,15 +209,13 @@ freezeInput.addEventListener("cut", (e) => {
 // Submit code button
 document.getElementById("submit-code").addEventListener("click", () => {
   const inputVal = freezeInput.value.trim();
-  // The first 50 digits of pi (including the leading '3')
-  const pi50digits = "31415926535897932384626433832795028841971693993751";
+  const pi50digits = "3.1415926535897932384626433832795028841971693993751";
 
   if (inputVal === pi50digits) {
     if (!isFrozen) {
-      alert("You need to freeze the button first (hover for 2 seconds or double click it)!");
-      return;
+      freezeButton();  // Freeze immediately on correct code submission
     }
-    showReward("🎉 Correct! You solved the puzzle! 🎉");
+    showReward("🎉 Correct! You solved the puzzle and froze the button! 🎉");
     spawnConfetti(window.innerWidth / 2, window.innerHeight / 2, 100);
   } else {
     alert("Wrong code! Keep trying.");
@@ -258,6 +232,7 @@ function showReward(msg) {
     popup.style.display = "none";
   }, 4000);
 }
+
 
 
 
