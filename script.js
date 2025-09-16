@@ -69,18 +69,30 @@ document.getElementById("spin-button").addEventListener("click", () => {
 
 // === Catch Me If You Can Button ===
 const runawayBtn = document.getElementById("runaway-button");
-runawayBtn.style.position = 'fixed';
-runawayBtn.style.left = '50%';
-runawayBtn.style.top = '150px';
 
-function runawayButtonMouseEnter() {
+// Move when hovered
+runawayBtn.addEventListener("mouseenter", () => {
   if (usedTouch || isFrozen) return;
-  const x = Math.random() * (window.innerWidth - runawayBtn.offsetWidth);
-  const y = Math.random() * (window.innerHeight - runawayBtn.offsetHeight);
-  runawayBtn.style.left = x + "px";
-  runawayBtn.style.top = y + "px";
-}
-runawayBtn.addEventListener("mouseenter", runawayButtonMouseEnter);
+  moveRandom(runawayBtn);
+});
+
+// Freeze on hover for 2 seconds
+runawayBtn.addEventListener("mouseover", () => {
+  if (usedTouch || isFrozen) return;
+  hoverTimeout = setTimeout(() => {
+    freezeButton();
+  }, 2000);
+});
+runawayBtn.addEventListener("mouseout", () => {
+  clearTimeout(hoverTimeout);
+});
+
+// Freeze on double-click
+runawayBtn.addEventListener("dblclick", () => {
+  if (!usedTouch && !isFrozen) {
+    freezeButton();
+  }
+});
 
 // Freeze on Shift key
 document.addEventListener("keydown", (e) => {
@@ -98,12 +110,17 @@ runawayBtn.addEventListener("click", () => {
   }
 });
 
+function moveRandom(el) {
+  el.style.position = "fixed";
+  el.style.left = Math.random() * (window.innerWidth - 150) + "px";
+  el.style.top = Math.random() * (window.innerHeight - 100) + "px";
+}
+
 function freezeButton() {
   isFrozen = true;
   runawayBtn.textContent = "😳 You froze me!";
   runawayBtn.style.backgroundColor = "lightblue";
   runawayBtn.style.border = "3px solid blue";
-  runawayBtn.removeEventListener("mouseenter", runawayButtonMouseEnter);
 }
 
 // === Clone Button ===
@@ -126,15 +143,17 @@ document.getElementById("clear-clones-button").addEventListener("click", () => {
 
 // Invert the world
 document.getElementById("invert-button").addEventListener("click", () => {
-  document.body.classList.toggle("inverted-upside-down");
+  document.body.classList.add('inverted-upside-down');
+  setTimeout(() => {
+    document.body.classList.remove('inverted-upside-down');
+  }, 3000);
 });
 
 // Glitch effect
 document.getElementById("glitch-button").addEventListener("click", () => {
-  const title = document.getElementById("crazy-title");
-  title.classList.add("glitching");
+  document.body.classList.add("glitching");
   setTimeout(() => {
-    title.classList.remove("glitching");
+    document.body.classList.remove("glitching");
   }, 2000);
 });
 
@@ -152,13 +171,13 @@ function startConfettiRain() {
   }, 200);
 }
 
-// Reward popup
-function showReward(message) {
-  const popup = document.getElementById("reward-popup");
-  popup.textContent = message;
-  popup.style.display = "block";
+// Reward Popup
+function showReward(text) {
+  const popup = document.getElementById('reward-popup');
+  popup.textContent = text;
+  popup.style.display = 'block';
   setTimeout(() => {
-    popup.style.display = "none";
+    popup.style.display = 'none';
   }, 5000);
 }
 
@@ -185,8 +204,7 @@ clueButton.addEventListener('click', () => {
 
 submitCodeBtn.addEventListener('click', () => {
   // The first 50 digits of pi INCLUDING the leading 3 and decimal point.
-  // As per your note, decimal point counts as a digit.
-  // The code length is 50 digits including the "3" and the decimal point
+  // The decimal point counts as a digit here, so total length 50 digits including "3."
   const piCode = "3.14159265358979323846264338327950288419716939937510";
   const entered = freezeCodeInput.value.trim();
 
@@ -213,6 +231,7 @@ freezeCodeInput.addEventListener('cut', e => {
   e.preventDefault();
   alert("No copying and pasting allowed!");
 });
+
 
 
 
