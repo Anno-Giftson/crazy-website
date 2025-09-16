@@ -84,6 +84,7 @@ document.getElementById("spin-button").addEventListener("click", () => {
 const runawayBtn = document.getElementById("runaway-button");
 
 function moveRandom(el) {
+  if (isFrozen) return; // Stop moving when frozen
   el.style.position = "fixed";
 
   // Limit area so button doesn't go under header container or out of view
@@ -98,28 +99,28 @@ function moveRandom(el) {
   el.style.top = (Math.random() * (maxHeight - minTop) + minTop) + "px";
 }
 
-// Move when hovered — now *always* moves, even if touch used or frozen
+// Move when hovered
 runawayBtn.addEventListener("mouseenter", () => {
+  if (usedTouch || isFrozen) return;
   moveRandom(runawayBtn);
 });
 
-// Remove freeze on hover, double-click, shift key — no freezing except on correct code submission
-
-// Click to claim reward (if frozen)
-runawayBtn.addEventListener("click", () => {
-  if (isFrozen) {
-    showReward("🎉 You outsmarted the button! You win! 🎉");
-    spawnConfetti(window.innerWidth / 2, window.innerHeight / 2, 100);
-  }
-});
-
-// Freeze function
+// Freeze function - stops movement and changes style/text
 function freezeButton() {
   isFrozen = true;
   runawayBtn.textContent = "😳 You froze me!";
   runawayBtn.style.backgroundColor = "lightblue";
   runawayBtn.style.border = "3px solid blue";
 }
+
+// Clicking frozen button shows reward & confetti
+runawayBtn.addEventListener("click", () => {
+  if (usedTouch) return;
+  if (isFrozen) {
+    showReward("🎉 You outsmarted the button! You win! 🎉");
+    spawnConfetti(window.innerWidth / 2, window.innerHeight / 2, 100);
+  }
+});
 
 // === Clone Button ===
 document.getElementById("clone-button").addEventListener("click", () => {
@@ -209,14 +210,13 @@ freezeInput.addEventListener("cut", (e) => {
 // Submit code button
 document.getElementById("submit-code").addEventListener("click", () => {
   const inputVal = freezeInput.value.trim();
+  // The first 50 digits of pi (including the leading '3' and decimal point)
   const pi50digits = "3.1415926535897932384626433832795028841971693993751";
 
   if (inputVal === pi50digits) {
     if (!isFrozen) {
-      freezeButton();  // Freeze immediately on correct code submission
+      freezeButton(); // Freeze immediately on correct code
     }
-    showReward("🎉 Correct! You solved the puzzle and froze the button! 🎉");
-    spawnConfetti(window.innerWidth / 2, window.innerHeight / 2, 100);
   } else {
     alert("Wrong code! Keep trying.");
   }
@@ -232,6 +232,7 @@ function showReward(msg) {
     popup.style.display = "none";
   }, 4000);
 }
+
 
 
 
