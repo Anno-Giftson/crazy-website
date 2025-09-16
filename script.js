@@ -2,7 +2,6 @@ let usedTouch = false;
 let touchBlocked = false;
 let clones = [];
 let isFrozen = false;
-let hoverTimeout = null;
 
 function isMobileDevice() {
   const ua = navigator.userAgent || navigator.vendor || window.opera;
@@ -20,7 +19,7 @@ window.addEventListener('DOMContentLoaded', () => {
   runawayBtn.style.transform = "translateX(-50%)";
 });
 
-// Detect touch, but only block laptops/chromebooks (show warning every time touch detected on non-mobile)
+// Detect touch on non-mobile and show warning
 window.addEventListener('touchstart', () => {
   if (!isMobileDevice()) {
     usedTouch = true;
@@ -29,7 +28,7 @@ window.addEventListener('touchstart', () => {
 }, { passive: true });
 
 function blockTouchScreen() {
-  if (touchBlocked) return; // prevent overlapping warnings if already showing
+  if (touchBlocked) return;
   touchBlocked = true;
   const blocker = document.createElement('div');
   blocker.id = 'blocker';
@@ -40,7 +39,7 @@ function blockTouchScreen() {
   setTimeout(() => {
     blocker.remove();
     document.body.style.overflow = '';
-    touchBlocked = false;  // allow warning to show again on next touch
+    touchBlocked = false;
   }, 3000);
 }
 
@@ -84,15 +83,12 @@ document.getElementById("spin-button").addEventListener("click", () => {
 const runawayBtn = document.getElementById("runaway-button");
 
 function moveRandom(el) {
-  if (isFrozen) return; // Stop moving when frozen
+  if (isFrozen) return;
   el.style.position = "fixed";
 
-  // Limit area so button doesn't go under header container or out of view
   const headerHeight = document.getElementById('header-container').offsetHeight;
   const maxWidth = window.innerWidth - el.offsetWidth - 20;
   const maxHeight = window.innerHeight - el.offsetHeight - 20;
-
-  // Min top = header height + 10px spacing
   const minTop = headerHeight + 10;
 
   el.style.left = Math.random() * maxWidth + "px";
@@ -105,15 +101,7 @@ runawayBtn.addEventListener("mouseenter", () => {
   moveRandom(runawayBtn);
 });
 
-// Freeze function - stops movement and changes style/text
-function freezeButton() {
-  isFrozen = true;
-  runawayBtn.textContent = "😳 You froze me!";
-  runawayBtn.style.backgroundColor = "lightblue";
-  runawayBtn.style.border = "3px solid blue";
-}
-
-// Clicking frozen button shows reward & confetti
+// Clicking frozen button gives reward
 runawayBtn.addEventListener("click", () => {
   if (usedTouch) return;
   if (isFrozen) {
@@ -173,16 +161,12 @@ function stopConfettiRain() {
   clearInterval(confettiInterval);
 }
 
-// === Puzzle container open/close logic ===
+// Puzzle container toggle
 const openPuzzleBtn = document.getElementById("open-puzzle-btn");
 const puzzleContent = document.getElementById("puzzle-content");
 
 openPuzzleBtn.addEventListener("click", () => {
-  if (puzzleContent.style.display === "none") {
-    puzzleContent.style.display = "block";
-  } else {
-    puzzleContent.style.display = "none";
-  }
+  puzzleContent.style.display = (puzzleContent.style.display === "none") ? "block" : "none";
 });
 
 // Clue toggle
@@ -191,38 +175,39 @@ document.getElementById("clue-button").addEventListener("click", () => {
   clueText.style.display = (clueText.style.display === "none") ? "block" : "none";
 });
 
-// No copy/paste on input and alert
+// No copy/paste on input
 const freezeInput = document.getElementById("freeze-code");
 
-freezeInput.addEventListener("copy", (e) => {
-  e.preventDefault();
-  alert("No copying allowed!");
-});
-freezeInput.addEventListener("paste", (e) => {
-  e.preventDefault();
-  alert("No pasting allowed!");
-});
-freezeInput.addEventListener("cut", (e) => {
-  e.preventDefault();
-  alert("No cutting allowed!");
+["copy", "paste", "cut"].forEach(event => {
+  freezeInput.addEventListener(event, (e) => {
+    e.preventDefault();
+    alert(`No ${event}ing allowed!`);
+  });
 });
 
-// Submit code button
+// Submit code
 document.getElementById("submit-code").addEventListener("click", () => {
   const inputVal = freezeInput.value.trim();
-  // The first 50 digits of pi (including the leading '3' and decimal point)
   const pi50digits = "3.14159265358979323846264338327950288419716939937510";
 
   if (inputVal === pi50digits) {
     if (!isFrozen) {
-      freezeButton(); // Freeze immediately on correct code
+      freezeButton();
     }
   } else {
     alert("Wrong code! Keep trying.");
   }
 });
 
-// Reward popup show/hide
+// Freeze logic (only called by code submission)
+function freezeButton() {
+  isFrozen = true;
+  runawayBtn.textContent = "😳 You froze me!";
+  runawayBtn.style.backgroundColor = "lightblue";
+  runawayBtn.style.border = "3px solid blue";
+}
+
+// Show reward popup
 function showReward(msg) {
   const popup = document.getElementById("reward-popup");
   popup.textContent = msg;
@@ -232,6 +217,7 @@ function showReward(msg) {
     popup.style.display = "none";
   }, 4000);
 }
+
 
 
 
