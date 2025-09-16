@@ -1,26 +1,64 @@
 body {
   margin: 0;
-  padding: 0;
+  padding: 140px 0 0 0; /* space for fixed header */
   font-family: 'Comic Sans MS', cursive;
   background-color: black;
   color: white;
-  text-align: center;
   overflow-x: hidden;
   transition: filter 0.3s ease, transform 0.7s ease;
+  user-select: none;
 }
 
-/* Group main buttons container */
-#main-buttons {
+/* Header container */
+#header-container {
   position: fixed;
-  top: 15px;
+  top: 0;
   left: 50%;
   transform: translateX(-50%);
+  width: 90vw;
+  max-width: 1200px;
+  background: rgba(0, 0, 0, 0.85);
+  padding: 15px 20px;
+  border-radius: 15px;
+  box-sizing: border-box;
+  z-index: 10000;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* Title */
+#crazy-title {
+  font-size: 3rem;
+  margin: 0;
+  animation: blinkRotate 1s infinite;
+  color: hotpink;
+}
+
+/* Buttons container inside header */
+#main-buttons {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
-  max-width: 90vw;
   justify-content: center;
-  z-index: 1000;
+  gap: 12px;
+}
+
+/* Buttons inside main-buttons */
+#main-buttons button {
+  min-width: 150px;
+  height: 40px;
+  font-size: 1.1rem;
+  padding: 8px 12px;
+  background-color: hotpink;
+  border: 3px dashed lime;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: transform 0.2s;
+}
+
+#main-buttons button:hover {
+  transform: scale(1.05);
 }
 
 /* Puzzle container fixed bottom-left */
@@ -28,75 +66,45 @@ body {
   position: fixed;
   bottom: 15px;
   left: 15px;
-  background: rgba(0,0,0,0.7);
+  background: rgba(0, 0, 0, 0.8);
   border: 2px solid hotpink;
-  padding: 10px;
-  border-radius: 15px;
-  max-width: 320px;
-  color: white;
-  z-index: 10000;
-}
-
-#puzzle-container button, #puzzle-container input {
-  font-size: 1em;
-  padding: 8px 12px;
-  margin-top: 5px;
-  border: 2px solid hotpink;
-  border-radius: 8px;
-  background-color: black;
-  color: white;
-  width: 100%;
-  box-sizing: border-box;
-  cursor: pointer;
-}
-
-#puzzle-container input:focus {
-  outline: none;
-  border-color: hotpink;
-}
-
-/* Running button styling to keep size */
-#runaway-button {
-  position: fixed;
-  width: 140px;
-  height: 40px;
-}
-
-/* Other buttons fixed size for consistency */
-button {
-  font-size: 1.1em;
   padding: 10px 15px;
+  border-radius: 15px;
+  max-width: 340px;
+  color: white;
+  z-index: 10001;
+  font-size: 1rem;
+  user-select: text;
+}
+
+/* Puzzle input and buttons */
+#puzzle-container input[type="text"] {
+  width: calc(100% - 20px);
+  padding: 6px 8px;
+  font-size: 1rem;
+  border-radius: 6px;
+  border: 2px solid hotpink;
+  background: black;
+  color: white;
+  margin-top: 10px;
+}
+
+#puzzle-container button {
+  margin-top: 10px;
   background-color: hotpink;
   border: 3px dashed lime;
+  padding: 8px 12px;
   cursor: pointer;
-  min-width: 140px;
-  height: 40px;
+  border-radius: 8px;
+  font-size: 1rem;
   transition: transform 0.2s;
 }
 
-button:hover {
+#puzzle-container button:hover {
   transform: scale(1.05);
 }
 
-#crazy-title {
-  font-size: 4em;
-  animation: blinkRotate 1s infinite;
-  margin-top: 60px;
-}
-
-@keyframes blinkRotate {
-  0% { opacity: 1; transform: rotate(0deg); color: red; }
-  25% { opacity: 0.5; transform: rotate(5deg); color: yellow; }
-  50% { opacity: 1; transform: rotate(-5deg); color: cyan; }
-  75% { opacity: 0.5; transform: rotate(10deg); color: magenta; }
-  100% { opacity: 1; transform: rotate(0deg); color: green; }
-}
-
-.inverted-upside-down {
-  filter: invert(1);
-  transform: rotate(180deg);
-}
-
+/* Confetti container */
 #confetti-container {
   position: fixed;
   top: 0;
@@ -107,6 +115,7 @@ button:hover {
   z-index: 999;
 }
 
+/* Confetti pieces */
 .confetti {
   position: absolute;
   width: 10px;
@@ -121,6 +130,7 @@ button:hover {
   100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
 }
 
+/* Reward popup */
 #reward-popup {
   position: fixed;
   top: 50%;
@@ -135,6 +145,7 @@ button:hover {
   box-shadow: 0 0 20px hotpink;
 }
 
+/* Blocker for touch devices */
 #blocker {
   position: fixed;
   top: 0; left: 0;
@@ -161,6 +172,22 @@ button:hover {
 .glitching {
   animation: glitch 0.2s steps(2, end) 10;
 }
+
+/* Title blinking and rotating */
+@keyframes blinkRotate {
+  0% { opacity: 1; transform: rotate(0deg); color: red; }
+  25% { opacity: 0.5; transform: rotate(5deg); color: yellow; }
+  50% { opacity: 1; transform: rotate(-5deg); color: cyan; }
+  75% { opacity: 0.5; transform: rotate(10deg); color: magenta; }
+  100% { opacity: 1; transform: rotate(0deg); color: green; }
+}
+
+/* Inverted upside down */
+.inverted-upside-down {
+  filter: invert(1);
+  transform: rotate(180deg);
+}
+
 
 
 
