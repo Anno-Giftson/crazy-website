@@ -211,7 +211,7 @@ freezeInput.addEventListener("cut", (e) => {
 document.getElementById("submit-code").addEventListener("click", () => {
   const inputVal = freezeInput.value.trim();
   // The first 50 digits of pi (including the leading '3' and decimal point)
-  const pi50digits = "3.1415926535897932384626433832795028841971693993751";
+  const pi50digits = "3.14159265358979323846264338327950288419716939937510";
 
   if (inputVal === pi50digits) {
     if (!isFrozen) {
