@@ -4,6 +4,7 @@ let clones = [];
 let isFrozen = false;
 let hoverTimeout = null;
 
+// Detect mobile devices
 function isMobileDevice() {
   const ua = navigator.userAgent || navigator.vendor || window.opera;
   return /android|iphone|ipad|ipod|mobile/i.test(ua);
@@ -112,8 +113,33 @@ runawayBtn.addEventListener("click", () => {
 
 function moveRandom(el) {
   el.style.position = "fixed";
-  el.style.left = Math.random() * (window.innerWidth - 150) + "px";
-  el.style.top = Math.random() * (window.innerHeight - 100) + "px";
+
+  // Define safe areas:
+  // Puzzle container approx bottom-left 320px wide and ~130px tall (including padding)
+  // Main buttons at top center with height ~70px
+
+  const padding = 10;
+  const puzzleWidth = 340;  // puzzle container width + margin
+  const puzzleHeight = 130;
+  const mainButtonsHeight = 70;
+
+  const windowWidth = window.innerWidth;
+  const windowHeight = window.innerHeight;
+
+  // Avoid left zone of puzzle container
+  // Avoid top zone of main buttons container
+
+  const minX = puzzleWidth + padding;
+  const maxX = windowWidth - el.offsetWidth - padding;
+
+  const minY = mainButtonsHeight + padding;
+  const maxY = windowHeight - puzzleHeight - padding - el.offsetHeight;
+
+  const randomX = Math.random() * (maxX - minX) + minX;
+  const randomY = Math.random() * (maxY - minY) + minY;
+
+  el.style.left = randomX + "px";
+  el.style.top = randomY + "px";
 }
 
 function freezeButton() {
@@ -157,19 +183,14 @@ document.getElementById("glitch-button").addEventListener("click", () => {
   }, 2000);
 });
 
-// Confetti rain
+// Confetti Rain (formerly Confetti Storm)
 document.getElementById("confetti-rain-button").addEventListener("click", () => {
-  startConfettiRain();
-});
-
-function startConfettiRain() {
-  let count = 0;
   const interval = setInterval(() => {
-    spawnConfetti(Math.random() * window.innerWidth, 0, 5);
-    count++;
-    if (count > 50) clearInterval(interval);
-  }, 200);
-}
+    const x = Math.random() * window.innerWidth;
+    spawnConfetti(x, 0, 5);
+  }, 100);
+  setTimeout(() => clearInterval(interval), 7000);
+});
 
 // Reward Popup
 function showReward(text) {
@@ -181,56 +202,82 @@ function showReward(text) {
   }, 5000);
 }
 
-// === Puzzle Code ===
-
-const puzzleToggleBtn = document.getElementById("puzzle-toggle-button");
-const puzzleContent = document.getElementById("puzzle-content");
-const clueButton = document.getElementById("clue-button");
-const clueText = document.getElementById("clue-text");
-const freezeCodeInput = document.getElementById("freeze-code");
-const submitCodeBtn = document.getElementById("submit-code");
-
+// Puzzle toggle button
+const puzzleToggleBtn = document.getElementById('puzzle-toggle-button');
+const puzzleContent = document.getElementById('puzzle-content');
 puzzleToggleBtn.addEventListener('click', () => {
-  if (puzzleContent.style.display === 'block') {
-    puzzleContent.style.display = 'none';
-  } else {
+  if (puzzleContent.style.display === 'none') {
     puzzleContent.style.display = 'block';
-  }
-});
-
-clueButton.addEventListener('click', () => {
-  clueText.style.display = (clueText.style.display === 'block') ? 'none' : 'block';
-});
-
-submitCodeBtn.addEventListener('click', () => {
-  // The first 50 digits of pi INCLUDING the leading 3 and decimal point.
-  // The decimal point counts as a digit here, so total length 50 digits including "3."
-  const piCode = "3.14159265358979323846264338327950288419716939937510";
-  const entered = freezeCodeInput.value.trim();
-
-  if (entered === piCode) {
-    freezeButton();
-    alert("Correct code! Button is frozen now.");
   } else {
-    alert("Wrong code. Try again!");
+    puzzleContent.style.display = 'none';
   }
 });
 
-// Prevent copy-pasting in the code input
-freezeCodeInput.addEventListener('paste', e => {
-  e.preventDefault();
-  alert("No copying and pasting allowed!");
+// Clue button toggle
+document.getElementById('clue-button').addEventListener('click', () => {
+  const clueText = document.getElementById('clue-text');
+  if (clueText.style.display === 'none') {
+    clueText.style.display = 'block';
+  } else {
+    clueText.style.display = 'none';
+  }
 });
 
-freezeCodeInput.addEventListener('copy', e => {
+// Prevent copy-paste in input and show alert
+const freezeInput = document.getElementById('freeze-code');
+
+freezeInput.addEventListener('paste', (e) => {
   e.preventDefault();
-  alert("No copying and pasting allowed!");
+  alert("Copying and pasting is not allowed!");
 });
 
-freezeCodeInput.addEventListener('cut', e => {
+freezeInput.addEventListener('copy', (e) => {
   e.preventDefault();
-  alert("No copying and pasting allowed!");
+  alert("Copying and pasting is not allowed!");
 });
+
+freezeInput.addEventListener('cut', (e) => {
+  e.preventDefault();
+  alert("Copying and pasting is not allowed!");
+});
+
+// Also prevent right-click context menu on input
+freezeInput.addEventListener('contextmenu', (e) => {
+  e.preventDefault();
+  alert("Copy-paste via right-click is disabled!");
+});
+
+// Submit code button
+document.getElementById('submit-code').addEventListener('click', () => {
+  const code = freezeInput.value.trim();
+  // The code is first 50 digits of pi INCLUDING the '3' but excluding the decimal point.
+  // The correct code is:
+  const correctCode = "31415926535897932384626433832795028841971693993751";
+
+  if (code === correctCode) {
+    alert("Correct! You cracked the code!");
+    freezeButton();  // Freeze the runaway button as reward
+  } else {
+    alert("Wrong code! Try again.");
+  }
+});
+
+// No Copying anywhere in the page
+document.addEventListener('copy', (e) => {
+  e.preventDefault();
+  alert("Copying is not allowed anywhere on this page!");
+});
+
+document.addEventListener('cut', (e) => {
+  e.preventDefault();
+  alert("Cutting is not allowed anywhere on this page!");
+});
+
+document.addEventListener('paste', (e) => {
+  e.preventDefault();
+  alert("Pasting is not allowed anywhere on this page!");
+});
+
 
 
 
