@@ -1,4 +1,3 @@
-let usedTouch = false;
 let touchBlocked = false;
 let clones = [];
 let isFrozen = false;
@@ -9,16 +8,24 @@ function isMobileDevice() {
   return /android|iphone|ipad|ipod|mobile/i.test(ua);
 }
 
-// Detect touch, but only block laptops/chromebooks
+// Detect touch, block only on laptops/chromebooks with touch input
 window.addEventListener('touchstart', () => {
   if (!touchBlocked && !isMobileDevice()) {
-    usedTouch = true;
     blockTouchScreen();
   }
-}, { once: true });
+});
+
+// Allow re-enabling after mouse movement (user switches back to mouse)
+document.addEventListener('mousemove', () => {
+  if (touchBlocked) {
+    touchBlocked = false;
+  }
+});
 
 function blockTouchScreen() {
+  if (touchBlocked) return;
   touchBlocked = true;
+
   const blocker = document.createElement('div');
   blocker.id = 'blocker';
   blocker.innerHTML = `🚫<br>Sorry, touch screen use is not allowed on this device.<br>Please use a mouse or trackpad.`;
@@ -28,10 +35,11 @@ function blockTouchScreen() {
   setTimeout(() => {
     blocker.remove();
     document.body.style.overflow = '';
+    touchBlocked = false;
   }, 3000);
 }
 
-// Background color changer
+// Background color changer (skip when inverted)
 setInterval(() => {
   if (!document.body.classList.contains('inverted-upside-down')) {
     document.body.style.backgroundColor = getRandomColor();
@@ -42,9 +50,9 @@ function getRandomColor() {
   return `hsl(${Math.floor(Math.random() * 360)}, 100%, 50%)`;
 }
 
-// Confetti on mouse move
+// Confetti on mouse move (skip if on mobile)
 document.addEventListener('mousemove', (e) => {
-  if (usedTouch) return;
+  if (isMobileDevice()) return;
   spawnConfetti(e.pageX, e.pageY, 3);
 });
 
@@ -79,27 +87,25 @@ runawayBtn.style.transform = "translateX(-50%)";
 function moveRandom(el) {
   el.style.position = "fixed";
 
-  // Limit area so button doesn't go under header container or out of view
   const headerHeight = document.getElementById('header-container').offsetHeight;
   const maxWidth = window.innerWidth - el.offsetWidth - 20;
   const maxHeight = window.innerHeight - el.offsetHeight - 20;
 
-  // Min top = header height + 10px spacing
   const minTop = headerHeight + 10;
 
   el.style.left = Math.random() * maxWidth + "px";
   el.style.top = (Math.random() * (maxHeight - minTop) + minTop) + "px";
 }
 
-// Move when hovered
+// Move when hovered (skip if on mobile or frozen)
 runawayBtn.addEventListener("mouseenter", () => {
-  if (usedTouch || isFrozen) return;
+  if (isMobileDevice() || isFrozen) return;
   moveRandom(runawayBtn);
 });
 
-// Freeze on hover for 2 seconds
+// Freeze on hover for 2 seconds (skip if mobile or frozen)
 runawayBtn.addEventListener("mouseover", () => {
-  if (usedTouch || isFrozen) return;
+  if (isMobileDevice() || isFrozen) return;
   hoverTimeout = setTimeout(() => {
     freezeButton();
   }, 2000);
@@ -108,23 +114,22 @@ runawayBtn.addEventListener("mouseout", () => {
   clearTimeout(hoverTimeout);
 });
 
-// Freeze on double-click
+// Freeze on double-click (skip if mobile or already frozen)
 runawayBtn.addEventListener("dblclick", () => {
-  if (!usedTouch && !isFrozen) {
-    freezeButton();
-  }
+  if (isMobileDevice() || isFrozen) return;
+  freezeButton();
 });
 
-// Freeze on Shift key
+// Freeze on Shift key (skip if mobile or already frozen)
 document.addEventListener("keydown", (e) => {
-  if (e.key === "Shift" && !isFrozen && !usedTouch) {
+  if (e.key === "Shift" && !isFrozen && !isMobileDevice()) {
     freezeButton();
   }
 });
 
-// Click to claim reward (if frozen)
+// Click to claim reward (if frozen, skip mobile)
 runawayBtn.addEventListener("click", () => {
-  if (usedTouch) return;
+  if (isMobileDevice()) return;
   if (isFrozen) {
     showReward("🎉 You outsmarted the button! You win! 🎉");
     spawnConfetti(window.innerWidth / 2, window.innerHeight / 2, 100);
@@ -251,6 +256,7 @@ function showReward(msg) {
     popup.style.display = "none";
   }, 4000);
 }
+
 
 
 
