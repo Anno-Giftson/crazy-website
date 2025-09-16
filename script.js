@@ -4,7 +4,6 @@ let clones = [];
 let isFrozen = false;
 let hoverTimeout = null;
 
-// Detect mobile devices
 function isMobileDevice() {
   const ua = navigator.userAgent || navigator.vendor || window.opera;
   return /android|iphone|ipad|ipod|mobile/i.test(ua);
@@ -71,6 +70,27 @@ document.getElementById("spin-button").addEventListener("click", () => {
 // === Catch Me If You Can Button ===
 const runawayBtn = document.getElementById("runaway-button");
 
+// Set initial position just below header container, centered horizontally
+runawayBtn.style.position = "fixed";
+runawayBtn.style.top = "100px";
+runawayBtn.style.left = "50%";
+runawayBtn.style.transform = "translateX(-50%)";
+
+function moveRandom(el) {
+  el.style.position = "fixed";
+
+  // Limit area so button doesn't go under header container or out of view
+  const headerHeight = document.getElementById('header-container').offsetHeight;
+  const maxWidth = window.innerWidth - el.offsetWidth - 20;
+  const maxHeight = window.innerHeight - el.offsetHeight - 20;
+
+  // Min top = header height + 10px spacing
+  const minTop = headerHeight + 10;
+
+  el.style.left = Math.random() * maxWidth + "px";
+  el.style.top = (Math.random() * (maxHeight - minTop) + minTop) + "px";
+}
+
 // Move when hovered
 runawayBtn.addEventListener("mouseenter", () => {
   if (usedTouch || isFrozen) return;
@@ -111,37 +131,6 @@ runawayBtn.addEventListener("click", () => {
   }
 });
 
-function moveRandom(el) {
-  el.style.position = "fixed";
-
-  // Define safe areas:
-  // Puzzle container approx bottom-left 320px wide and ~130px tall (including padding)
-  // Main buttons at top center with height ~70px
-
-  const padding = 10;
-  const puzzleWidth = 340;  // puzzle container width + margin
-  const puzzleHeight = 130;
-  const mainButtonsHeight = 70;
-
-  const windowWidth = window.innerWidth;
-  const windowHeight = window.innerHeight;
-
-  // Avoid left zone of puzzle container
-  // Avoid top zone of main buttons container
-
-  const minX = puzzleWidth + padding;
-  const maxX = windowWidth - el.offsetWidth - padding;
-
-  const minY = mainButtonsHeight + padding;
-  const maxY = windowHeight - puzzleHeight - padding - el.offsetHeight;
-
-  const randomX = Math.random() * (maxX - minX) + minX;
-  const randomY = Math.random() * (maxY - minY) + minY;
-
-  el.style.left = randomX + "px";
-  el.style.top = randomY + "px";
-}
-
 function freezeButton() {
   isFrozen = true;
   runawayBtn.textContent = "😳 You froze me!";
@@ -154,129 +143,115 @@ document.getElementById("clone-button").addEventListener("click", () => {
   const clone = document.getElementById("clone-button").cloneNode(true);
   clone.textContent = "I'm a clone!";
   clone.style.position = "fixed";
-  clone.style.left = Math.random() * (window.innerWidth - 150) + "px";
-  clone.style.top = Math.random() * (window.innerHeight - 100) + "px";
-  clone.addEventListener("click", () => alert("Cloned button clicked!"));
+  clone.style.top = `${Math.random() * (window.innerHeight - 40)}px`;
+  clone.style.left = `${Math.random() * (window.innerWidth - 150)}px`;
+  clone.style.zIndex = 9999;
+  clone.addEventListener("click", () => {
+    alert("Clone clicked!");
+  });
   document.body.appendChild(clone);
   clones.push(clone);
 });
 
-// Clear Clones
+// Clear clones
 document.getElementById("clear-clones-button").addEventListener("click", () => {
   clones.forEach(c => c.remove());
   clones = [];
 });
 
-// Invert the world
+// Invert button
 document.getElementById("invert-button").addEventListener("click", () => {
-  document.body.classList.add('inverted-upside-down');
-  setTimeout(() => {
-    document.body.classList.remove('inverted-upside-down');
-  }, 3000);
+  document.body.classList.toggle("inverted-upside-down");
 });
 
-// Glitch effect
+// Glitch button
 document.getElementById("glitch-button").addEventListener("click", () => {
   document.body.classList.add("glitching");
   setTimeout(() => {
     document.body.classList.remove("glitching");
-  }, 2000);
+  }, 3000);
 });
 
-// Confetti Rain (formerly Confetti Storm)
+// Confetti rain button
 document.getElementById("confetti-rain-button").addEventListener("click", () => {
-  const interval = setInterval(() => {
-    const x = Math.random() * window.innerWidth;
-    spawnConfetti(x, 0, 5);
-  }, 100);
-  setTimeout(() => clearInterval(interval), 7000);
+  startConfettiRain();
+  setTimeout(stopConfettiRain, 7000);
 });
 
-// Reward Popup
-function showReward(text) {
-  const popup = document.getElementById('reward-popup');
-  popup.textContent = text;
-  popup.style.display = 'block';
-  setTimeout(() => {
-    popup.style.display = 'none';
-  }, 5000);
+let confettiInterval;
+function startConfettiRain() {
+  confettiInterval = setInterval(() => {
+    const x = Math.random() * window.innerWidth;
+    spawnConfetti(x, 0, 15);
+  }, 300);
+}
+function stopConfettiRain() {
+  clearInterval(confettiInterval);
 }
 
-// Puzzle toggle button
-const puzzleToggleBtn = document.getElementById('puzzle-toggle-button');
-const puzzleContent = document.getElementById('puzzle-content');
-puzzleToggleBtn.addEventListener('click', () => {
-  if (puzzleContent.style.display === 'none') {
-    puzzleContent.style.display = 'block';
+// === Puzzle container open/close logic ===
+const openPuzzleBtn = document.getElementById("open-puzzle-btn");
+const puzzleContent = document.getElementById("puzzle-content");
+
+openPuzzleBtn.addEventListener("click", () => {
+  if (puzzleContent.style.display === "none") {
+    puzzleContent.style.display = "block";
   } else {
-    puzzleContent.style.display = 'none';
+    puzzleContent.style.display = "none";
   }
 });
 
-// Clue button toggle
-document.getElementById('clue-button').addEventListener('click', () => {
-  const clueText = document.getElementById('clue-text');
-  if (clueText.style.display === 'none') {
-    clueText.style.display = 'block';
-  } else {
-    clueText.style.display = 'none';
-  }
+// Clue toggle
+document.getElementById("clue-button").addEventListener("click", () => {
+  const clueText = document.getElementById("clue-text");
+  clueText.style.display = (clueText.style.display === "none") ? "block" : "none";
 });
 
-// Prevent copy-paste in input and show alert
-const freezeInput = document.getElementById('freeze-code');
+// No copy/paste on input and alert
+const freezeInput = document.getElementById("freeze-code");
 
-freezeInput.addEventListener('paste', (e) => {
+freezeInput.addEventListener("copy", (e) => {
   e.preventDefault();
-  alert("Copying and pasting is not allowed!");
+  alert("No copying allowed!");
 });
-
-freezeInput.addEventListener('copy', (e) => {
+freezeInput.addEventListener("paste", (e) => {
   e.preventDefault();
-  alert("Copying and pasting is not allowed!");
+  alert("No pasting allowed!");
 });
-
-freezeInput.addEventListener('cut', (e) => {
+freezeInput.addEventListener("cut", (e) => {
   e.preventDefault();
-  alert("Copying and pasting is not allowed!");
-});
-
-// Also prevent right-click context menu on input
-freezeInput.addEventListener('contextmenu', (e) => {
-  e.preventDefault();
-  alert("Copy-paste via right-click is disabled!");
+  alert("No cutting allowed!");
 });
 
 // Submit code button
-document.getElementById('submit-code').addEventListener('click', () => {
-  const code = freezeInput.value.trim();
-  // The code is first 50 digits of pi INCLUDING the '3' but excluding the decimal point.
-  // The correct code is:
-  const correctCode = "31415926535897932384626433832795028841971693993751";
+document.getElementById("submit-code").addEventListener("click", () => {
+  const inputVal = freezeInput.value.trim();
+  // The first 50 digits of pi (including the leading '3')
+  const pi50digits = "31415926535897932384626433832795028841971693993751";
 
-  if (code === correctCode) {
-    alert("Correct! You cracked the code!");
-    freezeButton();  // Freeze the runaway button as reward
+  if (inputVal === pi50digits) {
+    if (!isFrozen) {
+      alert("You need to freeze the button first (hover for 2 seconds or double click it)!");
+      return;
+    }
+    showReward("🎉 Correct! You solved the puzzle! 🎉");
+    spawnConfetti(window.innerWidth / 2, window.innerHeight / 2, 100);
   } else {
-    alert("Wrong code! Try again.");
+    alert("Wrong code! Keep trying.");
   }
 });
 
-// No Copying anywhere in the page
-document.addEventListener('copy', (e) => {
-  e.preventDefault();
-  alert("Copying is not allowed anywhere on this page!");
-});
+// Reward popup show/hide
+function showReward(msg) {
+  const popup = document.getElementById("reward-popup");
+  popup.textContent = msg;
+  popup.style.display = "block";
 
-document.addEventListener('cut', (e) => {
-  e.preventDefault();
-  alert("Cutting is not allowed anywhere on this page!");
-});
+  setTimeout(() => {
+    popup.style.display = "none";
+  }, 4000);
+}
 
-document.addEventListener('paste', (e) => {
-  e.preventDefault();
-  alert("Pasting is not allowed anywhere on this page!");
-});
 
 
 
