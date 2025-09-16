@@ -107,17 +107,6 @@ button:hover {
   animation: glitch 0.2s steps(2, end) 10;
 }
 
-/* Puzzle container styles */
-#puzzle-container input:focus {
-  outline: none;
-  border-color: cyan;
-  box-shadow: 0 0 8px cyan;
-}
-
-#puzzle-container button:hover {
-  transform: scale(1.05);
-  transition: transform 0.15s;
-}
 
 
 
