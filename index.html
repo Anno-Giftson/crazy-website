@@ -17,25 +17,32 @@
   <button id="glitch-button">Make it Glitch!</button>
   <button id="confetti-rain-button">Start Confetti Rain!</button>
 
-  <div id="confetti-container"></div>
-  <div id="reward-popup" style="display: none;"></div>
-
-  <!-- Puzzle container fixed neatly in bottom-left -->
-  <div id="puzzle-container" style="position: fixed; left: 20px; bottom: 20px; background: #222; border: 3px dashed lime; padding: 20px; border-radius: 15px; max-width: 320px; color: white; font-family: 'Comic Sans MS', cursive; z-index: 10000;">
-    <button id="puzzle-toggle-button" style="margin-bottom:10px; cursor:pointer;">Click here to do something and catch the running button</button>
-    <div id="puzzle-content" style="display: none;">
-      <input id="freeze-code" type="text" placeholder="Enter the code here" style="width: 100%; padding: 8px; font-size: 1em; border-radius: 8px; border: 2px solid lime; margin-bottom: 10px;">
-      <button id="submit-code" style="padding: 8px 15px; cursor: pointer; background-color: hotpink; border: 2px dashed lime; font-size: 1em;">Submit</button>
-      <button id="clue-button" style="margin-top:10px; cursor:pointer; background: black; color: lime; border: 2px dashed lime; padding: 5px 10px;">Need a Clue?</button>
-      <div id="clue-text" style="display: none; margin-top: 10px; color: cyan; font-size: 0.9em; border: 1px solid cyan; padding: 8px; border-radius: 8px;">
-        The first 50 digits of π (pi) is the code. (The decimal point <em>counts</em> as a digit.)
+  <!-- Puzzle Container -->
+  <div id="puzzle-container">
+    <button id="puzzle-toggle-button">Click here to do something and catch the running button</button>
+    <div id="puzzle-content" style="display:none;">
+      <input 
+        type="text" 
+        id="freeze-code" 
+        placeholder="Enter code here" 
+        autocomplete="off" 
+        spellcheck="false"
+      />
+      <button id="clue-button">Need a Clue?</button>
+      <div id="clue-text" style="display:none;">
+        The first 50 digits of π (pi) is the code, but the code is hidden here — you'll need to find it yourself!
       </div>
+      <button id="submit-code">Submit Code</button>
     </div>
   </div>
+
+  <div id="confetti-container"></div>
+  <div id="reward-popup" style="display: none;"></div>
 
   <script src="script.js"></script>
 </body>
 </html>
+
 
 
 
