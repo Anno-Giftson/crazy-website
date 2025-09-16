@@ -107,6 +107,59 @@ button:hover {
   animation: glitch 0.2s steps(2, end) 10;
 }
 
+/* Puzzle Container */
+#puzzle-container {
+  position: fixed;
+  bottom: 15px;
+  left: 15px;
+  background: rgba(0,0,0,0.7);
+  border: 2px solid hotpink;
+  padding: 10px;
+  border-radius: 15px;
+  max-width: 320px;
+  color: white;
+  z-index: 10000;
+}
+
+#puzzle-content {
+  margin-top: 10px;
+}
+
+#freeze-code {
+  width: 100%;
+  padding: 8px;
+  font-size: 1em;
+  border: 2px solid lime;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  background: black;
+  color: white;
+}
+
+#clue-button {
+  background-color: purple;
+  border: 2px solid magenta;
+  margin-bottom: 5px;
+}
+
+#clue-text {
+  background: #222;
+  border: 1px dashed magenta;
+  padding: 8px;
+  font-size: 0.9em;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  user-select: none;
+  /* Prevent selection for extra anti-copy */
+}
+
+#submit-code {
+  background-color: hotpink;
+  border: 3px dashed lime;
+  width: 100%;
+}
+
+
 
 
 
