@@ -1,38 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head> <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/> 
-  <title>Totally Crazy Website</title> 
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Totally Crazy Website</title>
   <link rel="stylesheet" href="style.css" />
-  </head> <body> <div id="header-container">
-    <h1 id="crazy-title">💥 Welcome to CrazyTown 💥</h1> <div id="main-buttons"> 
-     <button id="spin-button">DO NOT PRESS</button>
-     <button id="runaway-button">Catch me if you can!</button> 
-     <button id="clone-button">Clone me!</button> 
-     <button id="clear-clones-button">Clear clones</button> 
-     <button id="invert-button">Invert this page!</button> 
-     <button id="glitch-button">Make it Glitch!</button> 
-     <button id="confetti-rain-button">Start Confetti Rain!</button> 
-     </div> 
-     </div> 
-    
-    <div id="puzzle-container"> 
-     <button id="open-puzzle-btn">Click here to do something and catch the running button</button> 
-     <div id="puzzle-content" style="display:none;"> 
-      <input id="freeze-code" type="text" placeholder="Enter code here" autocomplete="off" /> 
-    <button id="submit-code">Submit Code</button> 
-    <button id="clue-button">Need a Clue?</button> 
-       <div id="clue-text" style="display:none; margin-top:10px; color: hotpink; font-weight: bold;">
-         The first 50 digits of π (pi) are the code. No further hints. 
-       </div> 
-     </div> 
-    </div> 
-    <div id="confetti-container">
-    </div> 
-    <div id="reward-popup" style="display: none;">
+</head>
+<body>
+  <div id="header-container">
+    <h1 id="crazy-title">💥 Welcome to CrazyTown 💥</h1>
+    <div id="main-buttons">
+      <button id="spin-button">DO NOT PRESS</button>
+      <button id="runaway-button">Catch me if you can!</button>
+      <button id="clone-button">Clone me!</button>
+      <button id="clear-clones-button">Clear clones</button>
+      <button id="invert-button">Invert this page!</button>
+      <button id="glitch-button">Make it Glitch!</button>
+      <button id="confetti-rain-button">Start Confetti Rain!</button>
     </div>
-    <script src="script.js"></script> 
-  </body> 
+  </div>
+
+  <div id="puzzle-container">
+    <button id="open-puzzle-btn">Click here to do something and catch the running button</button>
+    <div id="puzzle-content" style="display:none;">
+      <input id="freeze-code" type="text" placeholder="Enter code here" autocomplete="off" />
+      <button id="submit-code">Submit Code</button>
+      <button id="clue-button">Need a Clue?</button>
+      <div id="clue-text" style="display:none; margin-top:10px; color: hotpink; font-weight: bold;">
+        The first 50 digits of π (pi) are the code. No further hints.
+      </div>
+    </div>
+  </div>
+
+  <div id="confetti-container"></div>
+  <div id="reward-popup" style="display: none;"></div>
+
+  <!-- Invisible Admin Access Button -->
+  <button id="admin-access-btn"></button>
+
+  <!-- Admin Password Modal -->
+  <div id="admin-modal">
+    <div id="admin-modal-content">
+      <h2>Admin Access</h2>
+      <input type="password" id="admin-password" placeholder="Enter password" />
+      <button id="admin-submit">Submit</button>
+      <p id="admin-error" style="color:red; display:none;">Incorrect password.</p>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
 </html>
+
 
 
