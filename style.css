@@ -188,18 +188,6 @@ body {
   transform: rotate(180deg);
 }
 
-/* Invisible admin button — top right corner */
-#admin-invisible-button {
-  position: fixed;
-  top: 5px;
-  right: 5px;
-  width: 40px;
-  height: 40px;
-  z-index: 20000;
-  cursor: pointer;
-  opacity: 0; /* totally invisible */
-  user-select: none;
-}
 
 
 
