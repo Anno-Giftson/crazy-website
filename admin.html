@@ -3,143 +3,62 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Admin Page - CrazyTown</title>
-  <link rel="stylesheet" href="style.css" />
+  <title>Admin Panel</title>
   <style>
     body {
       background-color: black;
       color: hotpink;
+      font-family: 'Comic Sans MS', cursive;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-start;
-      height: 100vh;
-      padding-top: 80px;
-      font-family: 'Comic Sans MS', cursive;
-      user-select: none;
+      padding-top: 50px;
+      min-height: 100vh;
     }
     h1 {
       font-size: 3rem;
-      margin-bottom: 20px;
-    }
-    #admin-panel {
-      display: none;
-      flex-direction: column;
-      gap: 20px;
-      max-width: 400px;
-      width: 90vw;
-      background: rgba(255, 20, 147, 0.1);
-      padding: 30px;
-      border-radius: 20px;
-      box-shadow: 0 0 20px hotpink;
-    }
-    #login-panel {
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-      max-width: 400px;
-      width: 90vw;
-      background: rgba(0,0,0,0.7);
-      padding: 30px;
-      border-radius: 20px;
-      border: 3px dashed hotpink;
-      box-sizing: border-box;
-    }
-    input[type="password"] {
-      font-size: 1.5rem;
-      padding: 10px;
-      border-radius: 12px;
-      border: 3px dashed hotpink;
-      background: black;
-      color: hotpink;
-      text-align: center;
+      margin-bottom: 30px;
+      text-shadow: 0 0 10px hotpink;
     }
     button {
-      font-size: 1.2rem;
       background-color: hotpink;
-      border: 3px dashed lime;
-      padding: 10px 15px;
+      color: black;
+      border: none;
+      padding: 15px 25px;
+      font-size: 1.5rem;
+      margin: 15px;
       border-radius: 12px;
       cursor: pointer;
+      box-shadow: 0 0 10px hotpink;
       transition: transform 0.2s;
-      color: black;
-      font-weight: bold;
     }
     button:hover {
-      transform: scale(1.05);
+      transform: scale(1.1);
     }
     #reward-message {
-      font-size: 1.8rem;
-      margin-top: 20px;
+      margin-top: 40px;
+      font-size: 2rem;
       color: lime;
-      text-align: center;
-    }
-    #logout-btn {
-      background-color: red;
-      color: white;
-      margin-top: 20px;
-      border: none;
-      font-weight: bold;
+      text-shadow: 0 0 8px lime;
     }
   </style>
 </head>
 <body>
   <h1>Admin Panel</h1>
-
-  <div id="login-panel">
-    <input type="password" id="admin-password" placeholder="Enter Admin Password" autocomplete="off" />
-    <button id="admin-login-btn">Log In</button>
-  </div>
-
-  <div id="admin-panel">
-    <button id="get-reward-instantly-btn">Get Reward Instantly</button>
-    <button id="logout-btn">Log Out</button>
-    <div id="reward-message"></div>
-  </div>
+  <button id="get-reward-btn">Get Reward Instantly</button>
+  <button id="logout-btn">Logout</button>
+  <div id="reward-message"></div>
 
   <script>
-    const PASSWORD = "Crazyadmin123";
-    const loginPanel = document.getElementById("login-panel");
-    const adminPanel = document.getElementById("admin-panel");
-    const adminPasswordInput = document.getElementById("admin-password");
-    const adminLoginBtn = document.getElementById("admin-login-btn");
-    const rewardMessage = document.getElementById("reward-message");
-    const logoutBtn = document.getElementById("logout-btn");
-
-    // Check session on load
-    window.onload = () => {
-      if (sessionStorage.getItem("adminLoggedIn") === "true") {
-        showAdminPanel();
-      }
-    };
-
-    adminLoginBtn.addEventListener("click", () => {
-      if (adminPasswordInput.value === PASSWORD) {
-        sessionStorage.setItem("adminLoggedIn", "true");
-        showAdminPanel();
-      } else {
-        alert("Incorrect password!");
-      }
+    document.getElementById("get-reward-btn").addEventListener("click", () => {
+      const messageDiv = document.getElementById("reward-message");
+      messageDiv.textContent = "🎉 Reward granted instantly! 🎉";
     });
 
-    function showAdminPanel() {
-      loginPanel.style.display = "none";
-      adminPanel.style.display = "flex";
-    }
-
-    // Reward instantly button functionality
-    document.getElementById("get-reward-instantly-btn").addEventListener("click", () => {
-      rewardMessage.textContent = "🎉 Reward Granted! No need for pi digits. 🎉";
-      rewardMessage.style.color = "lime";
-    });
-
-    logoutBtn.addEventListener("click", () => {
-      sessionStorage.removeItem("adminLoggedIn");
-      adminPanel.style.display = "none";
-      loginPanel.style.display = "flex";
-      adminPasswordInput.value = "";
-      rewardMessage.textContent = "";
+    document.getElementById("logout-btn").addEventListener("click", () => {
+      window.location.href = "index.html";
     });
   </script>
 </body>
 </html>
+
