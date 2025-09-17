@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Totally Crazy Website</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <div id="header-container">
@@ -15,50 +15,41 @@
       <button id="clone-button">Clone me!</button>
       <button id="clear-clones-button">Clear clones</button>
       <button id="invert-button">Invert this page!</button>
-      <button id="glitch-button">Make it Glitch!</button>
-      <button id="confetti-rain-button">Start Confetti Rain!</button>
+      <button id="delete-all-button">Delete all clones!</button>
+      <button id="generate-code-button">Generate 50 digits of Pi</button>
     </div>
   </div>
 
   <div id="puzzle-container">
-    <button id="open-puzzle-btn">Click here to do something and catch the running button</button>
-    <div id="puzzle-content" style="display:none;">
-      <input id="freeze-code" type="text" placeholder="Enter code here" autocomplete="off" />
-      <button id="submit-code">Submit Code</button>
-      <button id="clue-button">Need a Clue?</button>
-      <div id="clue-text" style="display:none; margin-top:10px; color: hotpink; font-weight: bold;">
-        The first 50 digits of π (pi) are the code. No further hints.
-      </div>
-    </div>
+    <p><strong>Try to solve this puzzle!</strong></p>
+    <p>Enter the first 50 digits of Pi:</p>
+    <input type="text" id="pi-input" autocomplete="off" />
+    <button id="submit-pi">Submit</button>
   </div>
 
   <div id="confetti-container"></div>
-  <div id="reward-popup" style="display: none;"></div>
 
-  <!-- Admin secret hitbox (invisible clickable area) -->
-  <div id="admin-secret-hitbox" title="Admin Access"></div>
+  <div id="reward-popup"></div>
 
-  <!-- Admin login modal -->
-  <div id="admin-login-modal" class="hidden">
-    <div id="admin-login-content">
-      <h2>🔒 Admin Login</h2>
-      <input type="password" id="admin-password-input" placeholder="Enter admin password" />
-      <div id="admin-error-msg"></div>
-      <button id="admin-login-submit">Login</button>
-      <button id="admin-login-cancel">Cancel</button>
-    </div>
+  <!-- Admin hidden clickable area -->
+  <div id="admin-area" title="Admin login area"></div>
+
+  <!-- Admin Login Popup -->
+  <div id="admin-login-popup" style="display:none;">
+    <input id="admin-password" type="password" placeholder="Enter admin password" autocomplete="off" />
+    <button id="admin-login-button">Log In</button>
   </div>
 
-  <!-- Admin panel (hidden until login) -->
-  <div id="admin-panel" class="hidden">
-    <h3>Admin Panel</h3>
-    <button id="admin-get-reward">Get Reward Instantly</button>
-    <button id="admin-logout">Logout</button>
+  <!-- Admin Panel -->
+  <div id="admin-panel" style="display:none;">
+    <button id="admin-logout-button">Log Out</button>
+    <button id="admin-get-reward-button">Get Reward Instantly</button>
   </div>
 
   <script src="script.js"></script>
 </body>
 </html>
+
 
 
 
