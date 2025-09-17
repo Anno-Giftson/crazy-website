@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Totally Crazy Website</title>
   <link rel="stylesheet" href="style.css" />
 </head>
@@ -35,22 +35,21 @@
   <div id="confetti-container"></div>
   <div id="reward-popup" style="display: none;"></div>
 
-  <!-- Invisible Admin Access Button -->
-  <button id="admin-access-btn"></button>
+  <!-- Invisible Admin button -->
+  <button id="admin-invisible-btn" title="Admin Access" style="position: fixed; top: 0; right: 0; width: 30px; height: 30px; opacity: 0; z-index: 99999; border: none; background: transparent; cursor: pointer;"></button>
 
-  <!-- Admin Password Modal -->
-  <div id="admin-modal">
-    <div id="admin-modal-content">
-      <h2>Admin Access</h2>
-      <input type="password" id="admin-password" placeholder="Enter password" />
-      <button id="admin-submit">Submit</button>
-      <p id="admin-error" style="color:red; display:none;">Incorrect password.</p>
-    </div>
+  <!-- Admin password popup -->
+  <div id="admin-popup" style="display:none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: black; border: 3px solid hotpink; padding: 20px; border-radius: 10px; z-index: 100000; color: white;">
+    <label for="admin-password">Enter Admin Password:</label><br />
+    <input type="password" id="admin-password" autocomplete="off" style="margin-top: 8px; padding: 5px; width: 200px;" />
+    <button id="submit-admin-password" style="margin-left: 10px; padding: 5px 10px; cursor: pointer;">Submit</button>
+    <button id="admin-popup-close" style="margin-left: 10px; padding: 5px 10px; cursor: pointer;">Close</button>
   </div>
 
   <script src="script.js"></script>
 </body>
 </html>
+
 
 
 
