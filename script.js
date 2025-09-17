@@ -1,246 +1,242 @@
-let usedTouch = false;
-let touchBlocked = false;
+// == CrazyTown Main Script ==
+
+// Grab elements
+const spinButton = document.getElementById('spin-button');
+const runawayButton = document.getElementById('runaway-button');
+const cloneButton = document.getElementById('clone-button');
+const clearClonesButton = document.getElementById('clear-clones-button');
+const invertButton = document.getElementById('invert-button');
+const glitchButton = document.getElementById('glitch-button');
+const confettiRainButton = document.getElementById('confetti-rain-button');
+const puzzleContainer = document.getElementById('puzzle-container');
+const openPuzzleBtn = document.getElementById('open-puzzle-btn');
+const puzzleContent = document.getElementById('puzzle-content');
+const freezeCodeInput = document.getElementById('freeze-code');
+const submitCodeBtn = document.getElementById('submit-code');
+const clueButton = document.getElementById('clue-button');
+const clueText = document.getElementById('clue-text');
+const confettiContainer = document.getElementById('confetti-container');
+const rewardPopup = document.getElementById('reward-popup');
+
+// Admin elements
+const adminSecretHitbox = document.getElementById('admin-secret-hitbox');
+const adminLoginModal = document.getElementById('admin-login-modal');
+const adminPasswordInput = document.getElementById('admin-password-input');
+const adminErrorMsg = document.getElementById('admin-error-msg');
+const adminLoginSubmit = document.getElementById('admin-login-submit');
+const adminLoginCancel = document.getElementById('admin-login-cancel');
+const adminPanel = document.getElementById('admin-panel');
+const adminGetRewardBtn = document.getElementById('admin-get-reward');
+const adminLogoutBtn = document.getElementById('admin-logout');
+
 let clones = [];
-let isFrozen = false;
+let inverted = false;
+let glitchTimeout = null;
+let confettiInterval = null;
 
-function isMobileDevice() {
-  const ua = navigator.userAgent || navigator.vendor || window.opera;
-  return /android|iphone|ipad|ipod|mobile/i.test(ua);
-}
+// Puzzle correct code (first 50 digits of pi)
+const pi50 = '31415926535897932384626433832795028841971693993751';
 
-window.addEventListener('DOMContentLoaded', () => {
-  const runawayBtn = document.getElementById("runaway-button");
-  runawayBtn.style.position = "fixed";
+// ---------- BUTTONS LOGIC ---------- //
 
-  const headerHeight = document.getElementById('header-container').offsetHeight;
-  runawayBtn.style.top = (headerHeight + 100) + "px";
-  runawayBtn.style.left = "50%";
-  runawayBtn.style.transform = "translateX(-50%)";
-});
-
-window.addEventListener('touchstart', () => {
-  if (!isMobileDevice()) {
-    usedTouch = true;
-    blockTouchScreen();
-  }
-}, { passive: true });
-
-function blockTouchScreen() {
-  if (touchBlocked) return;
-  touchBlocked = true;
-  const blocker = document.createElement('div');
-  blocker.id = 'blocker';
-  blocker.innerHTML = `🚫<br>Sorry, touch screen use is not allowed on this device.<br>Please use a mouse or trackpad.`;
-  document.body.appendChild(blocker);
-  document.body.style.overflow = 'hidden';
-
+// DO NOT PRESS - spins the button and triggers confetti popup
+spinButton.addEventListener('click', () => {
+  spinButton.style.transition = 'transform 1s ease-in-out';
+  spinButton.style.transform = 'rotate(1080deg)';
   setTimeout(() => {
-    blocker.remove();
-    document.body.style.overflow = '';
-    touchBlocked = false;
-  }, 3000);
-}
-
-setInterval(() => {
-  if (!document.body.classList.contains('inverted-upside-down')) {
-    document.body.style.backgroundColor = getRandomColor();
-  }
-}, 1000);
-
-function getRandomColor() {
-  return `hsl(${Math.floor(Math.random() * 360)}, 100%, 50%)`;
-}
-
-document.addEventListener('mousemove', (e) => {
-  if (usedTouch) return;
-  spawnConfetti(e.pageX, e.pageY, 3);
+    spinButton.style.transform = '';
+  }, 1100);
+  showRewardPopup("You pressed DO NOT PRESS! Nice try!");
+  startConfettiRain(3000);
 });
 
-function spawnConfetti(x, y, count = 10) {
-  for (let i = 0; i < count; i++) {
-    const confetti = document.createElement('div');
-    confetti.classList.add('confetti');
-    confetti.style.left = `${x}px`;
-    confetti.style.top = `${y}px`;
-    confetti.style.backgroundColor = getRandomColor();
-    confetti.style.width = confetti.style.height = `${Math.random() * 10 + 5}px`;
-
-    document.getElementById('confetti-container').appendChild(confetti);
-    setTimeout(() => confetti.remove(), 3000);
-  }
-}
-
-document.getElementById("spin-button").addEventListener("click", () => {
-  alert("YOU PRESSED THE BUTTON. NOW YOU MUST DANCE. 💃🕺");
+// Catch me if you can - runs away on hover
+runawayButton.addEventListener('mouseenter', () => {
+  const maxX = window.innerWidth - runawayButton.offsetWidth;
+  const maxY = window.innerHeight - runawayButton.offsetHeight;
+  const randX = Math.floor(Math.random() * maxX);
+  const randY = Math.floor(Math.random() * maxY);
+  runawayButton.style.position = 'fixed';
+  runawayButton.style.left = randX + 'px';
+  runawayButton.style.top = randY + 'px';
 });
 
-const runawayBtn = document.getElementById("runaway-button");
-
-function moveRandom(el) {
-  if (isFrozen) return;
-  el.style.position = "fixed";
-
-  const headerHeight = document.getElementById('header-container').offsetHeight;
-  const maxWidth = window.innerWidth - el.offsetWidth - 20;
-  const maxHeight = window.innerHeight - el.offsetHeight - 20;
-  const minTop = headerHeight + 10;
-
-  el.style.left = Math.random() * maxWidth + "px";
-  el.style.top = (Math.random() * (maxHeight - minTop) + minTop) + "px";
-}
-
-runawayBtn.addEventListener("mouseenter", () => {
-  if (isFrozen) return;
-  moveRandom(runawayBtn);
-});
-
-runawayBtn.addEventListener("click", () => {
-  if (isFrozen) {
-    showReward("🎉 You outsmarted the button! You win! 🎉");
-    spawnConfetti(window.innerWidth / 2, window.innerHeight / 2, 100);
-  }
-});
-
-document.getElementById("clone-button").addEventListener("click", () => {
-  const clone = document.getElementById("clone-button").cloneNode(true);
+// Clone me! - clone button near the original
+cloneButton.addEventListener('click', () => {
+  const clone = cloneButton.cloneNode(true);
   clone.textContent = "I'm a clone!";
-  clone.style.position = "fixed";
-  clone.style.top = `${Math.random() * (window.innerHeight - 40)}px`;
-  clone.style.left = `${Math.random() * (window.innerWidth - 150)}px`;
-  clone.style.zIndex = 9999;
-  clone.addEventListener("click", () => {
-    alert("Clone clicked!");
-  });
+  clone.style.position = 'fixed';
+  clone.style.left = (cloneButton.offsetLeft + Math.random() * 200 - 100) + 'px';
+  clone.style.top = (cloneButton.offsetTop + Math.random() * 200 - 100) + 'px';
+  clone.style.zIndex = 1000 + clones.length;
+  clone.addEventListener('click', () => alert('You clicked a clone!'));
   document.body.appendChild(clone);
   clones.push(clone);
 });
 
-document.getElementById("clear-clones-button").addEventListener("click", () => {
+// Clear clones
+clearClonesButton.addEventListener('click', () => {
   clones.forEach(c => c.remove());
   clones = [];
 });
 
-document.getElementById("invert-button").addEventListener("click", () => {
-  document.body.classList.toggle("inverted-upside-down");
+// Invert page and rotate upside down
+invertButton.addEventListener('click', () => {
+  inverted = !inverted;
+  if (inverted) {
+    document.body.classList.add('inverted-upside-down');
+  } else {
+    document.body.classList.remove('inverted-upside-down');
+  }
 });
 
-document.getElementById("glitch-button").addEventListener("click", () => {
-  document.body.classList.add("glitching");
-  setTimeout(() => {
-    document.body.classList.remove("glitching");
-  }, 3000);
+// Glitch effect on title
+glitchButton.addEventListener('click', () => {
+  const title = document.getElementById('crazy-title');
+  title.classList.add('glitching');
+  clearTimeout(glitchTimeout);
+  glitchTimeout = setTimeout(() => {
+    title.classList.remove('glitching');
+  }, 2000);
 });
 
-document.getElementById("confetti-rain-button").addEventListener("click", () => {
-  startConfettiRain();
-  setTimeout(stopConfettiRain, 7000);
+// Confetti rain button
+confettiRainButton.addEventListener('click', () => {
+  startConfettiRain(5000);
 });
 
-let confettiInterval;
-function startConfettiRain() {
+// ---------- PUZZLE ---------- //
+
+openPuzzleBtn.addEventListener('click', () => {
+  puzzleContent.style.display = puzzleContent.style.display === 'none' ? 'block' : 'none';
+  clueText.style.display = 'none';
+});
+
+submitCodeBtn.addEventListener('click', () => {
+  const userInput = freezeCodeInput.value.trim();
+  if (userInput === pi50) {
+    showRewardPopup('🎉 Correct! You got the reward! 🎉');
+  } else {
+    alert('Wrong code! Try again.');
+  }
+});
+
+clueButton.addEventListener('click', () => {
+  clueText.style.display = 'block';
+});
+
+// ---------- CONFETTI ---------- //
+
+function startConfettiRain(duration = 3000) {
+  const colors = ['#ff0043', '#14fc56', '#00d4ff', '#fffc00', '#ff00ff'];
+  const confettiCount = 100;
+
+  let intervalCount = 0;
   confettiInterval = setInterval(() => {
-    const x = Math.random() * window.innerWidth;
-    spawnConfetti(x, 0, 15);
-  }, 300);
+    if (intervalCount > confettiCount) {
+      clearInterval(confettiInterval);
+      return;
+    }
+    createConfettiPiece(colors[Math.floor(Math.random() * colors.length)]);
+    intervalCount++;
+  }, 30);
 }
-function stopConfettiRain() {
-  clearInterval(confettiInterval);
+
+function createConfettiPiece(color) {
+  const confetti = document.createElement('div');
+  confetti.classList.add('confetti');
+  confetti.style.backgroundColor = color;
+  confetti.style.left = Math.random() * window.innerWidth + 'px';
+  confetti.style.top = '-10px';
+  confettiContainer.appendChild(confetti);
+  setTimeout(() => {
+    confetti.remove();
+  }, 3000);
 }
 
-const openPuzzleBtn = document.getElementById("open-puzzle-btn");
-const puzzleContent = document.getElementById("puzzle-content");
+// ---------- REWARD POPUP ---------- //
 
-openPuzzleBtn.addEventListener("click", () => {
-  puzzleContent.style.display = (puzzleContent.style.display === "none") ? "block" : "none";
+function showRewardPopup(text) {
+  rewardPopup.textContent = text;
+  rewardPopup.style.display = 'block';
+  setTimeout(() => {
+    rewardPopup.style.display = 'none';
+  }, 3500);
+}
+
+// ---------- ADMIN LOGIN ---------- //
+
+const ADMIN_PASSWORD = 'crazyadmin123';
+
+function openAdminLogin() {
+  adminPasswordInput.value = '';
+  adminErrorMsg.textContent = '';
+  adminLoginModal.classList.remove('hidden');
+  adminPasswordInput.focus();
+}
+
+function closeAdminLogin() {
+  adminLoginModal.classList.add('hidden');
+}
+
+function showAdminPanel() {
+  adminPanel.classList.remove('hidden');
+}
+
+function hideAdminPanel() {
+  adminPanel.classList.add('hidden');
+  sessionStorage.removeItem('adminLoggedIn');
+}
+
+// Check sessionStorage on load for admin login
+window.addEventListener('load', () => {
+  if (sessionStorage.getItem('adminLoggedIn') === 'true') {
+    showAdminPanel();
+  }
 });
 
-document.getElementById("clue-button").addEventListener("click", () => {
-  const clueText = document.getElementById("clue-text");
-  clueText.style.display = (clueText.style.display === "none") ? "block" : "none";
-});
-
-const freezeInput = document.getElementById("freeze-code");
-
-["copy", "paste", "cut"].forEach(event => {
-  freezeInput.addEventListener(event, (e) => {
-    e.preventDefault();
-    alert(`No ${event}ing allowed!`);
-  });
-});
-
-document.getElementById("submit-code").addEventListener("click", () => {
-  const inputVal = freezeInput.value.trim();
-  const pi50digits = "3.14159265358979323846264338327950288419716939937510";
-
-  if (inputVal === pi50digits) {
-    if (!isFrozen) {
-      freezeButton();
+// Clicking the secret hitbox opens the admin login modal
+adminSecretHitbox.addEventListener('click', () => {
+  if (sessionStorage.getItem('adminLoggedIn') === 'true') {
+    // Already logged in, toggle admin panel visibility
+    if (adminPanel.classList.contains('hidden')) {
+      showAdminPanel();
+    } else {
+      hideAdminPanel();
     }
   } else {
-    alert("Wrong code! Keep trying.");
+    openAdminLogin();
   }
 });
 
-function freezeButton() {
-  isFrozen = true;
-  runawayBtn.textContent = "😳 You froze me!";
-  runawayBtn.style.backgroundColor = "lightblue";
-  runawayBtn.style.border = "3px solid blue";
-}
-
-function showReward(msg) {
-  const popup = document.getElementById("reward-popup");
-  popup.textContent = msg;
-  popup.style.display = "block";
-
-  setTimeout(() => {
-    popup.style.display = "none";
-  }, 4000);
-}
-
-// === ADMIN MODE (Session-Based) ===
-
-const adminSecret = "crazyadmin123"; // Change this password if needed
-const adminPanel = document.getElementById("admin-panel");
-
-if (sessionStorage.getItem("isAdmin") === "true") {
-  adminPanel.style.display = "block";
-}
-
-document.getElementById("admin-secret-hitbox").addEventListener("click", () => {
-  if (sessionStorage.getItem("isAdmin") === "true") {
-    adminPanel.style.display = "block";
-    return;
-  }
-
-  const attempt = prompt("🔒 Admin Access Only: Enter password");
-  if (attempt === adminSecret) {
-    sessionStorage.setItem("isAdmin", "true");
-    adminPanel.style.display = "block";
+// Submit admin login
+adminLoginSubmit.addEventListener('click', () => {
+  const pass = adminPasswordInput.value.trim();
+  if (pass === ADMIN_PASSWORD) {
+    sessionStorage.setItem('adminLoggedIn', 'true');
+    closeAdminLogin();
+    showAdminPanel();
   } else {
-    alert("Access denied.");
+    adminErrorMsg.textContent = 'Incorrect password!';
   }
 });
 
-document.getElementById("admin-show-reward").addEventListener("click", () => {
-  showReward("👑 Admin has claimed the prize. No questions asked.");
-  spawnConfetti(window.innerWidth / 2, window.innerHeight / 2, 100);
+// Cancel admin login
+adminLoginCancel.addEventListener('click', () => {
+  closeAdminLogin();
 });
 
-document.getElementById("admin-freeze-button").addEventListener("click", () => {
-  if (!isFrozen) freezeButton();
+// Admin "Get Reward Instantly" button
+adminGetRewardBtn.addEventListener('click', () => {
+  showRewardPopup('🎉 Admin reward granted instantly! 🎉');
 });
 
-document.getElementById("admin-show-code").addEventListener("click", () => {
-  const codeDiv = document.getElementById("admin-code-text");
-  codeDiv.textContent = "PI (50 digits): 3.14159265358979323846264338327950288419716939937510";
+// Admin logout
+adminLogoutBtn.addEventListener('click', () => {
+  hideAdminPanel();
+  alert('Admin logged out.');
 });
 
-document.getElementById("admin-logout").addEventListener("click", () => {
-  sessionStorage.removeItem("isAdmin");
-  adminPanel.style.display = "none";
-  alert("Logged out.");
-});
 
 
 
