@@ -2,105 +2,103 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Admin Dashboard</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin Panel</title>
   <style>
     body {
-      background: black;
-      color: hotpink;
-      font-family: 'Comic Sans MS', cursive;
-      padding: 40px;
+      background: #111;
+      color: #eee;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding: 20px;
     }
-    .admin-panel {
-      max-width: 600px;
-      margin: auto;
-      background: rgba(255, 255, 255, 0.05);
-      padding: 30px;
-      border-radius: 15px;
-      border: 3px dashed lime;
-      box-shadow: 0 0 20px hotpink;
+    button {
+      display: block;
+      width: 220px;
+      margin: 10px 0;
+      padding: 12px;
+      font-size: 1.1rem;
+      background: hotpink;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      color: black;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background: deeppink;
+      color: white;
     }
     h1 {
+      margin-bottom: 20px;
       text-align: center;
       color: hotpink;
-    }
-    .admin-panel button {
-      display: block;
-      width: 100%;
-      padding: 12px;
-      margin: 12px 0;
-      font-size: 1.2rem;
-      background-color: hotpink;
-      border: 3px dashed lime;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: transform 0.2s ease;
-    }
-    .admin-panel button:hover {
-      transform: scale(1.05);
     }
   </style>
 </head>
 <body>
-  <h1>👑 Admin Dashboard</h1>
-  <div class="admin-panel">
-    <button onclick="freezeButton()">Freeze the Runaway Button</button>
-    <button onclick="triggerReward()">Trigger Reward</button>
-    <button onclick="startConfettiRain()">Start Confetti Rain</button>
-    <button onclick="clearClones()">Clear All Clones</button>
-    <button onclick="toggleDoNotPress()">Toggle ‘Do Not Press’ Button</button>
-    <button onclick="toggleInvert()">Toggle Invert Mode</button>
-    <button onclick="toggleGlitch()">Toggle Glitch Mode</button>
-  </div>
+  <h1>Admin Control Panel</h1>
+  <button onclick="freezeButton()">Freeze Runaway Button & Reward</button>
+  <button onclick="clearClones()">Clear All Clones</button>
+  <button onclick="toggleInvert()">Toggle Invert Page</button>
+  <button onclick="toggleGlitch()">Glitch Effect</button>
+  <button onclick="startConfettiRain()">Start Confetti Rain</button>
+  <button onclick="toggleDoNotPress()">Toggle DO NOT PRESS Button</button>
 
   <script>
-    // Communicate with opener window (main site)
-    const openerWindow = window.opener;
-
     function freezeButton() {
-      openerWindow.freezeButton?.();
-      alert("Runaway button is now frozen.");
-    }
-
-    function triggerReward() {
-      openerWindow.showReward?.("👑 Admin granted you a surprise!");
-      openerWindow.spawnConfetti?.(window.innerWidth / 2, window.innerHeight / 2, 100);
-    }
-
-    function startConfettiRain() {
-      openerWindow.startConfettiRain?.();
+      if (window.opener && window.opener.freezeButton) {
+        window.opener.freezeButton();
+        alert("Runaway button frozen!");
+      } else {
+        alert("Main window not found or function missing.");
+      }
     }
 
     function clearClones() {
-      openerWindow.clones?.forEach(c => c.remove());
-      openerWindow.clones = [];
-      alert("All clones removed.");
-    }
-
-    function toggleDoNotPress() {
-      const btn = openerWindow.document.getElementById("spin-button");
-      if (btn.disabled) {
-        btn.disabled = false;
-        btn.textContent = "DO NOT PRESS";
-        alert("The button is now ACTIVE again.");
+      if (window.opener && window.opener.clearClones) {
+        window.opener.clearClones();
+        alert("All clones cleared.");
       } else {
-        btn.disabled = true;
-        btn.textContent = "LOCKED by Admin";
-        alert("The button has been DISABLED.");
+        alert("Main window not found or function missing.");
       }
     }
 
     function toggleInvert() {
-      openerWindow.document.body.classList.toggle("inverted-upside-down");
+      if (window.opener && window.opener.toggleInvert) {
+        window.opener.toggleInvert();
+        alert("Page invert toggled.");
+      } else {
+        alert("Main window not found or function missing.");
+      }
     }
 
     function toggleGlitch() {
-      openerWindow.document.body.classList.add("glitching");
-      setTimeout(() => {
-        openerWindow.document.body.classList.remove("glitching");
-      }, 3000);
+      if (window.opener && window.opener.toggleGlitch) {
+        window.opener.toggleGlitch();
+        alert("Glitch effect triggered.");
+      } else {
+        alert("Main window not found or function missing.");
+      }
+    }
+
+    function startConfettiRain() {
+      if (window.opener && window.opener.startConfettiRain) {
+        window.opener.startConfettiRain();
+        alert("Confetti rain started.");
+      } else {
+        alert("Main window not found or function missing.");
+      }
+    }
+
+    function toggleDoNotPress() {
+      if (window.opener && window.opener.toggleDoNotPress) {
+        window.opener.toggleDoNotPress();
+        alert("DO NOT PRESS button toggled.");
+      } else {
+        alert("Main window not found or function missing.");
+      }
     }
   </script>
 </body>
 </html>
+
