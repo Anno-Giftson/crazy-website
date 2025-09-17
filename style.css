@@ -112,7 +112,7 @@ body {
   position: absolute;
   width: 10px;
   height: 10px;
-  background-color: red;
+  background-color: red; /* will get changed in JS spawn */
   border-radius: 50%;
   animation: fall 3s linear forwards;
 }
@@ -136,34 +136,6 @@ body {
   box-shadow: 0 0 20px hotpink;
 }
 
-#blocker {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: black;
-  color: red;
-  font-size: 2em;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 99999;
-}
-
-@keyframes glitch {
-  0% { transform: translate(0); }
-  20% { transform: translate(-5px, 5px); }
-  40% { transform: translate(5px, -5px); }
-  60% { transform: translate(-3px, 3px); }
-  80% { transform: translate(3px, -3px); }
-  100% { transform: translate(0); }
-}
-
-.glitching {
-  animation: glitch 0.2s steps(2, end) 10;
-}
-
 @keyframes blinkRotate {
   0% { opacity: 1; transform: rotate(0deg); color: red; }
   25% { opacity: 0.5; transform: rotate(5deg); color: yellow; }
@@ -177,51 +149,19 @@ body {
   transform: rotate(180deg);
 }
 
-/* Admin button (invisible) */
-#admin-access-btn {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 40px;
-  height: 40px;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  z-index: 100000;
+.glitching {
+  animation: glitch 0.2s steps(2, end) 10;
 }
 
-/* Admin modal */
-#admin-modal {
-  display: none;
-  position: fixed;
-  top: 0; left: 0;
-  width: 100vw; height: 100vh;
-  background: rgba(0, 0, 0, 0.8);
-  justify-content: center;
-  align-items: center;
-  z-index: 100001;
+@keyframes glitch {
+  0% { transform: translate(0); }
+  20% { transform: translate(-5px, 5px); }
+  40% { transform: translate(5px, -5px); }
+  60% { transform: translate(-3px, 3px); }
+  80% { transform: translate(3px, -3px); }
+  100% { transform: translate(0); }
 }
 
-#admin-modal-content {
-  background: white;
-  padding: 30px;
-  border-radius: 10px;
-  text-align: center;
-  color: black;
-}
-
-#admin-modal input {
-  padding: 8px;
-  font-size: 1rem;
-  margin-top: 10px;
-  width: 200px;
-}
-
-#admin-modal button {
-  margin-top: 10px;
-  padding: 8px 16px;
-  font-size: 1rem;
-}
 
 
 
