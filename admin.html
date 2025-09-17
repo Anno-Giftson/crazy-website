@@ -3,102 +3,105 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Admin Panel</title>
+  <title>Admin Dashboard</title>
   <style>
     body {
-      background: #111;
-      color: #eee;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-family: Arial, sans-serif;
+      background: black;
+      color: white;
       padding: 20px;
     }
     button {
-      display: block;
-      width: 220px;
-      margin: 10px 0;
-      padding: 12px;
-      font-size: 1.1rem;
       background: hotpink;
       border: none;
-      border-radius: 8px;
+      padding: 10px 20px;
+      margin: 10px 0;
       cursor: pointer;
-      color: black;
-      transition: background-color 0.3s ease;
-    }
-    button:hover {
-      background: deeppink;
-      color: white;
+      font-size: 16px;
+      border-radius: 5px;
     }
     h1 {
       margin-bottom: 20px;
-      text-align: center;
       color: hotpink;
     }
   </style>
 </head>
 <body>
-  <h1>Admin Control Panel</h1>
-  <button onclick="freezeButton()">Freeze Runaway Button & Reward</button>
-  <button onclick="clearClones()">Clear All Clones</button>
-  <button onclick="toggleInvert()">Toggle Invert Page</button>
-  <button onclick="toggleGlitch()">Glitch Effect</button>
-  <button onclick="startConfettiRain()">Start Confetti Rain</button>
-  <button onclick="toggleDoNotPress()">Toggle DO NOT PRESS Button</button>
+  <h1>Admin Dashboard</h1>
+
+  <button id="freeze-btn">Freeze Runaway Button</button><br/>
+  <button id="reward-btn">Get Reward (Skip Pi)</button><br/>
+  <button id="invert-btn">Invert Main Page</button><br/>
+  <button id="glitch-btn">Glitch Main Page</button><br/>
+  <button id="confetti-rain-btn">Start Confetti Rain</button><br/>
+  <button id="clear-clones-btn">Clear Clones</button>
 
   <script>
-    function freezeButton() {
-      if (window.opener && window.opener.freezeButton) {
-        window.opener.freezeButton();
-        alert("Runaway button frozen!");
+    // Helper to call functions on main window safely
+    function callMainWindowFunction(fnName) {
+      if (window.opener && !window.opener.closed) {
+        const fn = window.opener[fnName];
+        if (typeof fn === "function") {
+          fn();
+        } else {
+          alert("Function '" + fnName + "' not found on main page.");
+        }
       } else {
         alert("Main window not found or function missing.");
       }
     }
 
-    function clearClones() {
-      if (window.opener && window.opener.clearClones) {
-        window.opener.clearClones();
-        alert("All clones cleared.");
-      } else {
-        alert("Main window not found or function missing.");
-      }
-    }
+    document.getElementById("freeze-btn").addEventListener("click", () => {
+      callMainWindowFunction("freezeButton");
+    });
 
-    function toggleInvert() {
-      if (window.opener && window.opener.toggleInvert) {
-        window.opener.toggleInvert();
-        alert("Page invert toggled.");
+    document.getElementById("reward-btn").addEventListener("click", () => {
+      if (window.opener && !window.opener.closed) {
+        window.opener.showReward("🎉 Admin triggered reward! 🎉");
+        window.opener.spawnConfetti(window.opener.window.innerWidth/2, window.opener.window.innerHeight/2, 100);
       } else {
-        alert("Main window not found or function missing.");
+        alert("Main window not found.");
       }
-    }
+    });
 
-    function toggleGlitch() {
-      if (window.opener && window.opener.toggleGlitch) {
-        window.opener.toggleGlitch();
-        alert("Glitch effect triggered.");
-      } else {
-        alert("Main window not found or function missing.");
+    document.getElementById("invert-btn").addEventListener("click", () => {
+      callMainWindowFunction(() => {
+        document.body.classList.toggle("inverted-upside-down");
+      });
+      // The above won't work as is since toggle is a DOM method, so instead:
+      if (window.opener && !window.opener.closed) {
+        const mainBody = window.opener.document.body;
+        mainBody.classList.toggle("inverted-upside-down");
       }
-    }
+    });
 
-    function startConfettiRain() {
-      if (window.opener && window.opener.startConfettiRain) {
+    document.getElementById("glitch-btn").addEventListener("click", () => {
+      if (window.opener && !window.opener.closed) {
+        const mainBody = window.opener.document.body;
+        mainBody.classList.add("glitching");
+        setTimeout(() => {
+          mainBody.classList.remove("glitching");
+        }, 3000);
+      }
+    });
+
+    document.getElementById("confetti-rain-btn").addEventListener("click", () => {
+      if (window.opener && !window.opener.closed) {
         window.opener.startConfettiRain();
-        alert("Confetti rain started.");
-      } else {
-        alert("Main window not found or function missing.");
+        setTimeout(() => {
+          window.opener.stopConfettiRain();
+        }, 7000);
       }
-    }
+    });
 
-    function toggleDoNotPress() {
-      if (window.opener && window.opener.toggleDoNotPress) {
-        window.opener.toggleDoNotPress();
-        alert("DO NOT PRESS button toggled.");
-      } else {
-        alert("Main window not found or function missing.");
+    document.getElementById("clear-clones-btn").addEventListener("click", () => {
+      if (window.opener && !window.opener.closed) {
+        window.opener.clones.forEach(c => c.remove());
+        window.opener.clones = [];
       }
-    }
+    });
   </script>
 </body>
 </html>
+
 
