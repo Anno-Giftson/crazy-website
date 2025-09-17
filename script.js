@@ -1,3 +1,8 @@
+// === Touch screen alert ===
+if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
+  alert("👋 Hey touchscreen user! Enjoy the madness responsibly! 👆");
+}
+
 // === Main Website JS ===
 
 // Elements
@@ -140,7 +145,6 @@ function spawnConfetti(x, y, count) {
 }
 
 // === Admin System ===
-
 const adminArea = document.getElementById('admin-area');
 const adminLoginPopup = document.getElementById('admin-login-popup');
 const adminPanel = document.getElementById('admin-panel');
@@ -149,7 +153,7 @@ const adminLoginButton = document.getElementById('admin-login-button');
 const adminLogoutButton = document.getElementById('admin-logout-button');
 const adminGetRewardButton = document.getElementById('admin-get-reward-button');
 
-// Hide admin UI initially
+// Initially hide admin UI (already hidden via CSS, but just to be sure)
 function hideAdminUI() {
   adminLoginPopup.style.display = 'none';
   adminPanel.style.display = 'none';
@@ -162,13 +166,13 @@ function showAdminLogin() {
   adminPasswordInput.focus();
 }
 
-// Show admin panel after successful login
+// Show admin panel after login
 function showAdminPanel() {
   adminLoginPopup.style.display = 'none';
   adminPanel.style.display = 'block';
 }
 
-// Check login on page load
+// Check if admin logged in (sessionStorage)
 function checkAdminLogin() {
   if (sessionStorage.getItem('adminLoggedIn') === 'true') {
     showAdminPanel();
@@ -177,14 +181,14 @@ function checkAdminLogin() {
   }
 }
 
-// Event: click on hidden admin area to show login
+// Click on invisible admin area to open login popup (if not logged in)
 adminArea.addEventListener('click', () => {
   if (sessionStorage.getItem('adminLoggedIn') !== 'true') {
     showAdminLogin();
   }
 });
 
-// Admin login button click
+// Admin login button click handler
 adminLoginButton.addEventListener('click', () => {
   const password = adminPasswordInput.value;
   if (password === 'Crazyadmin123') {
@@ -198,23 +202,24 @@ adminLoginButton.addEventListener('click', () => {
   }
 });
 
-// Admin logout button click
+// Admin logout button click handler
 adminLogoutButton.addEventListener('click', () => {
   sessionStorage.removeItem('adminLoggedIn');
   hideAdminUI();
   alert('Logged out successfully.');
 });
 
-// Admin get reward instantly button click
+// Admin "Get Reward Instantly" button click
 adminGetRewardButton.addEventListener('click', () => {
   showReward("🎉 Admin reward granted instantly! 🎉");
   spawnConfetti(window.innerWidth / 2, window.innerHeight / 2, 100);
 });
 
-// On page load, check if admin logged in
+// Check login status on DOM ready
 window.addEventListener('DOMContentLoaded', () => {
   checkAdminLogin();
 });
+
 
 
 
