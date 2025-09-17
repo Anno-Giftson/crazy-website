@@ -7,6 +7,7 @@ function isMobileDevice() {
   return /android|iphone|ipad|ipod|mobile/i.test(ua);
 }
 
+// Position the runaway button neatly on page load
 window.addEventListener('DOMContentLoaded', () => {
   const runawayBtn = document.getElementById("runaway-button");
   runawayBtn.style.position = "fixed";
@@ -17,6 +18,7 @@ window.addEventListener('DOMContentLoaded', () => {
   runawayBtn.style.transform = "translateX(-50%)";
 });
 
+// Detect touch on non-mobile and show warning
 window.addEventListener('touchstart', () => {
   if (!isMobileDevice()) {
     blockTouchScreen();
@@ -39,6 +41,7 @@ function blockTouchScreen() {
   }, 3000);
 }
 
+// Background color changer
 setInterval(() => {
   if (!document.body.classList.contains('inverted-upside-down')) {
     document.body.style.backgroundColor = getRandomColor();
@@ -49,6 +52,7 @@ function getRandomColor() {
   return `hsl(${Math.floor(Math.random() * 360)}, 100%, 50%)`;
 }
 
+// Confetti on mouse move
 document.addEventListener('mousemove', (e) => {
   spawnConfetti(e.pageX, e.pageY, 3);
 });
@@ -88,11 +92,13 @@ function moveRandom(el) {
   el.style.top = (Math.random() * (maxHeight - minTop) + minTop) + "px";
 }
 
+// Move when hovered
 runawayBtn.addEventListener("mouseenter", () => {
   if (isFrozen) return;
   moveRandom(runawayBtn);
 });
 
+// Clicking frozen button gives reward
 runawayBtn.addEventListener("click", () => {
   if (isFrozen) {
     showReward("🎉 You outsmarted the button! You win! 🎉");
@@ -134,7 +140,7 @@ document.getElementById("glitch-button").addEventListener("click", () => {
   }, 3000);
 });
 
-// Confetti rain
+// Confetti rain button
 document.getElementById("confetti-rain-button").addEventListener("click", () => {
   startConfettiRain();
   setTimeout(stopConfettiRain, 7000);
@@ -165,7 +171,7 @@ document.getElementById("clue-button").addEventListener("click", () => {
   clueText.style.display = (clueText.style.display === "none") ? "block" : "none";
 });
 
-// No copy/paste
+// No copy/paste on input
 const freezeInput = document.getElementById("freeze-code");
 
 ["copy", "paste", "cut"].forEach(event => {
@@ -189,6 +195,7 @@ document.getElementById("submit-code").addEventListener("click", () => {
   }
 });
 
+// Freeze logic (only called by code submission or admin)
 function freezeButton() {
   isFrozen = true;
   runawayBtn.textContent = "😳 You froze me!";
@@ -196,6 +203,7 @@ function freezeButton() {
   runawayBtn.style.border = "3px solid blue";
 }
 
+// Show reward popup
 function showReward(msg) {
   const popup = document.getElementById("reward-popup");
   popup.textContent = msg;
@@ -206,29 +214,35 @@ function showReward(msg) {
   }, 4000);
 }
 
-// === ADMIN ACCESS SYSTEM ===
-const adminBtn = document.getElementById("admin-access-btn");
-const adminModal = document.getElementById("admin-modal");
-const adminSubmit = document.getElementById("admin-submit");
-const adminPasswordInput = document.getElementById("admin-password");
-const adminError = document.getElementById("admin-error");
-
-adminBtn.addEventListener("click", () => {
-  adminModal.style.display = "flex";
-  adminPasswordInput.value = "";
-  adminError.style.display = "none";
-});
-
-adminSubmit.addEventListener("click", () => {
-  const password = adminPasswordInput.value;
-  const correctPassword = "letmein"; // 🔐 Change this to your own secure password
-
-  if (password === correctPassword) {
-    window.location.href = "admin.html";
+// === Expose functions for Admin Page ===
+window.freezeButton = freezeButton;
+window.showReward = showReward;
+window.spawnConfetti = spawnConfetti;
+window.startConfettiRain = startConfettiRain;
+window.clearClones = () => {
+  clones.forEach(c => c.remove());
+  clones = [];
+};
+window.toggleInvert = () => {
+  document.body.classList.toggle("inverted-upside-down");
+};
+window.toggleGlitch = () => {
+  document.body.classList.add("glitching");
+  setTimeout(() => {
+    document.body.classList.remove("glitching");
+  }, 3000);
+};
+window.toggleDoNotPress = () => {
+  const btn = document.getElementById("spin-button");
+  if (btn.disabled) {
+    btn.disabled = false;
+    btn.textContent = "DO NOT PRESS";
   } else {
-    adminError.style.display = "block";
+    btn.disabled = true;
+    btn.textContent = "LOCKED by Admin";
   }
-});
+};
+
 
 
 
