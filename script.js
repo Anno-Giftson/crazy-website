@@ -1,4 +1,3 @@
-let usedTouch = false;
 let touchBlocked = false;
 let clones = [];
 let isFrozen = false;
@@ -22,7 +21,6 @@ window.addEventListener('DOMContentLoaded', () => {
 // Detect touch on non-mobile and show warning
 window.addEventListener('touchstart', () => {
   if (!isMobileDevice()) {
-    usedTouch = true;
     blockTouchScreen();
   }
 }, { passive: true });
@@ -56,7 +54,6 @@ function getRandomColor() {
 
 // Confetti on mouse move
 document.addEventListener('mousemove', (e) => {
-  if (usedTouch) return;
   spawnConfetti(e.pageX, e.pageY, 3);
 });
 
@@ -97,13 +94,12 @@ function moveRandom(el) {
 
 // Move when hovered
 runawayBtn.addEventListener("mouseenter", () => {
-  if (usedTouch || isFrozen) return;
+  if (isFrozen) return;
   moveRandom(runawayBtn);
 });
 
 // Clicking frozen button gives reward
 runawayBtn.addEventListener("click", () => {
-  if (usedTouch) return;
   if (isFrozen) {
     showReward("🎉 You outsmarted the button! You win! 🎉");
     spawnConfetti(window.innerWidth / 2, window.innerHeight / 2, 100);
@@ -217,6 +213,7 @@ function showReward(msg) {
     popup.style.display = "none";
   }, 4000);
 }
+
 
 
 
