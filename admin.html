@@ -11,97 +11,85 @@
       color: white;
       padding: 20px;
     }
+    h1 {
+      color: hotpink;
+      margin-bottom: 20px;
+    }
     button {
       background: hotpink;
       border: none;
       padding: 10px 20px;
-      margin: 10px 0;
+      margin: 8px 0;
       cursor: pointer;
       font-size: 16px;
       border-radius: 5px;
+      display: block;
+      width: 250px;
     }
-    h1 {
-      margin-bottom: 20px;
-      color: hotpink;
+    button:hover {
+      background: deeppink;
     }
   </style>
 </head>
 <body>
   <h1>Admin Dashboard</h1>
-
-  <button id="freeze-btn">Freeze Runaway Button</button><br/>
-  <button id="reward-btn">Get Reward (Skip Pi)</button><br/>
-  <button id="invert-btn">Invert Main Page</button><br/>
-  <button id="glitch-btn">Glitch Main Page</button><br/>
-  <button id="confetti-rain-btn">Start Confetti Rain</button><br/>
-  <button id="clear-clones-btn">Clear Clones</button>
+  <button id="freeze-btn">Freeze Runaway Button</button>
+  <button id="reward-btn">Trigger Reward</button>
+  <button id="invert-btn">Toggle Invert Page</button>
+  <button id="glitch-btn">Glitch Page</button>
+  <button id="confetti-rain-btn">Start Confetti Rain</button>
+  <button id="clear-clones-btn">Clear All Clones</button>
+  <button id="toggle-dnp-btn">Toggle DO NOT PRESS Button</button>
 
   <script>
-    // Helper to call functions on main window safely
-    function callMainWindowFunction(fnName) {
+    function callMain(fnName, ...args) {
       if (window.opener && !window.opener.closed) {
         const fn = window.opener[fnName];
         if (typeof fn === "function") {
-          fn();
+          fn(...args);
         } else {
           alert("Function '" + fnName + "' not found on main page.");
         }
       } else {
-        alert("Main window not found or function missing.");
+        alert("Main window not found or closed.");
       }
     }
 
     document.getElementById("freeze-btn").addEventListener("click", () => {
-      callMainWindowFunction("freezeButton");
+      callMain("freezeButton");
     });
 
     document.getElementById("reward-btn").addEventListener("click", () => {
       if (window.opener && !window.opener.closed) {
         window.opener.showReward("🎉 Admin triggered reward! 🎉");
-        window.opener.spawnConfetti(window.opener.window.innerWidth/2, window.opener.window.innerHeight/2, 100);
+        window.opener.spawnConfetti(window.opener.innerWidth / 2, window.opener.innerHeight / 2, 100);
       } else {
         alert("Main window not found.");
       }
     });
 
     document.getElementById("invert-btn").addEventListener("click", () => {
-      callMainWindowFunction(() => {
-        document.body.classList.toggle("inverted-upside-down");
-      });
-      // The above won't work as is since toggle is a DOM method, so instead:
-      if (window.opener && !window.opener.closed) {
-        const mainBody = window.opener.document.body;
-        mainBody.classList.toggle("inverted-upside-down");
-      }
+      callMain("toggleInvert");
     });
 
     document.getElementById("glitch-btn").addEventListener("click", () => {
-      if (window.opener && !window.opener.closed) {
-        const mainBody = window.opener.document.body;
-        mainBody.classList.add("glitching");
-        setTimeout(() => {
-          mainBody.classList.remove("glitching");
-        }, 3000);
-      }
+      callMain("toggleGlitch");
     });
 
     document.getElementById("confetti-rain-btn").addEventListener("click", () => {
-      if (window.opener && !window.opener.closed) {
-        window.opener.startConfettiRain();
-        setTimeout(() => {
-          window.opener.stopConfettiRain();
-        }, 7000);
-      }
+      callMain("startConfettiRain");
     });
 
     document.getElementById("clear-clones-btn").addEventListener("click", () => {
-      if (window.opener && !window.opener.closed) {
-        window.opener.clones.forEach(c => c.remove());
-        window.opener.clones = [];
-      }
+      callMain("clearClones");
+    });
+
+    document.getElementById("toggle-dnp-btn").addEventListener("click", () => {
+      callMain("toggleDoNotPress");
     });
   </script>
 </body>
 </html>
+
 
 
