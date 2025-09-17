@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Totally Crazy Website</title>
   <link rel="stylesheet" href="style.css" />
 </head>
@@ -32,25 +32,34 @@
     </div>
   </div>
 
-  <!-- Secret Admin Trigger -->
-  <div id="admin-secret-hitbox"></div>
-
-  <!-- Admin Panel -->
-  <div id="admin-panel" style="display:none;">
-    <h2>👑 Admin Control Panel</h2>
-    <button id="admin-show-reward">Force Reward</button>
-    <button id="admin-freeze-button">Freeze Runaway Button</button>
-    <button id="admin-show-code">Show PI Code</button>
-    <div id="admin-code-text" style="margin-top: 10px; font-family: monospace;"></div>
-    <button id="admin-logout" style="margin-top:20px; background-color: red;">Logout</button>
-  </div>
-
   <div id="confetti-container"></div>
   <div id="reward-popup" style="display: none;"></div>
+
+  <!-- Admin secret hitbox (invisible clickable area) -->
+  <div id="admin-secret-hitbox" title="Admin Access"></div>
+
+  <!-- Admin login modal -->
+  <div id="admin-login-modal" class="hidden">
+    <div id="admin-login-content">
+      <h2>🔒 Admin Login</h2>
+      <input type="password" id="admin-password-input" placeholder="Enter admin password" />
+      <div id="admin-error-msg"></div>
+      <button id="admin-login-submit">Login</button>
+      <button id="admin-login-cancel">Cancel</button>
+    </div>
+  </div>
+
+  <!-- Admin panel (hidden until login) -->
+  <div id="admin-panel" class="hidden">
+    <h3>Admin Panel</h3>
+    <button id="admin-get-reward">Get Reward Instantly</button>
+    <button id="admin-logout">Logout</button>
+  </div>
 
   <script src="script.js"></script>
 </body>
 </html>
+
 
 
 
