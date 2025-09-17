@@ -1,267 +1,114 @@
+/* General styles */
 body {
   margin: 0;
-  padding: 140px 0 0 0; /* space for fixed header */
-  font-family: 'Comic Sans MS', cursive;
-  background-color: black;
+  font-family: Arial, sans-serif;
+  background-color: #222;
   color: white;
   overflow-x: hidden;
-  transition: filter 0.3s ease, transform 0.7s ease;
-  user-select: none;
 }
 
-/* Header container */
 #header-container {
+  background-color: #444;
+  padding: 20px;
+  text-align: center;
+  font-size: 2em;
+}
+
+/* Runaway button styling */
+#runaway-button {
   position: fixed;
-  top: 0;
+  top: 150px;
   left: 50%;
   transform: translateX(-50%);
-  width: 90vw;
-  max-width: 1200px;
-  background: rgba(0, 0, 0, 0.85);
-  padding: 15px 20px;
-  border-radius: 15px;
-  box-sizing: border-box;
-  z-index: 10000;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-/* Title */
-#crazy-title {
-  font-size: 3rem;
-  margin: 0;
-  animation: blinkRotate 1s infinite;
-  color: hotpink;
-}
-
-/* Buttons container inside header */
-#main-buttons {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 12px;
-}
-
-/* Buttons inside main-buttons */
-#main-buttons button {
-  min-width: 150px;
-  height: 40px;
-  font-size: 1.1rem;
-  padding: 8px 12px;
-  background-color: hotpink;
-  border: 3px dashed lime;
+  padding: 15px 25px;
+  font-size: 1.2em;
   cursor: pointer;
+  background-color: #ff3;
+  border: none;
   border-radius: 8px;
-  transition: transform 0.2s;
+  box-shadow: 0 0 15px #ff3;
+  transition: background-color 0.3s ease;
+  z-index: 1000;
+}
+#runaway-button:hover {
+  background-color: #ff0;
 }
 
-#main-buttons button:hover {
-  transform: scale(1.05);
-}
-
-/* Puzzle container fixed bottom-left */
-#puzzle-container {
+/* Spin button styling */
+#spin-button {
   position: fixed;
-  bottom: 15px;
-  left: 15px;
-  background: rgba(0, 0, 0, 0.8);
-  border: 2px solid hotpink;
-  padding: 10px 15px;
-  border-radius: 15px;
-  max-width: 340px;
-  color: white;
-  z-index: 10001;
-  font-size: 1rem;
-  user-select: text;
-}
-
-/* Puzzle input and buttons */
-#puzzle-container input[type="text"] {
-  width: calc(100% - 20px);
-  padding: 6px 8px;
-  font-size: 1rem;
-  border-radius: 6px;
-  border: 2px solid hotpink;
-  background: black;
-  color: white;
-  margin-top: 10px;
-}
-
-#puzzle-container button {
-  margin-top: 10px;
-  background-color: hotpink;
-  border: 3px dashed lime;
-  padding: 8px 12px;
+  bottom: 100px;
+  right: 50%;
+  transform: translateX(50%);
+  padding: 15px 25px;
+  font-size: 1.2em;
   cursor: pointer;
+  background-color: #e44;
+  border: none;
   border-radius: 8px;
-  font-size: 1rem;
-  transition: transform 0.2s;
-}
-
-#puzzle-container button:hover {
-  transform: scale(1.05);
+  color: white;
+  box-shadow: 0 0 15px #e44;
+  z-index: 1000;
 }
 
 /* Confetti container */
 #confetti-container {
   position: fixed;
-  top: 0;
-  left: 0;
+  top: 0; left: 0;
   width: 100vw;
   height: 100vh;
   pointer-events: none;
-  z-index: 999;
+  overflow: visible;
+  z-index: 9999;
 }
 
 /* Confetti pieces */
 .confetti {
   position: absolute;
-  width: 10px;
-  height: 10px;
-  background-color: red;
-  border-radius: 50%;
-  animation: fall 3s linear forwards;
+  width: 8px;
+  height: 8px;
+  opacity: 0.8;
+  border-radius: 2px;
+  animation: confetti-fall 3s forwards;
+}
+@keyframes confetti-fall {
+  to {
+    transform: translateY(100vh) rotate(360deg);
+    opacity: 0;
+  }
 }
 
-@keyframes fall {
-  0% { transform: translateY(0) rotate(0deg); opacity: 1; }
-  100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
-}
-
-/* Reward popup */
-#reward-popup {
+/* Invisible admin trigger button bottom left */
+#admin-trigger {
   position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: white;
-  color: black;
-  padding: 20px 30px;
-  border-radius: 20px;
-  font-size: 2em;
-  z-index: 9999;
-  box-shadow: 0 0 20px hotpink;
-  display: none;
-}
-
-/* Glitch animation */
-@keyframes glitch {
-  0% { transform: translate(0); }
-  20% { transform: translate(-5px, 5px); }
-  40% { transform: translate(5px, -5px); }
-  60% { transform: translate(-3px, 3px); }
-  80% { transform: translate(3px, -3px); }
-  100% { transform: translate(0); }
-}
-
-.glitching {
-  animation: glitch 0.2s steps(2, end) 10;
-}
-
-/* Title blinking and rotating */
-@keyframes blinkRotate {
-  0% { opacity: 1; transform: rotate(0deg); color: red; }
-  25% { opacity: 0.5; transform: rotate(5deg); color: yellow; }
-  50% { opacity: 1; transform: rotate(-5deg); color: cyan; }
-  75% { opacity: 0.5; transform: rotate(10deg); color: magenta; }
-  100% { opacity: 1; transform: rotate(0deg); color: green; }
-}
-
-/* Inverted upside down */
-.inverted-upside-down {
-  filter: invert(1);
-  transform: rotate(180deg);
-}
-
-/* Admin Login Popup */
-#admin-login-popup {
-  display: none; /* Hidden initially */
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: black;
-  color: white;
-  padding: 25px 30px;
-  border: 3px solid hotpink;
-  border-radius: 15px;
-  z-index: 100000;
-  font-size: 1.3rem;
-  box-shadow: 0 0 15px hotpink;
-}
-
-#admin-login-popup input {
-  padding: 8px 10px;
-  font-size: 1.2rem;
-  border-radius: 8px;
-  border: 2px solid hotpink;
-  background: black;
-  color: white;
-  margin-right: 10px;
-  width: 220px;
-}
-
-#admin-login-popup button {
-  padding: 9px 16px;
-  font-size: 1.2rem;
-  background-color: hotpink;
-  border: 3px dashed lime;
-  border-radius: 8px;
+  bottom: 10px;
+  left: 10px;
+  width: 30px;
+  height: 30px;
+  background: transparent;
   cursor: pointer;
-  color: black;
-  transition: transform 0.2s ease;
+  z-index: 11000;
 }
 
-#admin-login-popup button:hover {
-  transform: scale(1.05);
-}
-
-/* Admin Panel */
-#admin-panel {
-  display: none; /* Hidden initially */
-  position: fixed;
-  top: 10%;
-  left: 50%;
-  transform: translateX(-50%);
-  background: black;
-  color: white;
-  padding: 30px 40px;
-  border: 3px solid hotpink;
-  border-radius: 20px;
-  z-index: 100000;
-  max-width: 400px;
-  box-shadow: 0 0 20px hotpink;
-  text-align: center;
-}
-
-#admin-panel button {
-  margin: 10px 10px 0 10px;
-  padding: 10px 15px;
-  background-color: hotpink;
-  color: black;
-  border: 3px dashed lime;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 1.1rem;
-  transition: transform 0.2s ease;
-}
-
-#admin-panel button:hover {
-  transform: scale(1.1);
-}
-
-/* Admin area invisible but clickable */
-#admin-area {
+/* Full screen blocker overlay */
+#blocker {
   position: fixed;
   top: 0; left: 0;
-  width: 40px; height: 40px;
-  opacity: 0;
-  cursor: pointer;
-  z-index: 100001;
-  /* No border or background to keep invisible */
+  width: 100vw;
+  height: 100vh;
+  background: black;
+  color: red;
+  font-size: 2em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 12000;
+  user-select: none;
+  text-align: center;
+  padding: 20px;
+  box-sizing: border-box;
 }
+
 
 
 
