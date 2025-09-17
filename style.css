@@ -177,7 +177,7 @@ body {
 
 /* Admin Login Popup */
 #admin-login-popup {
-  display: none; /* Start hidden */
+  display: none; /* Hidden initially */
   position: fixed;
   top: 50%;
   left: 50%;
@@ -220,7 +220,7 @@ body {
 
 /* Admin Panel */
 #admin-panel {
-  display: none; /* Start hidden */
+  display: none; /* Hidden initially */
   position: fixed;
   top: 10%;
   left: 50%;
@@ -260,7 +260,9 @@ body {
   opacity: 0;
   cursor: pointer;
   z-index: 100001;
+  /* No border or background to keep invisible */
 }
+
 
 
 
