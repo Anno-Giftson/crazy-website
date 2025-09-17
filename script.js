@@ -1,224 +1,206 @@
-// === Touch screen alert ===
-if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
-  alert("👋 Hey touchscreen user! Enjoy the madness responsibly! 👆");
+body {
+  margin: 0;
+  padding: 140px 0 0 0; /* space for fixed header */
+  font-family: 'Comic Sans MS', cursive;
+  background-color: black;
+  color: white;
+  overflow-x: hidden;
+  transition: filter 0.3s ease, transform 0.7s ease;
+  user-select: none;
 }
 
-// === Main Website JS ===
-
-// Elements
-const spinButton = document.getElementById('spin-button');
-const runawayButton = document.getElementById('runaway-button');
-const cloneButton = document.getElementById('clone-button');
-const clearClonesButton = document.getElementById('clear-clones-button');
-const invertButton = document.getElementById('invert-button');
-const deleteAllButton = document.getElementById('delete-all-button');
-const generateCodeButton = document.getElementById('generate-code-button');
-const piInput = document.getElementById('pi-input');
-const submitPi = document.getElementById('submit-pi');
-const puzzleContainer = document.getElementById('puzzle-container');
-const confettiContainer = document.getElementById('confetti-container');
-const rewardPopup = document.getElementById('reward-popup');
-
-// Clones array
-let clones = [];
-
-// Confetti colors
-const confettiColors = ['#FF004D', '#00E676', '#2979FF', '#FF9100', '#E91E63', '#00B8D4'];
-
-// Spin button effect: rotate entire body 360 degrees in 2s
-spinButton.addEventListener('click', () => {
-  document.body.style.transition = 'transform 2s ease';
-  document.body.style.transform = 'rotate(360deg)';
-  setTimeout(() => {
-    document.body.style.transition = '';
-    document.body.style.transform = '';
-  }, 2100);
-});
-
-// Runaway button moves randomly within viewport on mouseover
-runawayButton.addEventListener('mouseenter', () => {
-  const vw = window.innerWidth;
-  const vh = window.innerHeight;
-  const maxX = vw - runawayButton.offsetWidth;
-  const maxY = vh - runawayButton.offsetHeight;
-  const randomX = Math.floor(Math.random() * maxX);
-  const randomY = Math.floor(Math.random() * maxY);
-  runawayButton.style.position = 'fixed';
-  runawayButton.style.left = `${randomX}px`;
-  runawayButton.style.top = `${randomY}px`;
-});
-
-// Clone me button clones the runaway button with glitch effect
-cloneButton.addEventListener('click', () => {
-  const clone = runawayButton.cloneNode(true);
-  clone.classList.add('glitching');
-  clone.style.position = 'fixed';
-  // Position near original button with small random offset
-  const rect = runawayButton.getBoundingClientRect();
-  clone.style.left = (rect.left + (Math.random() * 100 - 50)) + 'px';
-  clone.style.top = (rect.top + (Math.random() * 100 - 50)) + 'px';
-  clone.style.zIndex = 9999;
-  document.body.appendChild(clone);
-  clones.push(clone);
-
-  // Remove glitch class after animation duration
-  setTimeout(() => {
-    clone.classList.remove('glitching');
-  }, 2000);
-
-  // Add runaway effect on clones
-  clone.addEventListener('mouseenter', () => {
-    const vw = window.innerWidth;
-    const vh = window.innerHeight;
-    const maxX = vw - clone.offsetWidth;
-    const maxY = vh - clone.offsetHeight;
-    const randomX = Math.floor(Math.random() * maxX);
-    const randomY = Math.floor(Math.random() * maxY);
-    clone.style.left = `${randomX}px`;
-    clone.style.top = `${randomY}px`;
-  });
-});
-
-// Clear clones button removes all clones
-clearClonesButton.addEventListener('click', () => {
-  clones.forEach(clone => clone.remove());
-  clones = [];
-});
-
-// Invert page button toggles invert + rotate
-invertButton.addEventListener('click', () => {
-  document.body.classList.toggle('inverted-upside-down');
-});
-
-// Delete all clones button removes clones + glitch effect on title
-deleteAllButton.addEventListener('click', () => {
-  clones.forEach(clone => clone.remove());
-  clones = [];
-  const title = document.getElementById('crazy-title');
-  title.classList.add('glitching');
-  setTimeout(() => {
-    title.classList.remove('glitching');
-  }, 1500);
-});
-
-// Generate 50 digits of Pi button autofills input
-generateCodeButton.addEventListener('click', () => {
-  piInput.value = '3.14159265358979323846264338327950288419716939937510';
-});
-
-// Submit Pi button checks if input is correct
-submitPi.addEventListener('click', () => {
-  const correctPi = '3.14159265358979323846264338327950288419716939937510';
-  if (piInput.value === correctPi) {
-    showReward("🎉 You solved the puzzle! Here's your reward! 🎉");
-    spawnConfetti(window.innerWidth / 2, window.innerHeight / 2, 100);
-    piInput.value = '';
-  } else {
-    alert('Nope! Try again!');
-    piInput.value = '';
-    piInput.focus();
-  }
-});
-
-// Reward popup show function
-function showReward(message) {
-  rewardPopup.textContent = message;
-  rewardPopup.style.display = 'block';
-  setTimeout(() => {
-    rewardPopup.style.display = 'none';
-  }, 4000);
+/* Header container */
+#header-container {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90vw;
+  max-width: 1200px;
+  background: rgba(0, 0, 0, 0.85);
+  padding: 15px 20px;
+  border-radius: 15px;
+  box-sizing: border-box;
+  z-index: 10000;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
 }
 
-// Confetti spawn function
-function spawnConfetti(x, y, count) {
-  for (let i = 0; i < count; i++) {
-    const confetti = document.createElement('div');
-    confetti.classList.add('confetti');
-    confetti.style.backgroundColor = confettiColors[Math.floor(Math.random() * confettiColors.length)];
-    confetti.style.left = (x + (Math.random() * 200 - 100)) + 'px';
-    confetti.style.top = (y + (Math.random() * 50 - 25)) + 'px';
-    confetti.style.width = confetti.style.height = (5 + Math.random() * 10) + 'px';
-    confetti.style.animationDuration = (2 + Math.random() * 2) + 's';
-    confettiContainer.appendChild(confetti);
-    setTimeout(() => confetti.remove(), 4000);
-  }
+/* Title */
+#crazy-title {
+  font-size: 3rem;
+  margin: 0;
+  animation: blinkRotate 1s infinite;
+  color: hotpink;
 }
 
-// === Admin System ===
-const adminArea = document.getElementById('admin-area');
-const adminLoginPopup = document.getElementById('admin-login-popup');
-const adminPanel = document.getElementById('admin-panel');
-const adminPasswordInput = document.getElementById('admin-password');
-const adminLoginButton = document.getElementById('admin-login-button');
-const adminLogoutButton = document.getElementById('admin-logout-button');
-const adminGetRewardButton = document.getElementById('admin-get-reward-button');
-
-// Initially hide admin UI (already hidden via CSS, but just to be sure)
-function hideAdminUI() {
-  adminLoginPopup.style.display = 'none';
-  adminPanel.style.display = 'none';
-  adminPasswordInput.value = '';
+/* Buttons container inside header */
+#main-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
 }
 
-// Show admin login popup
-function showAdminLogin() {
-  adminLoginPopup.style.display = 'block';
-  adminPasswordInput.focus();
+/* Buttons inside main-buttons */
+#main-buttons button {
+  min-width: 150px;
+  height: 40px;
+  font-size: 1.1rem;
+  padding: 8px 12px;
+  background-color: hotpink;
+  border: 3px dashed lime;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: transform 0.2s;
 }
 
-// Show admin panel after login
-function showAdminPanel() {
-  adminLoginPopup.style.display = 'none';
-  adminPanel.style.display = 'block';
+#main-buttons button:hover {
+  transform: scale(1.05);
 }
 
-// Check if admin logged in (sessionStorage)
-function checkAdminLogin() {
-  if (sessionStorage.getItem('adminLoggedIn') === 'true') {
-    showAdminPanel();
-  } else {
-    hideAdminUI();
-  }
+/* Puzzle container fixed bottom-left */
+#puzzle-container {
+  position: fixed;
+  bottom: 15px;
+  left: 15px;
+  background: rgba(0, 0, 0, 0.8);
+  border: 2px solid hotpink;
+  padding: 10px 15px;
+  border-radius: 15px;
+  max-width: 340px;
+  color: white;
+  z-index: 10001;
+  font-size: 1rem;
+  user-select: text;
 }
 
-// Click on invisible admin area to open login popup (if not logged in)
-adminArea.addEventListener('click', () => {
-  if (sessionStorage.getItem('adminLoggedIn') !== 'true') {
-    showAdminLogin();
-  }
-});
+/* Puzzle input and buttons */
+#puzzle-container input[type="text"] {
+  width: calc(100% - 20px);
+  padding: 6px 8px;
+  font-size: 1rem;
+  border-radius: 6px;
+  border: 2px solid hotpink;
+  background: black;
+  color: white;
+  margin-top: 10px;
+}
 
-// Admin login button click handler
-adminLoginButton.addEventListener('click', () => {
-  const password = adminPasswordInput.value;
-  if (password === 'Crazyadmin123') {
-    sessionStorage.setItem('adminLoggedIn', 'true');
-    showAdminPanel();
-    alert('Admin login successful!');
-  } else {
-    alert('Wrong password! Try again.');
-    adminPasswordInput.value = '';
-    adminPasswordInput.focus();
-  }
-});
+#puzzle-container button {
+  margin-top: 10px;
+  background-color: hotpink;
+  border: 3px dashed lime;
+  padding: 8px 12px;
+  cursor: pointer;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: transform 0.2s;
+}
 
-// Admin logout button click handler
-adminLogoutButton.addEventListener('click', () => {
-  sessionStorage.removeItem('adminLoggedIn');
-  hideAdminUI();
-  alert('Logged out successfully.');
-});
+#puzzle-container button:hover {
+  transform: scale(1.05);
+}
 
-// Admin "Get Reward Instantly" button click
-adminGetRewardButton.addEventListener('click', () => {
-  showReward("🎉 Admin reward granted instantly! 🎉");
-  spawnConfetti(window.innerWidth / 2, window.innerHeight / 2, 100);
-});
+/* Confetti container */
+#confetti-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 999;
+}
 
-// Check login status on DOM ready
-window.addEventListener('DOMContentLoaded', () => {
-  checkAdminLogin();
-});
+/* Confetti pieces */
+.confetti {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background-color: red;
+  border-radius: 50%;
+  animation: fall 3s linear forwards;
+}
+
+@keyframes fall {
+  0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+}
+
+/* Reward popup */
+#reward-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  color: black;
+  padding: 20px 30px;
+  border-radius: 20px;
+  font-size: 2em;
+  z-index: 9999;
+  box-shadow: 0 0 20px hotpink;
+}
+
+/* Blocker for touch devices */
+#blocker {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background: black;
+  color: red;
+  font-size: 2em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 99999;
+}
+
+/* Glitch animation */
+@keyframes glitch {
+  0% { transform: translate(0); }
+  20% { transform: translate(-5px, 5px); }
+  40% { transform: translate(5px, -5px); }
+  60% { transform: translate(-3px, 3px); }
+  80% { transform: translate(3px, -3px); }
+  100% { transform: translate(0); }
+}
+
+.glitching {
+  animation: glitch 0.2s steps(2, end) 10;
+}
+
+/* Title blinking and rotating */
+@keyframes blinkRotate {
+  0% { opacity: 1; transform: rotate(0deg); color: red; }
+  25% { opacity: 0.5; transform: rotate(5deg); color: yellow; }
+  50% { opacity: 1; transform: rotate(-5deg); color: cyan; }
+  75% { opacity: 0.5; transform: rotate(10deg); color: magenta; }
+  100% { opacity: 1; transform: rotate(0deg); color: green; }
+}
+
+/* Inverted upside down */
+.inverted-upside-down {
+  filter: invert(1);
+  transform: rotate(180deg);
+}
+
+/* Invisible admin button: small area top-left corner */
+#admin-invisible-btn {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 40px;
+  height: 40px;
+  /* invisible but clickable */
+  background: transparent;
+  cursor: pointer;
+  z-index: 11000;
+}
+
 
 
 
