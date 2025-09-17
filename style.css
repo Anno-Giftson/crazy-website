@@ -1,6 +1,6 @@
 body {
   margin: 0;
-  padding: 140px 0 0 0;
+  padding: 140px 0 0 0; /* space for fixed header */
   font-family: 'Comic Sans MS', cursive;
   background-color: black;
   color: white;
@@ -9,6 +9,7 @@ body {
   user-select: none;
 }
 
+/* Header container */
 #header-container {
   position: fixed;
   top: 0;
@@ -27,6 +28,7 @@ body {
   gap: 15px;
 }
 
+/* Title */
 #crazy-title {
   font-size: 3rem;
   margin: 0;
@@ -34,6 +36,7 @@ body {
   color: hotpink;
 }
 
+/* Buttons container inside header */
 #main-buttons {
   display: flex;
   flex-wrap: wrap;
@@ -41,6 +44,7 @@ body {
   gap: 12px;
 }
 
+/* Buttons inside main-buttons */
 #main-buttons button {
   min-width: 150px;
   height: 40px;
@@ -57,6 +61,7 @@ body {
   transform: scale(1.05);
 }
 
+/* Puzzle container fixed bottom-left */
 #puzzle-container {
   position: fixed;
   bottom: 15px;
@@ -72,6 +77,7 @@ body {
   user-select: text;
 }
 
+/* Puzzle input and buttons */
 #puzzle-container input[type="text"] {
   width: calc(100% - 20px);
   padding: 6px 8px;
@@ -98,6 +104,7 @@ body {
   transform: scale(1.05);
 }
 
+/* Confetti container */
 #confetti-container {
   position: fixed;
   top: 0;
@@ -108,6 +115,7 @@ body {
   z-index: 999;
 }
 
+/* Confetti pieces */
 .confetti {
   position: absolute;
   width: 10px;
@@ -122,6 +130,7 @@ body {
   100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
 }
 
+/* Reward popup */
 #reward-popup {
   position: fixed;
   top: 50%;
@@ -136,19 +145,7 @@ body {
   box-shadow: 0 0 20px hotpink;
 }
 
-#blocker {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100vw; height: 100vh;
-  background: black;
-  color: red;
-  font-size: 2em;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 99999;
-}
-
+/* Glitch animation */
 @keyframes glitch {
   0% { transform: translate(0); }
   20% { transform: translate(-5px, 5px); }
@@ -162,58 +159,146 @@ body {
   animation: glitch 0.2s steps(2, end) 10;
 }
 
+/* Title blinking and rotating */
 @keyframes blinkRotate {
   0% { opacity: 1; transform: rotate(0deg); color: red; }
   25% { opacity: 0.5; transform: rotate(5deg); color: yellow; }
   50% { opacity: 1; transform: rotate(-5deg); color: cyan; }
   75% { opacity: 0.5; transform: rotate(10deg); color: magenta; }
-  100% { opacity: 1; transform: rotate(0); color: green; }
+  100% { opacity: 1; transform: rotate(0deg); color: green; }
 }
 
+/* Inverted upside down */
 .inverted-upside-down {
   filter: invert(1);
   transform: rotate(180deg);
 }
 
-/* === Admin Stuff === */
-
+/* Admin secret hitbox - invisible clickable area */
 #admin-secret-hitbox {
   position: fixed;
-  bottom: 5px;
-  right: 5px;
-  width: 30px;
-  height: 30px;
+  bottom: 0;
+  right: 0;
+  width: 20px;
+  height: 20px;
   z-index: 99999;
   cursor: pointer;
-  opacity: 0;
+  /* Uncomment below to debug clickable area */
+  /* background: rgba(255, 0, 0, 0.2); */
 }
 
+/* Admin login modal styles */
+#admin-login-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100000;
+}
+
+#admin-login-modal.hidden {
+  display: none;
+}
+
+#admin-login-content {
+  background: black;
+  padding: 25px 30px;
+  border: 3px solid hotpink;
+  border-radius: 20px;
+  max-width: 320px;
+  width: 90%;
+  text-align: center;
+  color: hotpink;
+  user-select: text;
+}
+
+#admin-login-content h2 {
+  margin: 0 0 15px 0;
+}
+
+#admin-login-content input[type="password"] {
+  width: 100%;
+  padding: 8px 10px;
+  font-size: 1.1rem;
+  border-radius: 8px;
+  border: 2px solid hotpink;
+  background: black;
+  color: white;
+  outline: none;
+}
+
+#admin-login-content input[type="password"]::placeholder {
+  color: #ff77ff;
+}
+
+#admin-error-msg {
+  margin: 10px 0;
+  color: #ff4444;
+  font-weight: bold;
+  min-height: 20px;
+}
+
+#admin-login-content button {
+  margin: 8px 6px 0 6px;
+  padding: 8px 16px;
+  font-size: 1rem;
+  background-color: hotpink;
+  border: 3px dashed lime;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: transform 0.2s;
+  color: black;
+}
+
+#admin-login-content button:hover {
+  transform: scale(1.1);
+}
+
+/* Admin panel */
 #admin-panel {
   position: fixed;
-  top: 10%;
-  left: 50%;
-  transform: translateX(-50%);
+  bottom: 20px;
+  right: 20px;
   background: rgba(0,0,0,0.9);
-  color: lime;
-  border: 3px dashed hotpink;
-  padding: 30px 40px;
+  padding: 15px 20px;
+  border: 3px solid hotpink;
   border-radius: 15px;
-  z-index: 99999;
-  text-align: center;
+  color: hotpink;
+  font-family: 'Comic Sans MS', cursive;
+  user-select: none;
+  z-index: 100001;
+  max-width: 300px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+#admin-panel h3 {
+  margin: 0 0 10px 0;
+  font-size: 1.5rem;
 }
 
 #admin-panel button {
-  display: block;
-  margin: 10px auto;
-  background: hotpink;
-  border: 2px dashed lime;
-  color: black;
-  font-weight: bold;
-  padding: 10px 20px;
+  background-color: hotpink;
+  border: 3px dashed lime;
   border-radius: 10px;
-  font-size: 1rem;
+  padding: 10px;
+  font-weight: bold;
   cursor: pointer;
+  color: black;
+  transition: transform 0.2s;
 }
+
+#admin-panel button:hover {
+  transform: scale(1.05);
+}
+
 
 
 
