@@ -1,205 +1,225 @@
-body {
-  margin: 0;
-  padding: 140px 0 0 0; /* space for fixed header */
-  font-family: 'Comic Sans MS', cursive;
-  background-color: black;
-  color: white;
-  overflow-x: hidden;
-  transition: filter 0.3s ease, transform 0.7s ease;
-  user-select: none;
+let usedTouch = false;
+let touchBlocked = false;
+let clones = [];
+let isFrozen = false;
+
+function isMobileDevice() {
+  const ua = navigator.userAgent || navigator.vendor || window.opera;
+  return /android|iphone|ipad|ipod|mobile/i.test(ua);
 }
 
-/* Header container */
-#header-container {
-  position: fixed;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 90vw;
-  max-width: 1200px;
-  background: rgba(0, 0, 0, 0.85);
-  padding: 15px 20px;
-  border-radius: 15px;
-  box-sizing: border-box;
-  z-index: 10000;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
+// Position the runaway button neatly on page load
+window.addEventListener('DOMContentLoaded', () => {
+  const runawayBtn = document.getElementById("runaway-button");
+  runawayBtn.style.position = "fixed";
+
+  const headerHeight = document.getElementById('header-container').offsetHeight;
+  runawayBtn.style.top = (headerHeight + 100) + "px";
+  runawayBtn.style.left = "50%";
+  runawayBtn.style.transform = "translateX(-50%)";
+});
+
+// Detect touch on non-mobile and show warning
+window.addEventListener('touchstart', () => {
+  if (!isMobileDevice()) {
+    usedTouch = true;
+    blockTouchScreen();
+  }
+}, { passive: true });
+
+function blockTouchScreen() {
+  if (touchBlocked) return;
+  touchBlocked = true;
+  const blocker = document.createElement('div');
+  blocker.id = 'blocker';
+  blocker.innerHTML = `🚫<br>Sorry, touch screen use is not allowed on this device.<br>Please use a mouse or trackpad.`;
+  document.body.appendChild(blocker);
+  document.body.style.overflow = 'hidden';
+
+  setTimeout(() => {
+    blocker.remove();
+    document.body.style.overflow = '';
+    touchBlocked = false;
+  }, 3000);
 }
 
-/* Title */
-#crazy-title {
-  font-size: 3rem;
-  margin: 0;
-  animation: blinkRotate 1s infinite;
-  color: hotpink;
+// Background color changer
+setInterval(() => {
+  if (!document.body.classList.contains('inverted-upside-down')) {
+    document.body.style.backgroundColor = getRandomColor();
+  }
+}, 1000);
+
+function getRandomColor() {
+  return `hsl(${Math.floor(Math.random() * 360)}, 100%, 50%)`;
 }
 
-/* Buttons container inside header */
-#main-buttons {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 12px;
+// Confetti on mouse move
+document.addEventListener('mousemove', (e) => {
+  if (usedTouch) return;
+  spawnConfetti(e.pageX, e.pageY, 3);
+});
+
+function spawnConfetti(x, y, count = 10) {
+  for (let i = 0; i < count; i++) {
+    const confetti = document.createElement('div');
+    confetti.classList.add('confetti');
+    confetti.style.left = `${x}px`;
+    confetti.style.top = `${y}px`;
+    confetti.style.backgroundColor = getRandomColor();
+    confetti.style.width = confetti.style.height = `${Math.random() * 10 + 5}px`;
+
+    document.getElementById('confetti-container').appendChild(confetti);
+    setTimeout(() => confetti.remove(), 3000);
+  }
 }
 
-/* Buttons inside main-buttons */
-#main-buttons button {
-  min-width: 150px;
-  height: 40px;
-  font-size: 1.1rem;
-  padding: 8px 12px;
-  background-color: hotpink;
-  border: 3px dashed lime;
-  cursor: pointer;
-  border-radius: 8px;
-  transition: transform 0.2s;
+// DO NOT PRESS button
+document.getElementById("spin-button").addEventListener("click", () => {
+  alert("YOU PRESSED THE BUTTON. NOW YOU MUST DANCE. 💃🕺");
+});
+
+// === Catch Me If You Can Button ===
+const runawayBtn = document.getElementById("runaway-button");
+
+function moveRandom(el) {
+  if (isFrozen) return;
+  el.style.position = "fixed";
+
+  const headerHeight = document.getElementById('header-container').offsetHeight;
+  const maxWidth = window.innerWidth - el.offsetWidth - 20;
+  const maxHeight = window.innerHeight - el.offsetHeight - 20;
+  const minTop = headerHeight + 10;
+
+  el.style.left = Math.random() * maxWidth + "px";
+  el.style.top = (Math.random() * (maxHeight - minTop) + minTop) + "px";
 }
 
-#main-buttons button:hover {
-  transform: scale(1.05);
+// Move when hovered
+runawayBtn.addEventListener("mouseenter", () => {
+  if (usedTouch || isFrozen) return;
+  moveRandom(runawayBtn);
+});
+
+// Clicking frozen button gives reward
+runawayBtn.addEventListener("click", () => {
+  if (usedTouch) return;
+  if (isFrozen) {
+    showReward("🎉 You outsmarted the button! You win! 🎉");
+    spawnConfetti(window.innerWidth / 2, window.innerHeight / 2, 100);
+  }
+});
+
+// === Clone Button ===
+document.getElementById("clone-button").addEventListener("click", () => {
+  const clone = document.getElementById("clone-button").cloneNode(true);
+  clone.textContent = "I'm a clone!";
+  clone.style.position = "fixed";
+  clone.style.top = `${Math.random() * (window.innerHeight - 40)}px`;
+  clone.style.left = `${Math.random() * (window.innerWidth - 150)}px`;
+  clone.style.zIndex = 9999;
+  clone.addEventListener("click", () => {
+    alert("Clone clicked!");
+  });
+  document.body.appendChild(clone);
+  clones.push(clone);
+});
+
+// Clear clones
+document.getElementById("clear-clones-button").addEventListener("click", () => {
+  clones.forEach(c => c.remove());
+  clones = [];
+});
+
+// Invert button
+document.getElementById("invert-button").addEventListener("click", () => {
+  document.body.classList.toggle("inverted-upside-down");
+});
+
+// Glitch button
+document.getElementById("glitch-button").addEventListener("click", () => {
+  const el = document.getElementById("crazy-title");
+  el.classList.add("glitching");
+  setTimeout(() => el.classList.remove("glitching"), 2000);
+});
+
+// Confetti rain button
+let confettiRainInterval = null;
+document.getElementById("confetti-rain-button").addEventListener("click", () => {
+  if (confettiRainInterval) {
+    clearInterval(confettiRainInterval);
+    confettiRainInterval = null;
+  } else {
+    confettiRainInterval = setInterval(() => {
+      const x = Math.random() * window.innerWidth;
+      spawnConfetti(x, 0, 10);
+    }, 300);
+  }
+});
+
+// Puzzle logic
+const openPuzzleBtn = document.getElementById("open-puzzle-btn");
+const puzzleContent = document.getElementById("puzzle-content");
+const freezeCodeInput = document.getElementById("freeze-code");
+const submitCodeBtn = document.getElementById("submit-code");
+const clueBtn = document.getElementById("clue-button");
+const clueText = document.getElementById("clue-text");
+
+openPuzzleBtn.addEventListener("click", () => {
+  puzzleContent.style.display = "block";
+  openPuzzleBtn.style.display = "none";
+});
+
+clueBtn.addEventListener("click", () => {
+  clueText.style.display = clueText.style.display === "none" ? "block" : "none";
+});
+
+// The actual pi digits as code (first 50 digits after decimal)
+const piDigits = "14159265358979323846264338327950288419716939937510";
+
+submitCodeBtn.addEventListener("click", () => {
+  if (isFrozen) {
+    alert("You already froze the button!");
+    return;
+  }
+  const val = freezeCodeInput.value.trim();
+  if (val === piDigits) {
+    freezeButton();
+  } else {
+    alert("Wrong code! Try again.");
+  }
+});
+
+function freezeButton() {
+  isFrozen = true;
+  runawayBtn.textContent = "Frozen 🥶";
+  runawayBtn.style.backgroundColor = "cyan";
+  runawayBtn.style.border = "3px solid blue";
+  alert("Button frozen! Now click it to get your reward!");
 }
 
-/* Puzzle container fixed bottom-left */
-#puzzle-container {
-  position: fixed;
-  bottom: 15px;
-  left: 15px;
-  background: rgba(0, 0, 0, 0.8);
-  border: 2px solid hotpink;
-  padding: 10px 15px;
-  border-radius: 15px;
-  max-width: 340px;
-  color: white;
-  z-index: 10001;
-  font-size: 1rem;
-  user-select: text;
+// Show reward popup
+function showReward(text) {
+  const popup = document.getElementById("reward-popup");
+  popup.textContent = text;
+  popup.style.display = "block";
+
+  setTimeout(() => {
+    popup.style.display = "none";
+  }, 6000);
 }
 
-/* Puzzle input and buttons */
-#puzzle-container input[type="text"] {
-  width: calc(100% - 20px);
-  padding: 6px 8px;
-  font-size: 1rem;
-  border-radius: 6px;
-  border: 2px solid hotpink;
-  background: black;
-  color: white;
-  margin-top: 10px;
-}
+// Invisible Admin button click opens password prompt and redirects
+document.getElementById("admin-invisible-btn").addEventListener("click", () => {
+  const password = prompt("Enter admin password:");
+  if (password === "Crazyadmin123") {
+    // Redirect to admin page
+    window.location.href = "admin.html";
+  } else if (password !== null) {
+    alert("Wrong password!");
+  }
+});
 
-#puzzle-container button {
-  margin-top: 10px;
-  background-color: hotpink;
-  border: 3px dashed lime;
-  padding: 8px 12px;
-  cursor: pointer;
-  border-radius: 8px;
-  font-size: 1rem;
-  transition: transform 0.2s;
-}
-
-#puzzle-container button:hover {
-  transform: scale(1.05);
-}
-
-/* Confetti container */
-#confetti-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  pointer-events: none;
-  z-index: 999;
-}
-
-/* Confetti pieces */
-.confetti {
-  position: absolute;
-  width: 10px;
-  height: 10px;
-  background-color: red;
-  border-radius: 50%;
-  animation: fall 3s linear forwards;
-}
-
-@keyframes fall {
-  0% { transform: translateY(0) rotate(0deg); opacity: 1; }
-  100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
-}
-
-/* Reward popup */
-#reward-popup {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: white;
-  color: black;
-  padding: 20px 30px;
-  border-radius: 20px;
-  font-size: 2em;
-  z-index: 9999;
-  box-shadow: 0 0 20px hotpink;
-}
-
-/* Blocker for touch devices */
-#blocker {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100vw; height: 100vh;
-  background: black;
-  color: red;
-  font-size: 2em;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 99999;
-}
-
-/* Glitch animation */
-@keyframes glitch {
-  0% { transform: translate(0); }
-  20% { transform: translate(-5px, 5px); }
-  40% { transform: translate(5px, -5px); }
-  60% { transform: translate(-3px, 3px); }
-  80% { transform: translate(3px, -3px); }
-  100% { transform: translate(0); }
-}
-
-.glitching {
-  animation: glitch 0.2s steps(2, end) 10;
-}
-
-/* Title blinking and rotating */
-@keyframes blinkRotate {
-  0% { opacity: 1; transform: rotate(0deg); color: red; }
-  25% { opacity: 0.5; transform: rotate(5deg); color: yellow; }
-  50% { opacity: 1; transform: rotate(-5deg); color: cyan; }
-  75% { opacity: 0.5; transform: rotate(10deg); color: magenta; }
-  100% { opacity: 1; transform: rotate(0deg); color: green; }
-}
-
-/* Inverted upside down */
-.inverted-upside-down {
-  filter: invert(1);
-  transform: rotate(180deg);
-}
-
-/* Invisible admin button: small area top-left corner */
-#admin-invisible-btn {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 40px;
-  height: 40px;
-  /* invisible but clickable */
-  background: transparent;
-  cursor: pointer;
-  z-index: 11000;
-}
 
 
 
