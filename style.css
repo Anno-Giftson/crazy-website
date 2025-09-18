@@ -1,6 +1,6 @@
 body { 
   margin: 0; 
-  padding: 140px 0 0 0; /* space for fixed header */ 
+  padding: 140px 0 0 0; 
   font-family: 'Comic Sans MS', cursive; 
   background-color: black; 
   color: white; 
@@ -9,7 +9,6 @@ body {
   user-select: none;
 } 
 
-/* Header container */ 
 #header-container { 
   position: fixed; 
   top: 0; 
@@ -28,7 +27,6 @@ body {
   gap: 15px; 
 } 
 
-/* Title */ 
 #crazy-title { 
   font-size: 3rem; 
   margin: 0; 
@@ -36,7 +34,6 @@ body {
   color: hotpink; 
 } 
 
-/* Buttons container inside header */ 
 #main-buttons { 
   display: flex; 
   flex-wrap: wrap; 
@@ -44,7 +41,6 @@ body {
   gap: 12px; 
 } 
 
-/* Buttons inside main-buttons */ 
 #main-buttons button, 
 #header-container button {
   min-width: 150px; 
@@ -63,7 +59,6 @@ body {
   transform: scale(1.05); 
 } 
 
-/* Puzzle container fixed bottom-left */ 
 #puzzle-container { 
   position: fixed; 
   bottom: 15px; 
@@ -79,7 +74,6 @@ body {
   user-select: text; 
 }
 
-/* Puzzle input and buttons */ 
 #puzzle-container input[type="text"], 
 #freeze-code, 
 #admin-password-input { 
@@ -114,7 +108,6 @@ body {
   transform: scale(1.05); 
 } 
 
-/* Confetti container */ 
 #confetti-container { 
   position: fixed; 
   top: 0; 
@@ -125,7 +118,6 @@ body {
   z-index: 999; 
 } 
 
-/* Confetti pieces */ 
 .confetti { 
   position: absolute; 
   width: 10px; 
@@ -140,7 +132,6 @@ body {
   100% { transform: translateY(100vh) rotate(720deg); opacity: 0; } 
 } 
 
-/* Reward popup */ 
 #reward-popup { 
   position: fixed; 
   top: 50%; 
@@ -155,7 +146,6 @@ body {
   box-shadow: 0 0 20px hotpink; 
 } 
 
-/* Blocker for touch devices */ 
 #blocker { 
   position: fixed; 
   top: 0; 
@@ -171,7 +161,6 @@ body {
   z-index: 99999; 
 } 
 
-/* Glitch animation */ 
 @keyframes glitch { 
   0% { transform: translate(0); } 
   20% { transform: translate(-5px, 5px); } 
@@ -185,7 +174,6 @@ body {
   animation: glitch 0.2s steps(2, end) 10; 
 }
 
-/* Title blinking and rotating */ 
 @keyframes blinkRotate { 
   0% { opacity: 1; transform: rotate(0deg); color: red; } 
   25% { opacity: 0.5; transform: rotate(5deg); color: yellow; } 
@@ -194,7 +182,6 @@ body {
   100% { opacity: 1; transform: rotate(0deg); color: green; } 
 } 
 
-/* Inverted upside down */ 
 .inverted-upside-down { 
   filter: invert(1); 
   transform: rotate(180deg); 
@@ -258,6 +245,7 @@ body {
 .popup-content button:hover {
   background-color: #45a049;
 }
+
 
 
 
