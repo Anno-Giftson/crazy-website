@@ -2,75 +2,51 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Admin Dashboard</title>
   <style>
     body {
+      background: #111;
+      color: white;
       font-family: Arial, sans-serif;
       padding: 20px;
-      background: #111;
-      color: #fff;
+    }
+    h1 {
+      color: hotpink;
     }
     button {
-      padding: 10px 20px;
-      margin: 10px;
       background: hotpink;
       border: none;
       color: white;
+      padding: 10px 20px;
+      margin: 10px 10px 10px 0;
       cursor: pointer;
+      border-radius: 6px;
+      font-size: 1rem;
     }
   </style>
 </head>
 <body>
   <h1>Admin Dashboard</h1>
-
-  <button onclick="triggerDoNotPress()">Trigger DO NOT PRESS</button>
-  <button onclick="triggerConfettiRain()">Start Confetti Rain</button>
-  <button onclick="triggerStopConfettiRain()">Stop Confetti Rain</button>
-  <button onclick="triggerGlitch()">Trigger Glitch</button>
-  <button onclick="triggerInvert()">Toggle Invert</button>
-  <button onclick="triggerFreeze()">Freeze Runaway Button</button>
-  <button onclick="triggerClone()">Clone a Button</button>
-  <button onclick="triggerClearClones()">Clear All Clones</button>
+  <button onclick="broadcast('trigger-do-not-press')">Trigger DO NOT PRESS</button>
+  <button onclick="broadcast('trigger-confetti-rain')">Start Confetti Rain</button>
+  <button onclick="broadcast('trigger-stop-confetti-rain')">Stop Confetti Rain</button>
+  <button onclick="broadcast('trigger-glitch')">Trigger Glitch</button>
+  <button onclick="broadcast('trigger-invert')">Toggle Invert</button>
+  <button onclick="broadcast('trigger-freeze')">Freeze Runaway Button</button>
+  <button onclick="broadcast('trigger-clone')">Clone a Button</button>
+  <button onclick="broadcast('trigger-clear-clones')">Clear All Clones</button>
 
   <script>
-    function send(cmd) {
-      window.opener?.postMessage(cmd, "*");
-    }
+    const bc = new BroadcastChannel('crazytown');
 
-    function triggerDoNotPress() {
-      send("trigger-do-not-press");
-    }
-
-    function triggerConfettiRain() {
-      send("trigger-confetti-rain");
-    }
-
-    function triggerStopConfettiRain() {
-      send("trigger-stop-confetti-rain");
-    }
-
-    function triggerGlitch() {
-      send("trigger-glitch");
-    }
-
-    function triggerInvert() {
-      send("trigger-invert");
-    }
-
-    function triggerFreeze() {
-      send("trigger-freeze");
-    }
-
-    function triggerClone() {
-      send("trigger-clone");
-    }
-
-    function triggerClearClones() {
-      send("trigger-clear-clones");
+    function broadcast(command) {
+      bc.postMessage(command);
     }
   </script>
 </body>
 </html>
+
 
 
 
