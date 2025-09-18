@@ -9,7 +9,7 @@
 <body>
   <div id="header-container">
     <h1 id="crazy-title">💥 Welcome to CrazyTown 💥</h1>
-    <div id="main-buttons"> 
+    <div id="main-buttons">
       <button id="spin-button">DO NOT PRESS</button>
       <button id="runaway-button">Catch me if you can!</button>
       <button id="clone-button">Clone me!</button>
@@ -20,27 +20,16 @@
     </div>
   </div>
 
-  <div id="puzzle-container"> 
-    <button id="open-puzzle-btn">Click here to do something and catch the running button</button> 
-    <div id="puzzle-content" style="display:none;"> 
-      <input id="freeze-code" type="text" placeholder="Enter code here" autocomplete="off" /> 
-      <button id="submit-code">Submit Code</button> 
-      <button id="clue-button">Need a Clue?</button> 
-      <div id="clue-text" style="display:none; margin-top:10px; color: hotpink; font-weight: bold;">
-        The first 50 digits of π (pi) are the code. No further hints. 
-      </div> 
-    </div> 
-  </div> 
+  <!-- Invisible admin button -->
+  <button id="admin-invisible-btn" style="position: fixed; top: 10px; left: 10px; opacity: 0; width: 40px; height: 40px; z-index: 100000; cursor: pointer;">.</button>
 
-  <div id="confetti-container"></div> 
-  <div id="reward-popup" style="display: none;"></div>
-
-  <!-- Invisible Admin Button -->
-  <button id="admin-invisible-btn" title="Admin Login"></button>
+  <div id="confetti-container"></div>
+  <div id="reward-popup" style="display:none;"></div>
 
   <script src="script.js"></script>
 </body>
 </html>
+
 
 
 
