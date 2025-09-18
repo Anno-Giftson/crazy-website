@@ -1,8 +1,13 @@
+let touchBlocked = false;
 let clones = [];
 let isFrozen = false;
 
+function isMobileDevice() {
+  const ua = navigator.userAgent || navigator.vendor || window.opera;
+  return /android|iphone|ipad|ipod|mobile/i.test(ua);
+}
+
 window.addEventListener('DOMContentLoaded', () => {
-  // Position runaway button initially
   const runawayBtn = document.getElementById("runaway-button");
   runawayBtn.style.position = "fixed";
   const headerHeight = document.getElementById('header-container').offsetHeight;
@@ -10,14 +15,71 @@ window.addEventListener('DOMContentLoaded', () => {
   runawayBtn.style.left = "50%";
   runawayBtn.style.transform = "translateX(-50%)";
 
-  // Invisible admin button setup (not functional yet)
-  const secretButton = document.getElementById("admin-invisible-btn");
+  // Create invisible admin trigger
+  const secretButton = document.createElement('div');
+  secretButton.style.position = 'fixed';
+  secretButton.style.top = '10px';
+  secretButton.style.right = '10px';
+  secretButton.style.width = '30px';
+  secretButton.style.height = '30px';
+  secretButton.style.opacity = '0';
+  secretButton.style.zIndex = '99999';
+  secretButton.style.cursor = 'pointer';
+  secretButton.title = 'Admin';
+
+  document.body.appendChild(secretButton);
+
   secretButton.addEventListener('click', () => {
-    alert("Admin access clicked (setup later).");
+    showAdminPopup();
   });
 });
 
-// Background color change every second unless inverted
+// Admin popup
+function showAdminPopup() {
+  const popup = document.createElement('div');
+  popup.id = 'admin-popup';
+  popup.innerHTML = `
+    <h3>Admin Login</h3>
+    <input type="password" id="admin-password" placeholder="Enter password"/>
+    <button onclick="submitAdminPassword()">Submit</button>
+  `;
+  document.body.appendChild(popup);
+}
+
+function submitAdminPassword() {
+  const pass = document.getElementById('admin-password').value;
+  if (pass === 'letmein') {
+    window.open('admin.html', '_blank');
+    document.getElementById('admin-popup').remove();
+  } else {
+    alert("Wrong password");
+  }
+}
+
+// Touch blocker
+window.addEventListener('touchstart', () => {
+  if (!isMobileDevice()) {
+    blockTouchScreen();
+  }
+}, { passive: true });
+
+function blockTouchScreen() {
+  if (touchBlocked) return;
+  touchBlocked = true;
+  const blocker = document.createElement('div');
+  blocker.id = 'blocker';
+  blocker.innerHTML = `🚫<br>Sorry, touch screen use is not allowed on this device.<br>Please use a mouse or trackpad.`;
+  document.body.appendChild(blocker);
+  document.body.style.overflow = 'hidden';
+
+  setTimeout(() => {
+    blocker.remove();
+    document.body.style.overflow = '';
+    touchBlocked = false;
+  }, 3000);
+}
+
+// Background color
 setInterval(() => {
   if (!document.body.classList.contains('inverted-upside-down')) {
     document.body.style.backgroundColor = getRandomColor();
@@ -47,12 +109,12 @@ function spawnConfetti(x, y, count = 10) {
   }
 }
 
-// DO NOT PRESS button alert
+// DO NOT PRESS
 document.getElementById("spin-button").addEventListener("click", () => {
   alert("YOU PRESSED THE BUTTON. NOW YOU MUST DANCE. 💃🕺");
 });
 
-// Runaway button logic
+// Runaway button
 const runawayBtn = document.getElementById("runaway-button");
 
 function moveRandom(el) {
@@ -68,17 +130,15 @@ function moveRandom(el) {
   el.style.top = (Math.random() * (maxHeight - minTop) + minTop) + "px";
 }
 
-// Runaway button moves on mouse enter only if NOT frozen
 runawayBtn.addEventListener("mouseenter", () => {
-  if (!isFrozen) {
-    moveRandom(runawayBtn);
-  }
+  if (isFrozen) return;
+  moveRandom(runawayBtn);
 });
 
-// When frozen and clicked, show reward popup
 runawayBtn.addEventListener("click", () => {
   if (isFrozen) {
-    showReward("🎉 You caught the runaway button! Congratulations! 🎉");
+    showReward("🎉 You outsmarted the button! You win! 🎉");
+    spawnConfetti(window.innerWidth / 2, window.innerHeight / 2, 100);
   }
 });
 
@@ -103,109 +163,114 @@ document.getElementById("clear-clones-button").addEventListener("click", () => {
   clones = [];
 });
 
-// Invert button with smooth animation and toggle
+// Invert with animation
 document.getElementById("invert-button").addEventListener("click", () => {
   const body = document.body;
-  // Add transition class to trigger smooth animation
-  body.classList.add("invert-transition");
+  body.style.transition = "transform 1s ease, filter 1s ease";
 
-  if (body.classList.contains("inverted-upside-down")) {
-    // Remove inversion
-    body.classList.remove("inverted-upside-down");
-  } else {
-    // Add inversion
+  if (!body.classList.contains("inverted-upside-down")) {
     body.classList.add("inverted-upside-down");
+  } else {
+    body.classList.remove("inverted-upside-down");
   }
 
-  // Remove transition class after animation completes (1s)
+  // After animation, reset transition property
   setTimeout(() => {
-    body.classList.remove("invert-transition");
+    body.style.transition = "";
   }, 1000);
 });
 
-// Glitch button effect
+// Glitch
 document.getElementById("glitch-button").addEventListener("click", () => {
-  const title = document.getElementById("crazy-title");
-  title.classList.add("glitch");
+  document.body.classList.add("glitching");
   setTimeout(() => {
-    title.classList.remove("glitch");
-  }, 1500);
+    document.body.classList.remove("glitching");
+  }, 3000);
 });
 
-// Puzzle controls
-const openPuzzleBtn = document.getElementById("open-puzzle-btn");
-const puzzleContent = document.getElementById("puzzle-content");
-const freezeInput = document.getElementById("freeze-code");
-const clueButton = document.getElementById("clue-button");
-const clueText = document.getElementById("clue-text");
-
-openPuzzleBtn.addEventListener("click", () => {
-  if (puzzleContent.style.display === "none" || puzzleContent.style.display === "") {
-    puzzleContent.style.display = "block";
-  } else {
-    puzzleContent.style.display = "none";
-  }
+// Confetti rain
+document.getElementById("confetti-rain-button").addEventListener("click", () => {
+  startConfettiRain();
+  setTimeout(stopConfettiRain, 7000);
 });
 
-clueButton.addEventListener("click", () => {
-  if (clueText.style.display === "none" || clueText.style.display === "") {
-    clueText.style.display = "block";
-  } else {
-    clueText.style.display = "none";
-  }
-});
-
-// Submit code to freeze runaway button
-document.getElementById("submit-code").addEventListener("click", () => {
-  const code = freezeInput.value.trim();
-  if (code === getFirst10PiDigits()) {
-    isFrozen = true;
-    runawayBtn.textContent = "😳 You froze me!";
-    runawayBtn.style.backgroundColor = "lightblue";
-    runawayBtn.style.border = "3px solid blue";
-    alert("Correct! The runaway button is now frozen. Click it to win!");
-  } else {
-    alert("Incorrect code, try again!");
-  }
-});
-
-// Utility for pi code with decimal included
-function getFirst10PiDigits() {
-  // "3.141592653" - first 10 digits including decimal point (total length 10)
-  return "3.141592653";
+let confettiInterval;
+function startConfettiRain() {
+  confettiInterval = setInterval(() => {
+    const x = Math.random() * window.innerWidth;
+    spawnConfetti(x, 0, 15);
+  }, 300);
+}
+function stopConfettiRain() {
+  clearInterval(confettiInterval);
 }
 
-// Reward popup
-function showReward(message) {
+// Puzzle toggle
+const openPuzzleBtn = document.getElementById("open-puzzle-btn");
+const puzzleContent = document.getElementById("puzzle-content");
+
+openPuzzleBtn.addEventListener("click", () => {
+  puzzleContent.style.display = (puzzleContent.style.display === "none") ? "block" : "none";
+});
+
+// Clue
+document.getElementById("clue-button").addEventListener("click", () => {
+  const clueText = document.getElementById("clue-text");
+  clueText.style.display = (clueText.style.display === "none") ? "block" : "none";
+});
+
+// No copy/paste
+const freezeInput = document.getElementById("freeze-code");
+["copy", "paste", "cut"].forEach(event => {
+  freezeInput.addEventListener(event, (e) => {
+    e.preventDefault();
+    alert(`No ${event}ing allowed!`);
+  });
+});
+
+// Submit code
+document.getElementById("submit-code").addEventListener("click", () => {
+  const inputVal = freezeInput.value.trim();
+  const pi50digits = "3.1415926535"; // First 10 digits of pi with the point
+
+  if (inputVal === pi50digits) {
+    if (!isFrozen) {
+      freezeButton();
+    }
+  } else {
+    alert("Wrong code! Keep trying.");
+  }
+});
+
+function freezeButton() {
+  isFrozen = true;
+  runawayBtn.textContent = "😳 You froze me!";
+  runawayBtn.style.backgroundColor = "lightblue";
+  runawayBtn.style.border = "3px solid blue";
+}
+
+function showReward(msg) {
   const popup = document.getElementById("reward-popup");
-  popup.textContent = message;
+  const runawayBtn = document.getElementById("runaway-button");
+
+  // Hide runaway button while reward is shown
+  runawayBtn.style.visibility = "hidden";
+
+  popup.textContent = msg;
   popup.style.display = "block";
 
   setTimeout(() => {
     popup.style.display = "none";
+    // Show runaway button again
+    runawayBtn.style.visibility = "visible";
   }, 4000);
 }
 
-// Optional: glitch animation keyframes
-const style = document.createElement('style');
-style.textContent = `
-@keyframes glitchEffect {
-  0% { clip: rect(20px, 9999px, 35px, 0); transform: skew(0.3deg); }
-  10% { clip: rect(5px, 9999px, 20px, 0); transform: skew(0.8deg); }
-  20% { clip: rect(10px, 9999px, 30px, 0); transform: skew(0.1deg); }
-  30% { clip: rect(15px, 9999px, 40px, 0); transform: skew(0.6deg); }
-  40% { clip: rect(20px, 9999px, 35px, 0); transform: skew(0.4deg); }
-  50% { clip: rect(5px, 9999px, 25px, 0); transform: skew(0.9deg); }
-  60% { clip: rect(10px, 9999px, 30px, 0); transform: skew(0.2deg); }
-  70% { clip: rect(15px, 9999px, 35px, 0); transform: skew(0.5deg); }
-  80% { clip: rect(5px, 9999px, 25px, 0); transform: skew(0.3deg); }
-  90% { clip: rect(10px, 9999px, 30px, 0); transform: skew(0.7deg); }
-  100% { clip: rect(20px, 9999px, 35px, 0); transform: skew(0.4deg); }
-}
-.glitch {
-  animation: glitchEffect 1.5s infinite;
-  color: lime;
-  text-shadow: 1px 1px 3px #0f0;
-}
-`;
-document.head.appendChild(style);
+// === ADMIN TRIGGERS ===
+window.addEventListener("message", (event) => {
+  if (event.data === "trigger-do-not-press") {
+    document.getElementById("spin-button").click();
+  }
+  // Add more admin triggers as needed
+});
+
