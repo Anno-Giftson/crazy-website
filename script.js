@@ -1,146 +1,144 @@
-// Variables
-const piCode = "3.1415926535"; // First 10 digits of Pi
+document.addEventListener('DOMContentLoaded', () => {
+  // Buttons & elements
+  const glitchBtn = document.getElementById('glitchBtn');
+  const invertBtn = document.getElementById('invertBtn');
+  const confettiBtn = document.getElementById('confettiBtn');
+  const cloneBtn = document.getElementById('cloneBtn');
+  const clearClonesBtn = document.getElementById('clearClonesBtn');
+  const runningBtn = document.getElementById('runningBtn');
+  const catchBtn = document.getElementById('catchBtn');
+  const submitCode = document.getElementById('submitCode');
+  const inputCode = document.getElementById('inputCode');
+  const rewardMsg = document.getElementById('rewardMsg');
+  const buttonContainer = document.getElementById('buttonContainer'); // Assuming a container for clones
 
-// Elements
-const glitchBtn = document.getElementById("glitchBtn");
-const invertBtn = document.getElementById("invertBtn");
-const cloneBtn = document.getElementById("cloneBtn");
-const clearClonesBtn = document.getElementById("clearClonesBtn");
-const confettiBtn = document.getElementById("confettiBtn");
-const runningBtn = document.getElementById("runningBtn");
-const clickHereBtn = document.getElementById("clickHereBtn");
-const submitBtn = document.getElementById("submitBtn");
-const codeInput = document.getElementById("codeInput");
-const rewardDiv = document.getElementById("reward");
-const invisibleBtn = document.getElementById("invisibleBtn");
-const body = document.body;
+  // State variables
+  let isGlitching = false;
+  let isInverted = false;
+  let confettiInterval = null;
+  let clones = [];
 
-let clonesContainer = document.getElementById("clonesContainer");
-let inverted = false;
-let glitchInterval;
-let confettiRunning = false;
-
-// === Glitch Effect ===
-glitchBtn.addEventListener("click", () => {
-  if (glitchInterval) {
-    clearInterval(glitchInterval);
-    glitchInterval = null;
-    body.classList.remove("glitch");
-  } else {
-    glitchInterval = setInterval(() => {
-      body.classList.toggle("glitch");
-    }, 200);
-  }
-});
-
-// === Invert Animation ===
-invertBtn.addEventListener("click", () => {
-  inverted = !inverted;
-  if (inverted) {
-    body.classList.add("invert-anim");
-    setTimeout(() => {
-      body.classList.remove("invert-anim");
-      body.classList.add("inverted");
-    }, 1000);
-  } else {
-    body.classList.add("invert-back-anim");
-    setTimeout(() => {
-      body.classList.remove("invert-back-anim");
-      body.classList.remove("inverted");
-    }, 1000);
-  }
-});
-
-// === Clone Me Button ===
-cloneBtn.addEventListener("click", () => {
-  const clone = document.createElement("button");
-  clone.textContent = "I'm a Clone!";
-  clone.className = "clone-btn";
-  clonesContainer.appendChild(clone);
-});
-
-// === Clear Clones Button ===
-clearClonesBtn.addEventListener("click", () => {
-  clonesContainer.innerHTML = "";
-});
-
-// === Confetti Rain Button ===
-confettiBtn.addEventListener("click", () => {
-  if (confettiRunning) return;
-  confettiRunning = true;
-  // Basic confetti effect (can be expanded)
-  let count = 100;
-  const interval = setInterval(() => {
-    if (count <= 0) {
-      clearInterval(interval);
-      confettiRunning = false;
-      return;
+  // --- GLITCH EFFECT ---
+  glitchBtn.addEventListener('click', () => {
+    if (!isGlitching) {
+      document.body.classList.add('glitch');
+      isGlitching = true;
+      setTimeout(() => {
+        document.body.classList.remove('glitch');
+        isGlitching = false;
+      }, 2000); // glitch lasts 2 seconds
     }
-    createConfetti();
-    count--;
-  }, 30);
-});
+  });
 
-function createConfetti() {
-  const confetti = document.createElement("div");
-  confetti.className = "confetti";
-  confetti.style.left = Math.random() * window.innerWidth + "px";
-  document.body.appendChild(confetti);
-  setTimeout(() => {
-    confetti.remove();
-  }, 3000);
-}
+  // --- INVERT WITH ANIMATION ---
+  invertBtn.addEventListener('click', () => {
+    if (!isInverted) {
+      document.body.style.transition = 'transform 0.6s';
+      document.body.style.transform = 'rotateY(180deg)';
+      setTimeout(() => {
+        document.body.classList.add('inverted');
+        document.body.style.transition = '';
+        document.body.style.transform = '';
+        isInverted = true;
+      }, 600);
+    } else {
+      // reverse animation
+      document.body.style.transition = 'transform 0.6s';
+      document.body.style.transform = 'rotateY(180deg)';
+      setTimeout(() => {
+        document.body.classList.remove('inverted');
+        document.body.style.transition = '';
+        document.body.style.transform = '';
+        isInverted = false;
+      }, 600);
+    }
+  });
 
-// === Running Button and Pi Code Challenge ===
+  // --- CONFETTI RAIN ---
+  function createConfettiPiece() {
+    const confetti = document.createElement('div');
+    confetti.classList.add('confetti');
+    confetti.style.left = Math.random() * window.innerWidth + 'px';
+    confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
+    confetti.style.animationDuration = 2 + Math.random() * 3 + 's';
+    confetti.style.opacity = 1;
+    document.body.appendChild(confetti);
 
-runningBtn.disabled = true; // Frozen at start
+    confetti.addEventListener('animationend', () => {
+      confetti.remove();
+    });
+  }
 
-clickHereBtn.addEventListener("click", () => {
-  rewardDiv.textContent = "Enter the first 10 digits of Pi to unlock the running button!";
-});
+  confettiBtn.addEventListener('click', () => {
+    if (!confettiInterval) {
+      confettiInterval = setInterval(createConfettiPiece, 100);
+      confettiBtn.textContent = "Stop Confetti";
+    } else {
+      clearInterval(confettiInterval);
+      confettiInterval = null;
+      confettiBtn.textContent = "Confetti Rain";
+    }
+  });
 
-submitBtn.addEventListener("click", () => {
-  if (codeInput.value === piCode) {
-    rewardDiv.textContent = "Correct! Now catch the running button!";
-    runningBtn.disabled = false;
-  } else {
-    rewardDiv.textContent = "Wrong code. Try again.";
+  // --- CLONE ME ---
+  cloneBtn.addEventListener('click', () => {
+    const clone = cloneBtn.cloneNode(true);
+    clone.textContent = "I'm a clone!";
+    clone.id = ''; // clear id so multiple clones don't conflict
+    clone.style.margin = '5px';
+    buttonContainer.appendChild(clone);
+    clones.push(clone);
+  });
+
+  // --- CLEAR CLONES ---
+  clearClonesBtn.addEventListener('click', () => {
+    clones.forEach(clone => clone.remove());
+    clones = [];
+  });
+
+  // --- RUNNING BUTTON + CATCH BUTTON ---
+  runningBtn.disabled = true;
+  const correctCode = "3.141592653";
+
+  catchBtn.addEventListener('mouseenter', () => {
+    const maxX = window.innerWidth - catchBtn.offsetWidth;
+    const maxY = window.innerHeight - catchBtn.offsetHeight;
+    const randomX = Math.floor(Math.random() * maxX);
+    const randomY = Math.floor(Math.random() * maxY);
+    catchBtn.style.position = 'absolute';
+    catchBtn.style.left = randomX + 'px';
+    catchBtn.style.top = randomY + 'px';
+  });
+
+  submitCode.addEventListener('click', () => {
+    const enteredCode = inputCode.value.trim();
+    if (enteredCode === correctCode) {
+      rewardMsg.textContent = "Correct! Click the running button now.";
+      rewardMsg.style.color = "green";
+      runningBtn.disabled = false;
+    } else {
+      rewardMsg.textContent = "Wrong code! Try again.";
+      rewardMsg.style.color = "red";
+    }
+  });
+
+  runningBtn.addEventListener('click', () => {
+    alert("🎉 Congratulations! You caught the running button! Here's your reward! 🎉");
+  });
+
+  // --- TOUCHSCREEN WARNING ---
+  function isMobileDevice() {
+    return /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+  }
+
+  if (!isMobileDevice()) {
+    window.addEventListener('touchstart', (e) => {
+      alert("No touchscreen allowed on this device!");
+      e.preventDefault();
+    }, { passive: false });
   }
 });
 
-// Running button moves on mouseover
-runningBtn.addEventListener("mouseover", () => {
-  if (!runningBtn.disabled) {
-    const x = Math.random() * (window.innerWidth - runningBtn.offsetWidth);
-    const y = Math.random() * (window.innerHeight - runningBtn.offsetHeight);
-    runningBtn.style.position = "absolute";
-    runningBtn.style.left = x + "px";
-    runningBtn.style.top = y + "px";
-  }
-});
-
-// Reward on click
-runningBtn.addEventListener("click", () => {
-  if (!runningBtn.disabled) {
-    alert("You caught me! Here's your reward!");
-  }
-});
-
-// === Invisible Button ===
-invisibleBtn.addEventListener("click", () => {
-  alert("Invisible button clicked!");
-});
-
-// === Touchscreen Warning (non-phone devices) ===
-function isTouchDevice() {
-  return ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
-}
-
-if (!/Mobi|Android/i.test(navigator.userAgent) && isTouchDevice()) {
-  document.addEventListener("touchstart", () => {
-    alert("No touchscreen allowed on this device!");
-  }, { once: false });
-}
 
 
 
