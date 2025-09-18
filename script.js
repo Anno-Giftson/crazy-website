@@ -1,18 +1,19 @@
 let clones = [];
 let isFrozen = false;
 
+// Runaway button setup
 const runawayBtn = document.getElementById("runaway-button");
 runawayBtn.style.position = "fixed";
 runawayBtn.style.top = "200px";
 runawayBtn.style.left = "50%";
 runawayBtn.style.transform = "translateX(-50%)";
 
-// === DO NOT PRESS ===
+// DO NOT PRESS
 document.getElementById("spin-button").addEventListener("click", () => {
   alert("YOU PRESSED THE BUTTON. NOW YOU MUST DANCE. 💃🕺");
 });
 
-// === RUNAWAY BUTTON ===
+// Runaway logic
 function moveRandom(el) {
   if (isFrozen) return;
 
@@ -34,7 +35,7 @@ runawayBtn.addEventListener("click", () => {
   }
 });
 
-// === CLONE BUTTON ===
+// Clone Button
 document.getElementById("clone-button").addEventListener("click", () => {
   const clone = document.getElementById("clone-button").cloneNode(true);
   clone.textContent = "I'm a clone!";
@@ -49,27 +50,27 @@ document.getElementById("clone-button").addEventListener("click", () => {
   clones.push(clone);
 });
 
-// === CLEAR CLONES ===
+// Clear Clones
 document.getElementById("clear-clones-button").addEventListener("click", () => {
   clones.forEach(c => c.remove());
   clones = [];
 });
 
-// === INVERT PAGE ===
+// Invert Page
 const mainContent = document.getElementById("main-content");
 document.getElementById("invert-button").addEventListener("click", () => {
   mainContent.classList.toggle("inverted-upside-down");
 });
 
-// === GLITCH EFFECT ===
+// Glitch Effect
 document.getElementById("glitch-button").addEventListener("click", () => {
-  mainContent.classList.add("glitching");
+  document.body.classList.add("glitching");
   setTimeout(() => {
-    mainContent.classList.remove("glitching");
-  }, 3000);
+    document.body.classList.remove("glitching");
+  }, 1000);
 });
 
-// === CONFETTI RAIN ===
+// Confetti
 let confettiInterval;
 document.getElementById("confetti-rain-button").addEventListener("click", () => {
   startConfettiRain();
@@ -105,7 +106,7 @@ function stopConfettiRain() {
   clearInterval(confettiInterval);
 }
 
-// === PUZZLE SECTION ===
+// Puzzle Section
 const openPuzzleBtn = document.getElementById("open-puzzle-btn");
 const puzzleContent = document.getElementById("puzzle-content");
 openPuzzleBtn.addEventListener("click", () => {
@@ -119,7 +120,7 @@ document.getElementById("clue-button").addEventListener("click", () => {
 
 document.getElementById("submit-code").addEventListener("click", () => {
   const val = document.getElementById("freeze-code").value.trim();
-  const correct = "3.14159265"; // 10 digits
+  const correct = "3.14159265"; // 10 digits of pi
   if (val === correct) {
     freezeButton();
   } else {
@@ -138,11 +139,18 @@ function showReward(msg) {
   const popup = document.getElementById("reward-popup");
   popup.textContent = msg;
   popup.style.display = "block";
-
   setTimeout(() => {
     popup.style.display = "none";
   }, 4000);
 }
+
+// === Background Color Animation ===
+let hue = 0;
+setInterval(() => {
+  hue = (hue + 1) % 360;
+  document.body.style.backgroundColor = `hsl(${hue}, 100%, 10%)`;
+}, 50);
+
 
 
 
