@@ -11,11 +11,31 @@
     <h1 id="crazy-title">💥 Welcome to CrazyTown 💥</h1>
     <div id="main-buttons"> 
       <button id="spin-button">DO NOT PRESS</button>
-      <!-- other buttons here -->
+      <button id="runaway-button">Catch me if you can!</button>
+      <button id="clone-button">Clone me!</button>
+      <button id="clear-clones-button">Clear clones</button>
+      <button id="invert-button">Invert this page!</button>
+      <button id="glitch-button">Make it Glitch!</button>
+      <button id="confetti-rain-button">Start Confetti Rain!</button>
     </div>
   </div>
 
-  <!-- Invisible Admin Button -->
+  <div id="puzzle-container"> 
+    <button id="open-puzzle-btn">Click here to do something and catch the running button</button> 
+    <div id="puzzle-content" style="display:none;"> 
+      <input id="freeze-code" type="text" placeholder="Enter code here" autocomplete="off" /> 
+      <button id="submit-code">Submit Code</button> 
+      <button id="clue-button">Need a Clue?</button> 
+      <div id="clue-text" style="display:none; margin-top:10px; color: hotpink; font-weight: bold;">
+        The first 50 digits of π (pi) are the code. No further hints. 
+      </div> 
+    </div> 
+  </div> 
+
+  <div id="confetti-container"></div> 
+  <div id="reward-popup" style="display: none;"></div>
+
+  <!-- Invisible Admin Access Button -->
   <button id="admin-invisible-btn" style="position: fixed; top: 10px; left: 10px; opacity: 0; z-index: 100000;">.</button>
 
   <!-- Admin Password Popup -->
@@ -28,6 +48,7 @@
   <script src="script.js"></script>
 </body>
 </html>
+
 
 
 
