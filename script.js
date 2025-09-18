@@ -1,143 +1,149 @@
-document.addEventListener('DOMContentLoaded', () => {
-  // Buttons & elements
-  const glitchBtn = document.getElementById('glitchBtn');
-  const invertBtn = document.getElementById('invertBtn');
-  const confettiBtn = document.getElementById('confettiBtn');
-  const cloneBtn = document.getElementById('cloneBtn');
-  const clearClonesBtn = document.getElementById('clearClonesBtn');
-  const runningBtn = document.getElementById('runningBtn');
-  const catchBtn = document.getElementById('catchBtn');
-  const submitCode = document.getElementById('submitCode');
-  const inputCode = document.getElementById('inputCode');
-  const rewardMsg = document.getElementById('rewardMsg');
-  const buttonContainer = document.getElementById('buttonContainer'); // Assuming a container for clones
+let clones = [];
+let isFrozen = false;
 
-  // State variables
-  let isGlitching = false;
-  let isInverted = false;
-  let confettiInterval = null;
-  let clones = [];
+const runawayBtn = document.getElementById("runaway-button");
+runawayBtn.style.position = "fixed";
+runawayBtn.style.top = "200px";
+runawayBtn.style.left = "50%";
+runawayBtn.style.transform = "translateX(-50%)";
 
-  // --- GLITCH EFFECT ---
-  glitchBtn.addEventListener('click', () => {
-    if (!isGlitching) {
-      document.body.classList.add('glitch');
-      isGlitching = true;
-      setTimeout(() => {
-        document.body.classList.remove('glitch');
-        isGlitching = false;
-      }, 2000); // glitch lasts 2 seconds
-    }
-  });
+// === DO NOT PRESS ===
+document.getElementById("spin-button").addEventListener("click", () => {
+  alert("YOU PRESSED THE BUTTON. NOW YOU MUST DANCE. 💃🕺");
+});
 
-  // --- INVERT WITH ANIMATION ---
-  invertBtn.addEventListener('click', () => {
-    if (!isInverted) {
-      document.body.style.transition = 'transform 0.6s';
-      document.body.style.transform = 'rotateY(180deg)';
-      setTimeout(() => {
-        document.body.classList.add('inverted');
-        document.body.style.transition = '';
-        document.body.style.transform = '';
-        isInverted = true;
-      }, 600);
-    } else {
-      // reverse animation
-      document.body.style.transition = 'transform 0.6s';
-      document.body.style.transform = 'rotateY(180deg)';
-      setTimeout(() => {
-        document.body.classList.remove('inverted');
-        document.body.style.transition = '';
-        document.body.style.transform = '';
-        isInverted = false;
-      }, 600);
-    }
-  });
+// === RUNAWAY BUTTON ===
+function moveRandom(el) {
+  if (isFrozen) return;
 
-  // --- CONFETTI RAIN ---
-  function createConfettiPiece() {
-    const confetti = document.createElement('div');
-    confetti.classList.add('confetti');
-    confetti.style.left = Math.random() * window.innerWidth + 'px';
-    confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
-    confetti.style.animationDuration = 2 + Math.random() * 3 + 's';
-    confetti.style.opacity = 1;
-    document.body.appendChild(confetti);
+  const maxWidth = window.innerWidth - el.offsetWidth - 20;
+  const maxHeight = window.innerHeight - el.offsetHeight - 20;
+  const minTop = 140;
 
-    confetti.addEventListener('animationend', () => {
-      confetti.remove();
-    });
-  }
+  el.style.left = Math.random() * maxWidth + "px";
+  el.style.top = (Math.random() * (maxHeight - minTop) + minTop) + "px";
+}
 
-  confettiBtn.addEventListener('click', () => {
-    if (!confettiInterval) {
-      confettiInterval = setInterval(createConfettiPiece, 100);
-      confettiBtn.textContent = "Stop Confetti";
-    } else {
-      clearInterval(confettiInterval);
-      confettiInterval = null;
-      confettiBtn.textContent = "Confetti Rain";
-    }
-  });
+runawayBtn.addEventListener("mouseenter", () => {
+  if (!isFrozen) moveRandom(runawayBtn);
+});
 
-  // --- CLONE ME ---
-  cloneBtn.addEventListener('click', () => {
-    const clone = cloneBtn.cloneNode(true);
-    clone.textContent = "I'm a clone!";
-    clone.id = ''; // clear id so multiple clones don't conflict
-    clone.style.margin = '5px';
-    buttonContainer.appendChild(clone);
-    clones.push(clone);
-  });
-
-  // --- CLEAR CLONES ---
-  clearClonesBtn.addEventListener('click', () => {
-    clones.forEach(clone => clone.remove());
-    clones = [];
-  });
-
-  // --- RUNNING BUTTON + CATCH BUTTON ---
-  runningBtn.disabled = true;
-  const correctCode = "3.141592653";
-
-  catchBtn.addEventListener('mouseenter', () => {
-    const maxX = window.innerWidth - catchBtn.offsetWidth;
-    const maxY = window.innerHeight - catchBtn.offsetHeight;
-    const randomX = Math.floor(Math.random() * maxX);
-    const randomY = Math.floor(Math.random() * maxY);
-    catchBtn.style.position = 'absolute';
-    catchBtn.style.left = randomX + 'px';
-    catchBtn.style.top = randomY + 'px';
-  });
-
-  submitCode.addEventListener('click', () => {
-    const enteredCode = inputCode.value.trim();
-    if (enteredCode === correctCode) {
-      rewardMsg.textContent = "Correct! Click the running button now.";
-      rewardMsg.style.color = "green";
-      runningBtn.disabled = false;
-    } else {
-      rewardMsg.textContent = "Wrong code! Try again.";
-      rewardMsg.style.color = "red";
-    }
-  });
-
-  runningBtn.addEventListener('click', () => {
-    alert("🎉 Congratulations! You caught the running button! Here's your reward! 🎉");
-  });
-
-  // --- TOUCHSCREEN WARNING ---
-  function isMobileDevice() {
-    return /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-  }
-
-  if (!isMobileDevice()) {
-    window.addEventListener('touchstart', (e) => {
-      alert("No touchscreen allowed on this device!");
-      e.preventDefault();
-    }, { passive: false });
+runawayBtn.addEventListener("click", () => {
+  if (isFrozen) {
+    showReward("🎉 You outsmarted the button! You win! 🎉");
   }
 });
+
+// === CLONE BUTTON ===
+document.getElementById("clone-button").addEventListener("click", () => {
+  const clone = document.getElementById("clone-button").cloneNode(true);
+  clone.textContent = "I'm a clone!";
+  clone.style.position = "fixed";
+  clone.style.top = `${Math.random() * (window.innerHeight - 40)}px`;
+  clone.style.left = `${Math.random() * (window.innerWidth - 150)}px`;
+  clone.style.zIndex = 9999;
+  clone.addEventListener("click", () => {
+    alert("Clone clicked!");
+  });
+  document.body.appendChild(clone);
+  clones.push(clone);
+});
+
+// === CLEAR CLONES ===
+document.getElementById("clear-clones-button").addEventListener("click", () => {
+  clones.forEach(c => c.remove());
+  clones = [];
+});
+
+// === INVERT PAGE ===
+const mainContent = document.getElementById("main-content");
+document.getElementById("invert-button").addEventListener("click", () => {
+  mainContent.classList.toggle("inverted-upside-down");
+});
+
+// === GLITCH EFFECT ===
+document.getElementById("glitch-button").addEventListener("click", () => {
+  mainContent.classList.add("glitching");
+  setTimeout(() => {
+    mainContent.classList.remove("glitching");
+  }, 3000);
+});
+
+// === CONFETTI RAIN ===
+let confettiInterval;
+document.getElementById("confetti-rain-button").addEventListener("click", () => {
+  startConfettiRain();
+  setTimeout(stopConfettiRain, 7000);
+});
+
+function spawnConfetti(x, y, count = 10) {
+  for (let i = 0; i < count; i++) {
+    const confetti = document.createElement('div');
+    confetti.classList.add('confetti');
+    confetti.style.left = `${x}px`;
+    confetti.style.top = `${y}px`;
+    confetti.style.backgroundColor = getRandomColor();
+    confetti.style.width = confetti.style.height = `${Math.random() * 10 + 5}px`;
+
+    document.getElementById('confetti-container').appendChild(confetti);
+    setTimeout(() => confetti.remove(), 3000);
+  }
+}
+
+function getRandomColor() {
+  return `hsl(${Math.floor(Math.random() * 360)}, 100%, 50%)`;
+}
+
+function startConfettiRain() {
+  confettiInterval = setInterval(() => {
+    const x = Math.random() * window.innerWidth;
+    spawnConfetti(x, 0, 15);
+  }, 300);
+}
+
+function stopConfettiRain() {
+  clearInterval(confettiInterval);
+}
+
+// === PUZZLE SECTION ===
+const openPuzzleBtn = document.getElementById("open-puzzle-btn");
+const puzzleContent = document.getElementById("puzzle-content");
+openPuzzleBtn.addEventListener("click", () => {
+  puzzleContent.style.display = (puzzleContent.style.display === "none") ? "block" : "none";
+});
+
+document.getElementById("clue-button").addEventListener("click", () => {
+  const clueText = document.getElementById("clue-text");
+  clueText.style.display = (clueText.style.display === "none") ? "block" : "none";
+});
+
+document.getElementById("submit-code").addEventListener("click", () => {
+  const val = document.getElementById("freeze-code").value.trim();
+  const correct = "3.14159265"; // 10 digits
+  if (val === correct) {
+    freezeButton();
+  } else {
+    alert("Wrong code! Try again.");
+  }
+});
+
+function freezeButton() {
+  isFrozen = true;
+  runawayBtn.textContent = "😳 You froze me!";
+  runawayBtn.style.backgroundColor = "lightblue";
+  runawayBtn.style.border = "3px solid blue";
+}
+
+function showReward(msg) {
+  const popup = document.getElementById("reward-popup");
+  popup.textContent = msg;
+  popup.style.display = "block";
+
+  setTimeout(() => {
+    popup.style.display = "none";
+  }, 4000);
+}
+
 
 
 
