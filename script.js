@@ -190,4 +190,16 @@ bc.onmessage = (event) => {
   }
 };
 
+// Invisible admin button
+const adminBtn = document.getElementById('admin-invisible-btn');
+adminBtn.addEventListener('click', () => {
+  const password = prompt('Enter admin password:');
+  if (password === 'SuperSecret123!') {
+    window.open('admin.html', '_blank');
+  } else {
+    alert('Wrong password!');
+  }
+});
+
+
 
