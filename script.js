@@ -47,128 +47,86 @@ function showAdminPopup() {
 }
 
 function submitAdminPassword() {
-  const pass = document.getElementById('admin-password').value;
-  if (pass === 'letmein') {
-    window.open('admin.html', '_blank');
+  const input = document.getElementById('admin-password');
+  if (input.value === 'totallycrazy') {
+    alert('Welcome, admin!');
     document.getElementById('admin-popup').remove();
+    showAdminPanel();
   } else {
-    alert("Wrong password");
+    alert('Wrong password!');
   }
 }
 
-// Touch blocker
-window.addEventListener('touchstart', () => {
-  if (!isMobileDevice()) {
-    blockTouchScreen();
-  }
-}, { passive: true });
-
-function blockTouchScreen() {
-  if (touchBlocked) return;
-  touchBlocked = true;
-  const blocker = document.createElement('div');
-  blocker.id = 'blocker';
-  blocker.innerHTML = `🚫<br>Sorry, touch screen use is not allowed on this device.<br>Please use a mouse or trackpad.`;
-  document.body.appendChild(blocker);
-  document.body.style.overflow = 'hidden';
-
-  setTimeout(() => {
-    blocker.remove();
-    document.body.style.overflow = '';
-    touchBlocked = false;
-  }, 3000);
+// Admin panel
+function showAdminPanel() {
+  alert('Admin panel is under construction');
 }
 
-// Background color
-setInterval(() => {
-  if (!document.body.classList.contains('inverted-upside-down')) {
-    document.body.style.backgroundColor = getRandomColor();
-  }
-}, 1000);
-
-function getRandomColor() {
-  return `hsl(${Math.floor(Math.random() * 360)}, 100%, 50%)`;
-}
-
-// Confetti on mouse move
-document.addEventListener('mousemove', (e) => {
-  spawnConfetti(e.pageX, e.pageY, 3);
-});
-
-function spawnConfetti(x, y, count = 10) {
-  for (let i = 0; i < count; i++) {
-    const confetti = document.createElement('div');
-    confetti.classList.add('confetti');
-    confetti.style.left = `${x}px`;
-    confetti.style.top = `${y}px`;
-    confetti.style.backgroundColor = getRandomColor();
-    confetti.style.width = confetti.style.height = `${Math.random() * 10 + 5}px`;
-
-    document.getElementById('confetti-container').appendChild(confetti);
-    setTimeout(() => confetti.remove(), 3000);
-  }
-}
-
-// DO NOT PRESS
+// Spin button animation
 document.getElementById("spin-button").addEventListener("click", () => {
-  alert("YOU PRESSED THE BUTTON. NOW YOU MUST DANCE. 💃🕺");
+  document.body.animate(
+    [
+      { transform: 'rotate(0deg)' },
+      { transform: 'rotate(360deg)' }
+    ],
+    {
+      duration: 1000,
+      iterations: 5,
+    }
+  );
 });
 
-// Runaway button
-const runawayBtn = document.getElementById("runaway-button");
+// Runaway button behavior
+document.getElementById("runaway-button").addEventListener("mouseenter", () => {
+  if (touchBlocked || isFrozen) return;
+  const button = document.getElementById("runaway-button");
+  const windowWidth = window.innerWidth;
+  const windowHeight = window.innerHeight;
+  const buttonWidth = button.offsetWidth;
+  const buttonHeight = button.offsetHeight;
 
-function moveRandom(el) {
-  if (isFrozen) return;
-  el.style.position = "fixed";
+  let newX = Math.random() * (windowWidth - buttonWidth);
+  let newY = Math.random() * (windowHeight - buttonHeight);
 
-  const headerHeight = document.getElementById('header-container').offsetHeight;
-  const maxWidth = window.innerWidth - el.offsetWidth - 20;
-  const maxHeight = window.innerHeight - el.offsetHeight - 20;
-  const minTop = headerHeight + 10;
-
-  el.style.left = Math.random() * maxWidth + "px";
-  el.style.top = (Math.random() * (maxHeight - minTop) + minTop) + "px";
-}
-
-runawayBtn.addEventListener("mouseenter", () => {
-  if (isFrozen) return;
-  moveRandom(runawayBtn);
+  button.style.left = newX + "px";
+  button.style.top = newY + "px";
 });
 
-runawayBtn.addEventListener("click", () => {
-  if (isFrozen) {
-    showReward("🎉 You outsmarted the button! You win! 🎉");
-    spawnConfetti(window.innerWidth / 2, window.innerHeight / 2, 100);
-  }
+document.getElementById("runaway-button").addEventListener("click", () => {
+  alert("You caught me!");
 });
 
 // Clone button
 document.getElementById("clone-button").addEventListener("click", () => {
-  const clone = document.getElementById("clone-button").cloneNode(true);
-  clone.textContent = "I'm a clone!";
+  const clone = document.getElementById("runaway-button").cloneNode(true);
   clone.style.position = "fixed";
-  clone.style.top = `${Math.random() * (window.innerHeight - 40)}px`;
-  clone.style.left = `${Math.random() * (window.innerWidth - 150)}px`;
-  clone.style.zIndex = 9999;
+  clone.style.zIndex = 99999;
+  clone.style.backgroundColor = "hotpink";
+  clone.style.border = "3px dashed lime";
+  clone.style.color = "black";
+  clone.style.left = Math.random() * (window.innerWidth - clone.offsetWidth) + "px";
+  clone.style.top = Math.random() * (window.innerHeight - clone.offsetHeight) + "px";
+
   clone.addEventListener("click", () => {
-    alert("Clone clicked!");
+    alert("You clicked a clone!");
   });
+
   document.body.appendChild(clone);
   clones.push(clone);
 });
 
-// Clear clones
+// Clear clones button
 document.getElementById("clear-clones-button").addEventListener("click", () => {
-  clones.forEach(c => c.remove());
+  clones.forEach(clone => clone.remove());
   clones = [];
 });
 
-// Invert
+// Invert button with smooth animation
 document.getElementById("invert-button").addEventListener("click", () => {
   document.body.classList.toggle("inverted-upside-down");
 });
 
-// Glitch
+// Glitch button with animation
 document.getElementById("glitch-button").addEventListener("click", () => {
   document.body.classList.add("glitching");
   setTimeout(() => {
@@ -176,83 +134,29 @@ document.getElementById("glitch-button").addEventListener("click", () => {
   }, 3000);
 });
 
-// Confetti rain
-document.getElementById("confetti-rain-button").addEventListener("click", () => {
-  startConfettiRain();
-  setTimeout(stopConfettiRain, 7000);
+// Puzzle open
+document.getElementById("open-puzzle-btn").addEventListener("click", () => {
+  const puzzleContent = document.getElementById("puzzle-content");
+  puzzleContent.style.display = puzzleContent.style.display === "none" ? "block" : "none";
 });
 
-let confettiInterval;
-function startConfettiRain() {
-  confettiInterval = setInterval(() => {
-    const x = Math.random() * window.innerWidth;
-    spawnConfetti(x, 0, 15);
-  }, 300);
-}
-function stopConfettiRain() {
-  clearInterval(confettiInterval);
-}
-
-// Puzzle toggle
-const openPuzzleBtn = document.getElementById("open-puzzle-btn");
-const puzzleContent = document.getElementById("puzzle-content");
-
-openPuzzleBtn.addEventListener("click", () => {
-  puzzleContent.style.display = (puzzleContent.style.display === "none") ? "block" : "none";
-});
-
-// Clue
+// Clue button
 document.getElementById("clue-button").addEventListener("click", () => {
-  const clueText = document.getElementById("clue-text");
-  clueText.style.display = (clueText.style.display === "none") ? "block" : "none";
-});
-
-// No copy/paste
-const freezeInput = document.getElementById("freeze-code");
-["copy", "paste", "cut"].forEach(event => {
-  freezeInput.addEventListener(event, (e) => {
-    e.preventDefault();
-    alert(`No ${event}ing allowed!`);
-  });
+  document.getElementById("clue-text").style.display = "block";
 });
 
 // Submit code
 document.getElementById("submit-code").addEventListener("click", () => {
-  const inputVal = freezeInput.value.trim();
-  const pi50digits = "3.14159265358979323846264338327950288419716939937510";
-
-  if (inputVal === pi50digits) {
-    if (!isFrozen) {
-      freezeButton();
-    }
+  const codeInput = document.getElementById("freeze-code").value.trim();
+  const pi50 = "3.14159265358979323846264338327950288419716939937510";
+  if (codeInput === pi50) {
+    isFrozen = true;
+    alert("You have frozen the running button! Now you can catch it!");
   } else {
-    alert("Wrong code! Keep trying.");
+    alert("Wrong code!");
   }
 });
 
-function freezeButton() {
-  isFrozen = true;
-  runawayBtn.textContent = "😳 You froze me!";
-  runawayBtn.style.backgroundColor = "lightblue";
-  runawayBtn.style.border = "3px solid blue";
-}
-
-function showReward(msg) {
-  const popup = document.getElementById("reward-popup");
-  popup.textContent = msg;
-  popup.style.display = "block";
-
-  setTimeout(() => {
-    popup.style.display = "none";
-  }, 4000);
-}
-
-// === ADMIN TRIGGERS ===
-window.addEventListener("message", (event) => {
-  if (event.data === "trigger-do-not-press") {
-    document.getElementById("spin-button").click();
-  }
-});
 
 
 
