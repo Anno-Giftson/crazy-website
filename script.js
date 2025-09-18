@@ -1,150 +1,226 @@
-// BroadcastChannel to receive commands from admin page
-const bc = new BroadcastChannel('crazytown');
-
+let touchBlocked = false;
 let clones = [];
 let isFrozen = false;
-
-// Helper function for random color
-function getRandomColor() {
-  return `hsl(${Math.floor(Math.random() * 360)}, 100%, 50%)`;
-}
-
-// Confetti spawning
-function spawnConfetti(x, y, count = 10) {
-  const container = document.getElementById('confetti-container');
-  for (let i = 0; i < count; i++) {
-    const confetti = document.createElement('div');
-    confetti.classList.add('confetti');
-    confetti.style.left = `${x}px`;
-    confetti.style.top = `${y}px`;
-    confetti.style.backgroundColor = getRandomColor();
-    const size = Math.random() * 10 + 5;
-    confetti.style.width = confetti.style.height = `${size}px`;
-    container.appendChild(confetti);
-    setTimeout(() => confetti.remove(), 3000);
-  }
-}
-
-function showReward(msg) {
-  const popup = document.getElementById('reward-popup');
-  popup.textContent = msg;
-  popup.style.display = 'block';
-  setTimeout(() => { popup.style.display = 'none'; }, 4000);
-}
-
-// Background color changing every second (only if not inverted)
-setInterval(() => {
-  if (!document.body.classList.contains('inverted-upside-down')) {
-    document.body.style.backgroundColor = getRandomColor();
-  }
-}, 1000);
-
-// Buttons and elements
-const spinButton = document.getElementById('spin-button');
-const runawayBtn = document.getElementById('runaway-button');
-const cloneButton = document.getElementById('clone-button');
-const clearClonesButton = document.getElementById('clear-clones-button');
-const invertButton = document.getElementById('invert-button');
-const glitchButton = document.getElementById('glitch-button');
-const confettiRainButton = document.getElementById('confetti-rain-button');
-
-
-// DO NOT PRESS
-spinButton.addEventListener('click', () => {
-  alert('YOU PRESSED THE BUTTON. NOW YOU MUST DANCE. 💃🕺');
-});
-
-// Runaway button positioning & movement
-runawayBtn.style.position = 'fixed';
-const headerHeight = document.getElementById('header-container').offsetHeight;
-runawayBtn.style.top = headerHeight + 100 + 'px';
-runawayBtn.style.left = '50%';
-runawayBtn.style.transform = 'translateX(-50%)';
-
-function moveRandom(el) {
-  if (isFrozen) return;
-  const maxWidth = window.innerWidth - el.offsetWidth - 20;
-  const maxHeight = window.innerHeight - el.offsetHeight - 20;
-  const minTop = headerHeight + 10;
-
-  el.style.left = Math.random() * maxWidth + 'px';
-  el.style.top = (Math.random() * (maxHeight - minTop) + minTop) + 'px';
-}
-
-runawayBtn.addEventListener('mouseenter', () => {
-  if (isFrozen) return;
-  moveRandom(runawayBtn);
-});
-
-runawayBtn.addEventListener('click', () => {
-  if (isFrozen) {
-    showReward('🎉 You outsmarted the button! You win! 🎉');
-    spawnConfetti(window.innerWidth / 2, window.innerHeight / 2, 100);
-  }
-});
-
-// Clone button
-cloneButton.addEventListener('click', () => {
-  const clone = cloneButton.cloneNode(true);
-  clone.textContent = "I'm a clone!";
-  clone.style.position = 'fixed';
-  clone.style.top = Math.random() * (window.innerHeight - 40) + 'px';
-  clone.style.left = Math.random() * (window.innerWidth - 150) + 'px';
-  clone.style.zIndex = 9999;
-  clone.addEventListener('click', () => {
-    alert('Clone clicked!');
-  });
-  document.body.appendChild(clone);
-  clones.push(clone);
-});
-
-// Clear clones
-clearClonesButton.addEventListener('click', () => {
-  clones.forEach(c => c.remove());
-  clones = [];
-});
-
-// Invert with animation
-invertButton.addEventListener('click', () => {
-  toggleInvert();
-});
-
-function toggleInvert() {
-  // If already inverted, remove animation and revert
-  if (document.body.classList.contains('inverted-upside-down')) {
-    document.body.classList.remove('inverting');
-    setTimeout(() => {
-      document.body.classList.remove('inverted-upside-down');
-    }, 1000);
-  } else {
-    // Add animation then invert
-    document.body.classList.add('inverting');
-    setTimeout(() => {
-      document.body.classList.add('inverted-upside-down');
-      document.body.classList.remove('inverting');
-    }, 1000);
-  }
-}
-
-// Glitch effect
-glitchButton.addEventListener('click', () => {
-  document.body.classList.add('glitching');
-  setTimeout(() => {
-    document.body.classList.remove('glitching');
-  }, 3000);
-});
-
-// Confetti rain
+let isInverted = false;
+let animationInProgress = false;
 let confettiInterval;
-confettiRainButton.addEventListener('click', () => {
-  startConfettiRain();
-  setTimeout(stopConfettiRain, 7000);
+
+const runawayBtn = document.getElementById("runaway-button");
+const freezeInput = document.getElementById("freeze-code");
+const adminInvisibleBtn = document.getElementById("admin-invisible-btn");
+const adminPopup = document.getElementById("admin-popup");
+const adminPasswordInput = document.getElementById("admin-password");
+const rewardPopup = document.getElementById("reward-popup");
+
+function isMobileDevice() {
+  const ua = navigator.userAgent || navigator.vendor || window.opera;
+  return /android|iphone|ipad|ipod|mobile/i.test(ua);
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  // Position runaway button initially
+  runawayBtn.style.position = "fixed";
+  const headerHeight = document.getElementById('header-container').offsetHeight;
+  runawayBtn.style.top = (headerHeight + 100) + "px";
+  runawayBtn.style.left = "50%";
+  runawayBtn.style.transform = "translateX(-50%)";
+
+  // Setup admin button event
+  adminInvisibleBtn.addEventListener('click', () => {
+    showAdminPopup();
+  });
+
+  document.getElementById('submit-admin-password').addEventListener('click', submitAdminPassword);
+  document.getElementById('admin-popup-close').addEventListener('click', () => {
+    hideAdminPopup();
+  });
+
+  // DO NOT PRESS button
+  document.getElementById("spin-button").addEventListener("click", () => {
+    alert("YOU PRESSED THE BUTTON. NOW YOU MUST DANCE. 💃🕺");
+  });
+
+  // Runaway button logic
+  runawayBtn.addEventListener("mouseenter", () => {
+    if (isFrozen) return;
+    moveRandom(runawayBtn);
+  });
+
+  runawayBtn.addEventListener("click", () => {
+    if (isFrozen) {
+      showReward("🎉 You outsmarted the button! You win! 🎉");
+      spawnConfetti(window.innerWidth / 2, window.innerHeight / 2, 100);
+    }
+  });
+
+  // Clone button
+  document.getElementById("clone-button").addEventListener("click", () => {
+    const clone = document.getElementById("clone-button").cloneNode(true);
+    clone.textContent = "I'm a clone!";
+    clone.style.position = "fixed";
+    clone.style.top = `${Math.random() * (window.innerHeight - 40)}px`;
+    clone.style.left = `${Math.random() * (window.innerWidth - 150)}px`;
+    clone.style.zIndex = 9999;
+    clone.addEventListener("click", () => {
+      alert("Clone clicked!");
+    });
+    document.body.appendChild(clone);
+    clones.push(clone);
+  });
+
+  // Clear clones
+  document.getElementById("clear-clones-button").addEventListener("click", () => {
+    clones.forEach(c => c.remove());
+    clones = [];
+  });
+
+  // Invert button with animation toggle
+  document.getElementById("invert-button").addEventListener("click", () => {
+    if (animationInProgress) return;
+    animationInProgress = true;
+    if (!isInverted) {
+      document.body.classList.add('inverting');
+      document.body.addEventListener('animationend', () => {
+        document.body.classList.remove('inverting');
+        document.body.classList.add('inverted-upside-down');
+        animationInProgress = false;
+      }, { once: true });
+    } else {
+      document.body.classList.add('reverting');
+      document.body.addEventListener('animationend', () => {
+        document.body.classList.remove('reverting');
+        document.body.classList.remove('inverted-upside-down');
+        animationInProgress = false;
+      }, { once: true });
+    }
+    isInverted = !isInverted;
+  });
+
+  // Glitch button
+  document.getElementById("glitch-button").addEventListener("click", () => {
+    glitchEffect();
+  });
+
+  // Confetti rain button
+  document.getElementById("confetti-rain-button").addEventListener("click", () => {
+    startConfettiRain();
+    setTimeout(stopConfettiRain, 7000);
+  });
+
+  // Puzzle toggle
+  const openPuzzleBtn = document.getElementById("open-puzzle-btn");
+  const puzzleContent = document.getElementById("puzzle-content");
+
+  openPuzzleBtn.addEventListener("click", () => {
+    puzzleContent.style.display = (puzzleContent.style.display === "none") ? "block" : "none";
+  });
+
+  // Clue button
+  document.getElementById("clue-button").addEventListener("click", () => {
+    const clueText = document.getElementById("clue-text");
+    clueText.style.display = (clueText.style.display === "none") ? "block" : "none";
+  });
+
+  // No code submission yet, add your logic as needed
+  document.getElementById("submit-code").addEventListener("click", () => {
+    const code = freezeInput.value.trim();
+    if (code === getPiDigits()) {
+      isFrozen = true;
+      alert("You froze the runaway button!");
+    } else {
+      alert("Incorrect code, try again!");
+    }
+  });
+
+  // Start background color changes
+  startBackgroundColorCycle();
+
+  // Listen for admin commands via postMessage (for future real-time control)
+  window.addEventListener("message", handleAdminCommands);
 });
+
+function showAdminPopup() {
+  adminPopup.style.display = "flex";
+  adminPasswordInput.value = "";
+  adminPasswordInput.focus();
+}
+
+function hideAdminPopup() {
+  adminPopup.style.display = "none";
+  adminPasswordInput.value = "";
+}
+
+function submitAdminPassword() {
+  const correctPassword = "SuperSecret123"; // Change your password here
+  if (adminPasswordInput.value === correctPassword) {
+    hideAdminPopup();
+    window.open('admin.html', '_blank');
+  } else {
+    alert("Wrong password!");
+    adminPasswordInput.focus();
+  }
+}
+
+function moveRandom(elem) {
+  const padding = 20;
+  const maxX = window.innerWidth - elem.offsetWidth - padding;
+  const maxY = window.innerHeight - elem.offsetHeight - padding;
+
+  const x = Math.random() * maxX;
+  const y = Math.random() * maxY;
+
+  elem.style.left = `${x}px`;
+  elem.style.top = `${y}px`;
+}
+
+function glitchEffect() {
+  const title = document.getElementById("crazy-title");
+  let iteration = 0;
+  const maxIterations = 15;
+
+  const glitchInterval = setInterval(() => {
+    let text = title.textContent;
+    if (iteration % 2 === 0) {
+      title.style.color = "lime";
+      title.style.textShadow = "2px 2px 5px red";
+      title.textContent = text.split('').sort(() => Math.random() - 0.5).join('');
+    } else {
+      title.style.color = "hotpink";
+      title.style.textShadow = "none";
+      title.textContent = "💥 Welcome to CrazyTown 💥";
+    }
+    iteration++;
+    if (iteration >= maxIterations) {
+      clearInterval(glitchInterval);
+      title.style.color = "hotpink";
+      title.style.textShadow = "none";
+      title.textContent = "💥 Welcome to CrazyTown 💥";
+    }
+  }, 100);
+}
+
+function spawnConfetti(x, y, count = 30) {
+  const container = document.getElementById("confetti-container");
+
+  for (let i = 0; i < count; i++) {
+    const confetti = document.createElement("div");
+    confetti.classList.add("confetti");
+    confetti.style.backgroundColor = getRandomColor();
+    confetti.style.left = `${x + (Math.random() * 100 - 50)}px`;
+    confetti.style.top = `${y + (Math.random() * 100 - 50)}px`;
+    confetti.style.animationDuration = (2 + Math.random() * 2) + "s";
+
+    container.appendChild(confetti);
+
+    setTimeout(() => {
+      confetti.remove();
+    }, 4000);
+  }
+}
 
 function startConfettiRain() {
   confettiInterval = setInterval(() => {
-    const x = Math.random() * window.innerWidth;
-    spawnConfetti(x, 0, 15);
+    spawnConfetti(Math.random() * window.innerWidth, 0, 10);
   }, 300);
 }
 
@@ -152,54 +228,51 @@ function stopConfettiRain() {
   clearInterval(confettiInterval);
 }
 
-// Freeze runaway button
-function freezeButton() {
-  isFrozen = true;
-  runawayBtn.textContent = '😳 You froze me!';
-  runawayBtn.style.backgroundColor = 'lightblue';
-  runawayBtn.style.border = '3px solid blue';
+function getRandomColor() {
+  const colors = ['#e74c3c', '#3498db', '#f1c40f', '#2ecc71', '#9b59b6', '#1abc9c', '#e67e22'];
+  return colors[Math.floor(Math.random() * colors.length)];
 }
 
-// === BroadcastChannel listener for admin commands ===
-bc.onmessage = (event) => {
-  switch (event.data) {
-    case 'trigger-do-not-press':
-      spinButton.click();
-      break;
-    case 'trigger-confetti-rain':
-      startConfettiRain();
-      break;
-    case 'trigger-stop-confetti-rain':
-      stopConfettiRain();
-      break;
-    case 'trigger-glitch':
-      glitchButton.click();
-      break;
-    case 'trigger-invert':
-      toggleInvert();
-      break;
-    case 'trigger-freeze':
-      freezeButton();
-      break;
-    case 'trigger-clone':
-      cloneButton.click();
-      break;
-    case 'trigger-clear-clones':
-      clearClonesButton.click();
-      break;
-  }
-};
+function startBackgroundColorCycle() {
+  let hue = 0;
+  setInterval(() => {
+    if (isInverted) return; // optional: don't change background while inverted
+    hue = (hue + 1) % 360;
+    document.body.style.backgroundColor = `hsl(${hue}, 60%, 20%)`;
+  }, 80);
+}
 
-// Invisible admin button
-const adminBtn = document.getElementById('admin-invisible-btn');
-adminBtn.addEventListener('click', () => {
-  const password = prompt('Enter admin password:');
-  if (password === 'SuperSecret123!') {
-    window.open('admin.html', '_blank');
-  } else {
-    alert('Wrong password!');
+function showReward(message) {
+  rewardPopup.textContent = message;
+  rewardPopup.style.display = "block";
+  setTimeout(() => {
+    rewardPopup.style.display = "none";
+  }, 3000);
+}
+
+function getPiDigits() {
+  // First 50 digits of Pi (without decimal)
+  return "31415926535897932384626433832795028841971693993751";
+}
+
+function handleAdminCommands(event) {
+  if (!event.data || typeof event.data !== 'object') return;
+  if (event.data.type === 'COMMAND') {
+    const cmd = event.data.command;
+    if (cmd === 'DO_NOT_PRESS') {
+      alert("Admin activated the DO NOT PRESS button for everyone!");
+      document.getElementById("spin-button").click();
+    } else if (cmd === 'INVERT_PAGE') {
+      document.getElementById("invert-button").click();
+    } else if (cmd === 'GLITCH') {
+      document.getElementById("glitch-button").click();
+    } else if (cmd === 'CONFETTI') {
+      document.getElementById("confetti-rain-button").click();
+    }
+    // Add more commands as needed
   }
-});
+}
+
 
 
 
