@@ -1,3 +1,4 @@
+/* Base Styles */
 body {
   margin: 0;
   padding: 140px 0 0 0;
@@ -6,7 +7,6 @@ body {
   color: white;
   overflow-x: hidden;
   user-select: none;
-  transition: background-color 1s, filter 1s, transform 1s;
 }
 
 #header-container {
@@ -105,9 +105,6 @@ body {
 
 .confetti {
   position: absolute;
-  width: 10px;
-  height: 10px;
-  background-color: red;
   border-radius: 50%;
   animation: fall 3s linear forwards;
 }
@@ -125,22 +122,40 @@ body {
   100% { opacity: 1; transform: rotate(0deg); color: green; }
 }
 
+/* Confetti size and color */
+.confetti {
+  width: 10px;
+  height: 10px;
+}
+
+/* Invert animation */
 .inverted-upside-down {
-  filter: invert(1);
-  transform: rotate(180deg);
+  animation: invertFlip 1s forwards;
 }
 
-.glitching {
-  animation: glitchAnim 0.2s infinite;
+@keyframes invertFlip {
+  0% {
+    filter: invert(0);
+    transform: rotate(0deg);
+  }
+  100% {
+    filter: invert(1);
+    transform: rotate(180deg);
+  }
 }
 
-@keyframes glitchAnim {
-  0% { transform: translate(0px, 0px); }
-  25% { transform: translate(2px, -2px); }
-  50% { transform: translate(-2px, 2px); }
-  75% { transform: translate(2px, 2px); }
-  100% { transform: translate(-2px, -2px); }
+/* Invisible Admin Button */
+#admin-invisible-btn {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  width: 30px;
+  height: 30px;
+  opacity: 0;
+  z-index: 99999;
+  cursor: pointer;
 }
+
 
 
 
