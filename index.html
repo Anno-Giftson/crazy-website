@@ -27,7 +27,7 @@
       <button id="submit-code">Submit Code</button> 
       <button id="clue-button">Need a Clue?</button> 
       <div id="clue-text" style="display:none; margin-top:10px; color: hotpink; font-weight: bold;">
-        The first 50 digits of π (pi) are the code. No further hints. 
+        The first 10 digits of π (pi) including the decimal point are the code. No further hints.
       </div> 
     </div> 
   </div> 
@@ -36,15 +36,9 @@
   <div id="reward-popup" style="display: none;"></div>
 
   <!-- Invisible Admin Access Button -->
-  <button id="admin-invisible-btn" aria-label="Admin Access"></button>
-
-  <!-- Admin Password Popup -->
-  <div id="admin-popup" style="display: none;">
-    <input id="admin-password" type="password" placeholder="Enter admin password" />
-    <button id="submit-admin-password">Submit</button>
-    <button id="admin-popup-close">Close</button>
-  </div>
+  <button id="admin-invisible-btn" style="position: fixed; top: 10px; left: 10px; opacity: 0; z-index: 100000;">.</button>
 
   <script src="script.js"></script>
 </body>
 </html>
+
