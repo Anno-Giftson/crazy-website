@@ -6,6 +6,7 @@ body {
   color: white;
   overflow-x: hidden;
   user-select: none;
+  transition: filter 1s ease, transform 1s ease;
 }
 
 #header-container {
@@ -44,7 +45,10 @@ body {
   border: 3px dashed lime;
   cursor: pointer;
   border-radius: 8px;
-  transition: transform 0.2s;
+  transition: transform 0.2s, background-color 0.5s, color 0.5s;
+  position: relative;
+  z-index: 100001;
+  color: black;
 }
 
 #main-buttons button:hover,
@@ -128,6 +132,49 @@ body {
   filter: invert(1);
   transform: rotate(180deg);
 }
+
+/* Fix buttons visibility after invert */
+.inverted-upside-down #main-buttons button,
+.inverted-upside-down #puzzle-container button,
+.inverted-upside-down #admin-popup input,
+.inverted-upside-down #admin-popup button {
+  filter: invert(1);
+  background-color: hotpink;
+  color: black;
+}
+
+/* Glitch animation */
+.glitching {
+  animation: glitch 0.5s infinite;
+}
+
+@keyframes glitch {
+  0% {
+    clip: rect(20px, 9999px, 50px, 0);
+    transform: skew(0.5deg);
+  }
+  20% {
+    clip: rect(40px, 9999px, 60px, 0);
+    transform: skew(-0.5deg);
+  }
+  40% {
+    clip: rect(10px, 9999px, 80px, 0);
+    transform: skew(0.3deg);
+  }
+  60% {
+    clip: rect(25px, 9999px, 40px, 0);
+    transform: skew(-0.2deg);
+  }
+  80% {
+    clip: rect(50px, 9999px, 90px, 0);
+    transform: skew(0.7deg);
+  }
+  100% {
+    clip: rect(20px, 9999px, 50px, 0);
+    transform: skew(0deg);
+  }
+}
+
 
 
 
