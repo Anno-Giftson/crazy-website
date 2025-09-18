@@ -6,7 +6,7 @@ body {
   color: white;
   overflow-x: hidden;
   user-select: none;
-  transition: background-color 0.5s ease;
+  transition: background-color 1s linear;
 }
 
 #header-container {
@@ -35,7 +35,8 @@ body {
   gap: 12px;
 }
 
-#main-buttons button {
+#main-buttons button,
+#puzzle-container button {
   min-width: 150px;
   height: 40px;
   font-size: 1.1rem;
@@ -45,30 +46,53 @@ body {
   cursor: pointer;
   border-radius: 8px;
   transition: transform 0.2s;
+  position: relative;
+  z-index: 10; /* so buttons stay on top */
 }
 
-#main-buttons button:hover {
+#main-buttons button:hover,
+#puzzle-container button:hover {
   transform: scale(1.05);
 }
 
-#confetti-container {
+#puzzle-container {
   position: fixed;
-  pointer-events: none;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  overflow: visible;
-  z-index: 9998;
+  bottom: 15px;
+  left: 15px;
+  background: rgba(0, 0, 0, 0.8);
+  border: 2px solid hotpink;
+  padding: 10px 15px;
+  border-radius: 15px;
+  max-width: 340px;
+  z-index: 10001;
 }
 
-.confetti {
-  position: absolute;
-  width: 10px;
-  height: 10px;
-  background-color: red;
-  border-radius: 50%;
-  animation: fall 3s linear forwards;
+#puzzle-container input[type="text"],
+#admin-popup input {
+  width: 100%;
+  padding: 6px 8px;
+  font-size: 1rem;
+  border-radius: 6px;
+  border: 2px solid hotpink;
+  background: black;
+  color: white;
+  margin-top: 10px;
+}
+
+#admin-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  padding: 20px;
+  border-radius: 15px;
+  z-index: 100000;
+  color: black;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 250px;
 }
 
 #reward-popup {
@@ -85,95 +109,71 @@ body {
   box-shadow: 0 0 20px hotpink;
 }
 
-.inverted-upside-down {
-  filter: invert(1);
-  transform: rotate(180deg);
-}
-
-.inverting {
-  animation: invertFlip 1s forwards;
-}
-
-.glitching {
-  animation: glitchAnim 0.3s infinite;
+.confetti {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background-color: red;
+  border-radius: 50%;
+  animation: fall 3s linear forwards;
 }
 
 @keyframes fall {
-  0% {
-    transform: translateY(0) rotate(0deg);
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(100vh) rotate(720deg);
-    opacity: 0;
-  }
+  0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
 }
 
 @keyframes blinkRotate {
-  0% {
-    opacity: 1;
-    transform: rotate(0deg);
-    color: red;
-  }
-  25% {
-    opacity: 0.5;
-    transform: rotate(5deg);
-    color: yellow;
-  }
-  50% {
-    opacity: 1;
-    transform: rotate(-5deg);
-    color: cyan;
-  }
-  75% {
-    opacity: 0.5;
-    transform: rotate(10deg);
-    color: magenta;
-  }
-  100% {
-    opacity: 1;
-    transform: rotate(0deg);
-    color: green;
-  }
+  0% { opacity: 1; transform: rotate(0deg); color: red; }
+  25% { opacity: 0.5; transform: rotate(5deg); color: yellow; }
+  50% { opacity: 1; transform: rotate(-5deg); color: cyan; }
+  75% { opacity: 0.5; transform: rotate(10deg); color: magenta; }
+  100% { opacity: 1; transform: rotate(0deg); color: green; }
 }
 
-@keyframes invertFlip {
-  0% {
-    transform: rotate(0deg);
-    filter: invert(0);
-  }
-  100% {
-    transform: rotate(180deg);
-    filter: invert(1);
-  }
+/* Invert animation */
+body.inverting {
+  animation: invertAnim 0.6s forwards;
 }
 
-@keyframes glitchAnim {
-  0% {
-    clip-path: inset(10% 0 90% 0);
-    transform: translate(-20px, -10px);
-  }
-  20% {
-    clip-path: inset(80% 0 10% 0);
-    transform: translate(10px, 10px);
-  }
-  40% {
-    clip-path: inset(10% 0 90% 0);
-    transform: translate(-10px, 5px);
-  }
-  60% {
-    clip-path: inset(80% 0 10% 0);
-    transform: translate(20px, -5px);
-  }
-  80% {
-    clip-path: inset(10% 0 90% 0);
-    transform: translate(-20px, 10px);
-  }
-  100% {
-    clip-path: inset(80% 0 10% 0);
-    transform: translate(0, 0);
-  }
+body.inverted-upside-down {
+  filter: invert(1);
+  transform: rotate(180deg);
+  transition: none !important; /* avoid transition conflict */
 }
+
+body.reverting {
+  animation: revertAnim 0.6s forwards;
+}
+
+@keyframes invertAnim {
+  0% { filter: invert(0); transform: rotate(0deg); }
+  100% { filter: invert(1); transform: rotate(180deg); }
+}
+
+@keyframes revertAnim {
+  0% { filter: invert(1); transform: rotate(180deg); }
+  100% { filter: invert(0); transform: rotate(0deg); }
+}
+
+/* Invisible Admin Button */
+#admin-invisible-btn {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 40px;
+  height: 40px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  z-index: 99999;
+  opacity: 0;
+}
+
+#admin-invisible-btn:focus {
+  outline: 2px solid #00f;
+}
+
 
 
 
