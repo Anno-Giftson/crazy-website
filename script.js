@@ -1,74 +1,51 @@
 let touchBlocked = false;
 let clones = [];
 let isFrozen = false;
+let confettiInterval = null;
 
-function isMobileDevice() {
-  const ua = navigator.userAgent || navigator.vendor || window.opera;
-  return /android|iphone|ipad|ipod|mobile/i.test(ua);
-}
+const runawayBtn = document.getElementById("runaway-button");
+const rewardPopup = document.getElementById("reward-popup");
+const mainContent = document.getElementById("main-content");
 
+// === Initialization ===
 window.addEventListener('DOMContentLoaded', () => {
-  const runawayBtn = document.getElementById("runaway-button");
+  // Position runaway button
   runawayBtn.style.position = "fixed";
   const headerHeight = document.getElementById('header-container').offsetHeight;
   runawayBtn.style.top = (headerHeight + 100) + "px";
   runawayBtn.style.left = "50%";
   runawayBtn.style.transform = "translateX(-50%)";
 
-  // Create invisible admin trigger
-  const secretButton = document.createElement('div');
-  secretButton.style.position = 'fixed';
-  secretButton.style.top = '10px';
-  secretButton.style.right = '10px';
-  secretButton.style.width = '30px';
-  secretButton.style.height = '30px';
-  secretButton.style.opacity = '0';
-  secretButton.style.zIndex = '99999';
-  secretButton.style.cursor = 'pointer';
-  secretButton.title = 'Admin';
-
-  document.body.appendChild(secretButton);
-
-  secretButton.addEventListener('click', () => {
-    showAdminPopup();
+  // Invisible Admin Button
+  document.getElementById("admin-invisible-btn").addEventListener("click", () => {
+    window.open("admin.html", "_blank");
   });
 });
 
-// Admin popup
-function showAdminPopup() {
-  const popup = document.createElement('div');
-  popup.id = 'admin-popup';
-  popup.innerHTML = `
-    <h3>Admin Login</h3>
-    <input type="password" id="admin-password" placeholder="Enter password"/>
-    <button onclick="submitAdminPassword()">Submit</button>
-  `;
-  document.body.appendChild(popup);
-}
-
-function submitAdminPassword() {
-  const pass = document.getElementById('admin-password').value;
-  if (pass === 'letmein') {
-    window.open('admin.html', '_blank');
-    document.getElementById('admin-popup').remove();
-  } else {
-    alert("Wrong password");
-  }
-}
-
-// Touch blocker
+// === Touch Blocker ===
 window.addEventListener('touchstart', () => {
   if (!isMobileDevice()) {
     blockTouchScreen();
   }
 }, { passive: true });
 
+function isMobileDevice() {
+  const ua = navigator.userAgent || navigator.vendor || window.opera;
+  return /android|iphone|ipad|ipod|mobile/i.test(ua);
+}
+
 function blockTouchScreen() {
   if (touchBlocked) return;
   touchBlocked = true;
   const blocker = document.createElement('div');
   blocker.id = 'blocker';
-  blocker.innerHTML = `🚫<br>Sorry, touch screen use is not allowed on this device.<br>Please use a mouse or trackpad.`;
+  blocker.innerHTML = `🚫<br>Touch is not allowed. Use a mouse or trackpad.`;
+  blocker.style = `
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(0,0,0,0.9); color: white; font-size: 2rem;
+    display: flex; align-items: center; justify-content: center; z-index: 100000;
+    text-align: center;
+  `;
   document.body.appendChild(blocker);
   document.body.style.overflow = 'hidden';
 
@@ -79,9 +56,9 @@ function blockTouchScreen() {
   }, 3000);
 }
 
-// Background color
+// === Background Color Changes ===
 setInterval(() => {
-  if (!document.body.classList.contains('inverted-upside-down')) {
+  if (!mainContent.classList.contains('inverted-upside-down')) {
     document.body.style.backgroundColor = getRandomColor();
   }
 }, 1000);
@@ -90,12 +67,13 @@ function getRandomColor() {
   return `hsl(${Math.floor(Math.random() * 360)}, 100%, 50%)`;
 }
 
-// Confetti on mouse move
+// === Confetti on Mouse Move ===
 document.addEventListener('mousemove', (e) => {
   spawnConfetti(e.pageX, e.pageY, 3);
 });
 
 function spawnConfetti(x, y, count = 10) {
+  const container = document.getElementById('confetti-container');
   for (let i = 0; i < count; i++) {
     const confetti = document.createElement('div');
     confetti.classList.add('confetti');
@@ -104,31 +82,15 @@ function spawnConfetti(x, y, count = 10) {
     confetti.style.backgroundColor = getRandomColor();
     confetti.style.width = confetti.style.height = `${Math.random() * 10 + 5}px`;
 
-    document.getElementById('confetti-container').appendChild(confetti);
+    container.appendChild(confetti);
     setTimeout(() => confetti.remove(), 3000);
   }
 }
 
-// DO NOT PRESS
+// === Button Events ===
 document.getElementById("spin-button").addEventListener("click", () => {
   alert("YOU PRESSED THE BUTTON. NOW YOU MUST DANCE. 💃🕺");
 });
-
-// Runaway button
-const runawayBtn = document.getElementById("runaway-button");
-
-function moveRandom(el) {
-  if (isFrozen) return;
-  el.style.position = "fixed";
-
-  const headerHeight = document.getElementById('header-container').offsetHeight;
-  const maxWidth = window.innerWidth - el.offsetWidth - 20;
-  const maxHeight = window.innerHeight - el.offsetHeight - 20;
-  const minTop = headerHeight + 10;
-
-  el.style.left = Math.random() * maxWidth + "px";
-  el.style.top = (Math.random() * (maxHeight - minTop) + minTop) + "px";
-}
 
 runawayBtn.addEventListener("mouseenter", () => {
   if (isFrozen) return;
@@ -138,9 +100,19 @@ runawayBtn.addEventListener("mouseenter", () => {
 runawayBtn.addEventListener("click", () => {
   if (isFrozen) {
     showReward("🎉 You outsmarted the button! You win! 🎉");
-    spawnConfetti(window.innerWidth / 2, window.innerHeight / 2, 100);
   }
 });
+
+function moveRandom(el) {
+  if (isFrozen) return;
+  const headerHeight = document.getElementById('header-container').offsetHeight;
+  const maxWidth = window.innerWidth - el.offsetWidth - 20;
+  const maxHeight = window.innerHeight - el.offsetHeight - 20;
+  const minTop = headerHeight + 10;
+
+  el.style.left = Math.random() * maxWidth + "px";
+  el.style.top = (Math.random() * (maxHeight - minTop) + minTop) + "px";
+}
 
 // Clone button
 document.getElementById("clone-button").addEventListener("click", () => {
@@ -157,30 +129,17 @@ document.getElementById("clone-button").addEventListener("click", () => {
   clones.push(clone);
 });
 
-// Clear clones
 document.getElementById("clear-clones-button").addEventListener("click", () => {
   clones.forEach(c => c.remove());
   clones = [];
 });
 
-// Invert with animation
+// === Invert Button ===
 document.getElementById("invert-button").addEventListener("click", () => {
-  const body = document.body;
-  body.style.transition = "transform 1s ease, filter 1s ease";
-
-  if (!body.classList.contains("inverted-upside-down")) {
-    body.classList.add("inverted-upside-down");
-  } else {
-    body.classList.remove("inverted-upside-down");
-  }
-
-  // After animation, reset transition property
-  setTimeout(() => {
-    body.style.transition = "";
-  }, 1000);
+  mainContent.classList.toggle("inverted-upside-down");
 });
 
-// Glitch
+// === Glitch Button ===
 document.getElementById("glitch-button").addEventListener("click", () => {
   document.body.classList.add("glitching");
   setTimeout(() => {
@@ -188,24 +147,26 @@ document.getElementById("glitch-button").addEventListener("click", () => {
   }, 3000);
 });
 
-// Confetti rain
+// === Confetti Rain ===
 document.getElementById("confetti-rain-button").addEventListener("click", () => {
   startConfettiRain();
   setTimeout(stopConfettiRain, 7000);
 });
 
-let confettiInterval;
 function startConfettiRain() {
+  if (confettiInterval) return;
   confettiInterval = setInterval(() => {
     const x = Math.random() * window.innerWidth;
     spawnConfetti(x, 0, 15);
   }, 300);
 }
+
 function stopConfettiRain() {
   clearInterval(confettiInterval);
+  confettiInterval = null;
 }
 
-// Puzzle toggle
+// === Puzzle + Freeze Logic ===
 const openPuzzleBtn = document.getElementById("open-puzzle-btn");
 const puzzleContent = document.getElementById("puzzle-content");
 
@@ -213,13 +174,11 @@ openPuzzleBtn.addEventListener("click", () => {
   puzzleContent.style.display = (puzzleContent.style.display === "none") ? "block" : "none";
 });
 
-// Clue
 document.getElementById("clue-button").addEventListener("click", () => {
   const clueText = document.getElementById("clue-text");
   clueText.style.display = (clueText.style.display === "none") ? "block" : "none";
 });
 
-// No copy/paste
 const freezeInput = document.getElementById("freeze-code");
 ["copy", "paste", "cut"].forEach(event => {
   freezeInput.addEventListener(event, (e) => {
@@ -228,12 +187,11 @@ const freezeInput = document.getElementById("freeze-code");
   });
 });
 
-// Submit code
 document.getElementById("submit-code").addEventListener("click", () => {
   const inputVal = freezeInput.value.trim();
-  const pi50digits = "3.1415926535"; // First 10 digits of pi with the point
+  const pi10digits = "3.141592653";
 
-  if (inputVal === pi50digits) {
+  if (inputVal === pi10digits) {
     if (!isFrozen) {
       freezeButton();
     }
@@ -250,27 +208,37 @@ function freezeButton() {
 }
 
 function showReward(msg) {
-  const popup = document.getElementById("reward-popup");
-  const runawayBtn = document.getElementById("runaway-button");
-
-  // Hide runaway button while reward is shown
+  // Temporarily hide button
   runawayBtn.style.visibility = "hidden";
-
-  popup.textContent = msg;
-  popup.style.display = "block";
+  rewardPopup.textContent = msg;
+  rewardPopup.style.display = "block";
 
   setTimeout(() => {
-    popup.style.display = "none";
-    // Show runaway button again
+    rewardPopup.style.display = "none";
     runawayBtn.style.visibility = "visible";
   }, 4000);
 }
 
-// === ADMIN TRIGGERS ===
+// === Admin Triggers ===
 window.addEventListener("message", (event) => {
-  if (event.data === "trigger-do-not-press") {
+  const data = event.data;
+  if (data === "trigger-do-not-press") {
     document.getElementById("spin-button").click();
+  } else if (data === "trigger-glitch") {
+    document.getElementById("glitch-button").click();
+  } else if (data === "trigger-invert") {
+    document.getElementById("invert-button").click();
+  } else if (data === "trigger-confetti-rain") {
+    document.getElementById("confetti-rain-button").click();
+  } else if (data === "trigger-stop-confetti-rain") {
+    stopConfettiRain();
+  } else if (data === "trigger-clone") {
+    document.getElementById("clone-button").click();
+  } else if (data === "trigger-clear-clones") {
+    document.getElementById("clear-clones-button").click();
+  } else if (data === "trigger-freeze") {
+    freezeButton();
   }
-  // Add more admin triggers as needed
 });
+
 
