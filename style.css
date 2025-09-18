@@ -6,7 +6,6 @@ body {
   color: white;
   overflow-x: hidden;
   user-select: none;
-  transition: background-color 1s ease;
 }
 
 #header-container {
@@ -28,12 +27,15 @@ body {
   color: hotpink;
 }
 
+#main-content {
+  transition: transform 1s ease, filter 1s ease;
+}
+
 #main-buttons {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 12px;
-  z-index: 10001;
 }
 
 #main-buttons button,
@@ -47,8 +49,6 @@ body {
   cursor: pointer;
   border-radius: 8px;
   transition: transform 0.2s;
-  position: relative;
-  z-index: 10001;
 }
 
 #main-buttons button:hover,
@@ -66,10 +66,11 @@ body {
   border-radius: 15px;
   max-width: 340px;
   z-index: 10001;
+  color: hotpink;
+  font-weight: bold;
 }
 
-#puzzle-container input[type="text"],
-#admin-popup input {
+#puzzle-container input[type="text"] {
   width: 100%;
   padding: 6px 8px;
   font-size: 1rem;
@@ -90,10 +91,13 @@ body {
   padding: 20px 30px;
   border-radius: 20px;
   font-size: 2em;
-  z-index: 9999;
+  z-index: 10002;
   box-shadow: 0 0 20px hotpink;
+  display: none;
+  text-align: center;
 }
 
+/* Confetti */
 .confetti {
   position: absolute;
   width: 10px;
@@ -101,7 +105,6 @@ body {
   background-color: red;
   border-radius: 50%;
   animation: fall 3s linear forwards;
-  pointer-events: none;
 }
 
 @keyframes fall {
@@ -109,6 +112,7 @@ body {
   100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
 }
 
+/* Title animation */
 @keyframes blinkRotate {
   0% { opacity: 1; transform: rotate(0deg); color: red; }
   25% { opacity: 0.5; transform: rotate(5deg); color: yellow; }
@@ -117,15 +121,37 @@ body {
   100% { opacity: 1; transform: rotate(0deg); color: green; }
 }
 
-/* Smooth invert animation */
-.invert-transition {
-  transition: filter 1s ease, transform 1s ease;
-}
-
+/* Inverted state */
 .inverted-upside-down {
   filter: invert(1);
   transform: rotate(180deg);
 }
+
+/* Glitch */
+.glitching * {
+  animation: glitch 0.2s infinite;
+}
+
+@keyframes glitch {
+  0% { transform: translate(0); }
+  25% { transform: translate(2px, -2px); }
+  50% { transform: translate(-2px, 2px); }
+  75% { transform: translate(2px, 2px); }
+  100% { transform: translate(0); }
+}
+
+/* Invisible admin trigger */
+#admin-invisible-btn {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  width: 30px;
+  height: 30px;
+  opacity: 0;
+  z-index: 100000;
+  cursor: pointer;
+}
+
 
 
 
