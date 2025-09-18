@@ -1,12 +1,41 @@
 body {
   margin: 0;
-  padding-top: 140px;
-  font-family: 'Comic Sans MS', cursive;
+  padding: 20px;
+  font-family: Arial, sans-serif;
   background-color: black;
   color: white;
   overflow-x: hidden;
   user-select: none;
-  transition: background-color 0.2s;
+  transition: background-color 0.5s ease;
+}
+
+button {
+  padding: 10px 20px;
+  margin: 10px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 5px;
+  background-color: hotpink;
+  color: black;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+button:hover {
+  transform: scale(1.05);
+}
+
+.glitching {
+  animation: glitch 0.1s infinite;
+}
+
+@keyframes glitch {
+  0%   { transform: translate(0, 0); }
+  20%  { transform: translate(-5px, 5px); }
+  40%  { transform: translate(5px, -5px); }
+  60%  { transform: translate(-10px, 10px); }
+  80%  { transform: translate(10px, -10px); }
+  100% { transform: translate(0, 0); }
 }
 
 #header-container {
@@ -28,29 +57,19 @@ body {
   color: hotpink;
 }
 
+@keyframes blinkRotate {
+  0% { opacity: 1; transform: rotate(0deg); color: red; }
+  25% { opacity: 0.5; transform: rotate(5deg); color: yellow; }
+  50% { opacity: 1; transform: rotate(-5deg); color: cyan; }
+  75% { opacity: 0.5; transform: rotate(10deg); color: magenta; }
+  100% { opacity: 1; transform: rotate(0deg); color: green; }
+}
+
 #main-buttons {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 12px;
-}
-
-#main-buttons button,
-#puzzle-container button {
-  min-width: 150px;
-  height: 40px;
-  font-size: 1.1rem;
-  padding: 8px 12px;
-  background-color: hotpink;
-  border: 3px dashed lime;
-  cursor: pointer;
-  border-radius: 8px;
-  transition: transform 0.2s;
-}
-
-#main-buttons button:hover,
-#puzzle-container button:hover {
-  transform: scale(1.05);
 }
 
 #puzzle-container {
@@ -104,36 +123,12 @@ body {
   100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
 }
 
-@keyframes blinkRotate {
-  0% { opacity: 1; transform: rotate(0deg); color: red; }
-  25% { opacity: 0.5; transform: rotate(5deg); color: yellow; }
-  50% { opacity: 1; transform: rotate(-5deg); color: cyan; }
-  75% { opacity: 0.5; transform: rotate(10deg); color: magenta; }
-  100% { opacity: 1; transform: rotate(0deg); color: green; }
-}
-
-#main-content {
-  transition: transform 1s ease, filter 1s ease;
-  transform-origin: center;
-}
-
-.inverted-upside-down {
+.inverted {
   transform: rotate(180deg);
   filter: invert(1);
+  transition: transform 1s ease, filter 1s ease;
 }
 
-.glitching {
-  animation: glitch 0.1s infinite;
-}
-
-@keyframes glitch {
-  0%   { transform: translate(0, 0); }
-  20%  { transform: translate(-2px, 2px); }
-  40%  { transform: translate(2px, -2px); }
-  60%  { transform: translate(-4px, 4px); }
-  80%  { transform: translate(4px, -4px); }
-  100% { transform: translate(0, 0); }
-}
 
 
 
