@@ -130,7 +130,7 @@ document.getElementById("clue-button").addEventListener("click", () => {
 // Freeze button logic (submit code)
 document.getElementById("submit-code").addEventListener("click", () => {
   const val = document.getElementById("freeze-code").value.trim();
-  const correctCode = "3.141592653"; // 10 digits
+  const correctCode = "3.141592653"; // 9 digits
   if (val === correctCode) {
     freezeRunawayButton();
   } else {
