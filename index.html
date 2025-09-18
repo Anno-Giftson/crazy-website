@@ -2,44 +2,35 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Totally Crazy Website</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <link rel="stylesheet" href="style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Button Fun</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div id="header-container">
-    <h1 id="crazy-title">💥 Welcome to CrazyTown 💥</h1>
-    <div id="main-buttons"> 
-      <button id="spin-button">DO NOT PRESS</button>
-      <button id="runaway-button">Catch me if you can!</button>
-      <button id="clone-button">Clone me!</button>
-      <button id="clear-clones-button">Clear clones</button>
-      <button id="invert-button">Invert this page!</button>
-      <button id="glitch-button">Make it Glitch!</button>
-      <button id="confetti-rain-button">Start Confetti Rain!</button>
-    </div>
+
+  <h1 id="title">Button Fun Zone</h1>
+
+  <div id="buttonContainer">
+    <button id="glitchBtn">Glitch</button>
+    <button id="invertBtn">Invert</button>
+    <button id="freezeRunningBtn">Freeze Running Btn</button>
+    <button id="catchBtn" disabled>Catch the Running Btn</button>
+    <button id="cloneMeBtn">Clone Me</button>
+    <button id="clearClonesBtn">Clear Clones</button>
+    <button id="confettiBtn">Confetti Rain</button>
   </div>
 
-  <div id="main-content">
-    <div id="puzzle-container"> 
-      <button id="open-puzzle-btn">Catch the Running Button</button> 
-      <div id="puzzle-content" style="display:none;"> 
-        <input id="freeze-code" type="text" placeholder="Enter code here" autocomplete="off" /> 
-        <button id="submit-code">Submit Code</button> 
-        <button id="clue-button">Need a Clue?</button> 
-        <div id="clue-text" style="display:none;">
-          The first 10 digits of π (pi) are the code.
-        </div> 
-      </div> 
-    </div> 
+  <form id="codeForm">
+    <input type="text" id="codeInput" placeholder="Enter first 10 digits of Pi" maxlength="12" autocomplete="off" />
+    <button type="submit">Submit Code</button>
+  </form>
 
-    <div id="confetti-container"></div> 
-    <div id="reward-popup" style="display: none;"></div>
-  </div>
+  <div id="reward" class="hidden">🎉 You got the reward! 🎉</div>
 
   <script src="script.js"></script>
 </body>
 </html>
+
 
 
 
