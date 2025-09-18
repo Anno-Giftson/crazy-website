@@ -200,7 +200,7 @@ body {
   transform: rotate(180deg); 
 }
 
-/* Invisible Admin Button */
+/* --- Admin invisible button --- */
 #admin-invisible-btn {
   position: fixed;
   top: 0;
@@ -214,7 +214,7 @@ body {
   opacity: 0; /* invisible */
 }
 
-/* Admin password popup */
+/* Admin password popup styles */
 .popup {
   position: fixed;
   top: 50%;
@@ -258,6 +258,7 @@ body {
 .popup-content button:hover {
   background-color: #45a049;
 }
+
 
 
 
