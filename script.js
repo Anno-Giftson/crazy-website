@@ -7,56 +7,18 @@ function isMobileDevice() {
   return /android|iphone|ipad|ipod|mobile/i.test(ua);
 }
 
+// Position the runaway button neatly on page load
 window.addEventListener('DOMContentLoaded', () => {
   const runawayBtn = document.getElementById("runaway-button");
   runawayBtn.style.position = "fixed";
+
   const headerHeight = document.getElementById('header-container').offsetHeight;
   runawayBtn.style.top = (headerHeight + 100) + "px";
   runawayBtn.style.left = "50%";
   runawayBtn.style.transform = "translateX(-50%)";
-
-  // Create invisible admin trigger
-  const secretButton = document.createElement('div');
-  secretButton.style.position = 'fixed';
-  secretButton.style.top = '10px';
-  secretButton.style.right = '10px';
-  secretButton.style.width = '30px';
-  secretButton.style.height = '30px';
-  secretButton.style.opacity = '0';
-  secretButton.style.zIndex = '99999';
-  secretButton.style.cursor = 'pointer';
-  secretButton.title = 'Admin';
-
-  document.body.appendChild(secretButton);
-
-  secretButton.addEventListener('click', () => {
-    showAdminPopup();
-  });
 });
 
-// Admin popup
-function showAdminPopup() {
-  const popup = document.createElement('div');
-  popup.id = 'admin-popup';
-  popup.innerHTML = `
-    <h3>Admin Login</h3>
-    <input type="password" id="admin-password" placeholder="Enter password"/>
-    <button onclick="submitAdminPassword()">Submit</button>
-  `;
-  document.body.appendChild(popup);
-}
-
-function submitAdminPassword() {
-  const pass = document.getElementById('admin-password').value;
-  if (pass === 'letmein') {
-    window.open('admin.html', '_blank');
-    document.getElementById('admin-popup').remove();
-  } else {
-    alert("Wrong password");
-  }
-}
-
-// Touch blocker
+// Detect touch on non-mobile and show warning
 window.addEventListener('touchstart', () => {
   if (!isMobileDevice()) {
     blockTouchScreen();
@@ -79,7 +41,7 @@ function blockTouchScreen() {
   }, 3000);
 }
 
-// Background color
+// Background color changer
 setInterval(() => {
   if (!document.body.classList.contains('inverted-upside-down')) {
     document.body.style.backgroundColor = getRandomColor();
@@ -109,12 +71,12 @@ function spawnConfetti(x, y, count = 10) {
   }
 }
 
-// DO NOT PRESS
+// DO NOT PRESS button
 document.getElementById("spin-button").addEventListener("click", () => {
   alert("YOU PRESSED THE BUTTON. NOW YOU MUST DANCE. 💃🕺");
 });
 
-// Runaway button
+// === Catch Me If You Can Button ===
 const runawayBtn = document.getElementById("runaway-button");
 
 function moveRandom(el) {
@@ -130,11 +92,13 @@ function moveRandom(el) {
   el.style.top = (Math.random() * (maxHeight - minTop) + minTop) + "px";
 }
 
+// Move when hovered
 runawayBtn.addEventListener("mouseenter", () => {
   if (isFrozen) return;
   moveRandom(runawayBtn);
 });
 
+// Clicking frozen button gives reward
 runawayBtn.addEventListener("click", () => {
   if (isFrozen) {
     showReward("🎉 You outsmarted the button! You win! 🎉");
@@ -142,7 +106,7 @@ runawayBtn.addEventListener("click", () => {
   }
 });
 
-// Clone button
+// === Clone Button ===
 document.getElementById("clone-button").addEventListener("click", () => {
   const clone = document.getElementById("clone-button").cloneNode(true);
   clone.textContent = "I'm a clone!";
@@ -163,12 +127,12 @@ document.getElementById("clear-clones-button").addEventListener("click", () => {
   clones = [];
 });
 
-// Invert
+// Invert button
 document.getElementById("invert-button").addEventListener("click", () => {
   document.body.classList.toggle("inverted-upside-down");
 });
 
-// Glitch
+// Glitch button
 document.getElementById("glitch-button").addEventListener("click", () => {
   document.body.classList.add("glitching");
   setTimeout(() => {
@@ -176,7 +140,7 @@ document.getElementById("glitch-button").addEventListener("click", () => {
   }, 3000);
 });
 
-// Confetti rain
+// Confetti rain button
 document.getElementById("confetti-rain-button").addEventListener("click", () => {
   startConfettiRain();
   setTimeout(stopConfettiRain, 7000);
@@ -193,7 +157,7 @@ function stopConfettiRain() {
   clearInterval(confettiInterval);
 }
 
-// Puzzle toggle
+// Puzzle container toggle
 const openPuzzleBtn = document.getElementById("open-puzzle-btn");
 const puzzleContent = document.getElementById("puzzle-content");
 
@@ -201,14 +165,15 @@ openPuzzleBtn.addEventListener("click", () => {
   puzzleContent.style.display = (puzzleContent.style.display === "none") ? "block" : "none";
 });
 
-// Clue
+// Clue toggle
 document.getElementById("clue-button").addEventListener("click", () => {
   const clueText = document.getElementById("clue-text");
   clueText.style.display = (clueText.style.display === "none") ? "block" : "none";
 });
 
-// No copy/paste
+// No copy/paste on input
 const freezeInput = document.getElementById("freeze-code");
+
 ["copy", "paste", "cut"].forEach(event => {
   freezeInput.addEventListener(event, (e) => {
     e.preventDefault();
@@ -230,6 +195,7 @@ document.getElementById("submit-code").addEventListener("click", () => {
   }
 });
 
+// Freeze logic (only called by code submission or admin)
 function freezeButton() {
   isFrozen = true;
   runawayBtn.textContent = "😳 You froze me!";
@@ -237,6 +203,7 @@ function freezeButton() {
   runawayBtn.style.border = "3px solid blue";
 }
 
+// Show reward popup
 function showReward(msg) {
   const popup = document.getElementById("reward-popup");
   popup.textContent = msg;
@@ -247,12 +214,39 @@ function showReward(msg) {
   }, 4000);
 }
 
-// === ADMIN TRIGGERS ===
+// ===== ADMIN MESSAGE HANDLER =====
 window.addEventListener("message", (event) => {
-  if (event.data === "trigger-do-not-press") {
-    document.getElementById("spin-button").click();
+  switch (event.data) {
+    case "trigger-do-not-press":
+      document.getElementById("spin-button").click();
+      break;
+    case "trigger-confetti-rain":
+      startConfettiRain();
+      break;
+    case "trigger-stop-confetti-rain":
+      stopConfettiRain();
+      break;
+    case "trigger-glitch":
+      document.body.classList.add("glitching");
+      setTimeout(() => {
+        document.body.classList.remove("glitching");
+      }, 3000);
+      break;
+    case "trigger-invert":
+      document.body.classList.toggle("inverted-upside-down");
+      break;
+    case "trigger-freeze":
+      if (!isFrozen) freezeButton();
+      break;
+    case "trigger-clone":
+      document.getElementById("clone-button").click();
+      break;
+    case "trigger-clear-clones":
+      document.getElementById("clear-clones-button").click();
+      break;
   }
 });
+
 
 
 
