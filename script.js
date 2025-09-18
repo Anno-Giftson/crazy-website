@@ -119,7 +119,7 @@ document.getElementById("clue-button").addEventListener("click", () => {
 
 document.getElementById("submit-code").addEventListener("click", () => {
   const val = document.getElementById("freeze-code").value.trim();
-  const correct = "3.14159265"; // 10 digits
+  const correct = "3.141592653"; // 10 digits
   if (val === correct) {
     freezeButton();
   } else {
