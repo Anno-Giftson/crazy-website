@@ -1,250 +1,134 @@
-body { 
-  margin: 0; 
-  padding: 140px 0 0 0; 
-  font-family: 'Comic Sans MS', cursive; 
-  background-color: black; 
-  color: white; 
-  overflow-x: hidden; 
-  transition: filter 0.3s ease, transform 0.7s ease; 
+body {
+  margin: 0;
+  padding: 140px 0 0 0;
+  font-family: 'Comic Sans MS', cursive;
+  background-color: black;
+  color: white;
+  overflow-x: hidden;
   user-select: none;
-} 
-
-#header-container { 
-  position: fixed; 
-  top: 0; 
-  left: 50%; 
-  transform: translateX(-50%); 
-  width: 90vw; 
-  max-width: 1200px; 
-  background: rgba(0, 0, 0, 0.85); 
-  padding: 15px 20px; 
-  border-radius: 15px; 
-  box-sizing: border-box; 
-  z-index: 10000; 
-  text-align: center; 
-  display: flex; 
-  flex-direction: column; 
-  gap: 15px; 
-} 
-
-#crazy-title { 
-  font-size: 3rem; 
-  margin: 0; 
-  animation: blinkRotate 1s infinite; 
-  color: hotpink; 
-} 
-
-#main-buttons { 
-  display: flex; 
-  flex-wrap: wrap; 
-  justify-content: center; 
-  gap: 12px; 
-} 
-
-#main-buttons button, 
-#header-container button {
-  min-width: 150px; 
-  height: 40px; 
-  font-size: 1.1rem; 
-  padding: 8px 12px; 
-  background-color: hotpink; 
-  border: 3px dashed lime; 
-  cursor: pointer; 
-  border-radius: 8px; 
-  transition: transform 0.2s; 
-} 
-
-#main-buttons button:hover,
-#header-container button:hover { 
-  transform: scale(1.05); 
-} 
-
-#puzzle-container { 
-  position: fixed; 
-  bottom: 15px; 
-  left: 15px; 
-  background: rgba(0, 0, 0, 0.8); 
-  border: 2px solid hotpink; 
-  padding: 10px 15px; 
-  border-radius: 15px; 
-  max-width: 340px; 
-  color: white; 
-  z-index: 10001; 
-  font-size: 1rem; 
-  user-select: text; 
 }
 
-#puzzle-container input[type="text"], 
-#freeze-code, 
-#admin-password-input { 
-  width: calc(100% - 20px); 
-  padding: 6px 8px; 
-  font-size: 1rem; 
-  border-radius: 6px; 
-  border: 2px solid hotpink; 
-  background: black; 
-  color: white; 
-  margin-top: 10px; 
-} 
-
-#puzzle-container button, 
-#submit-code, 
-#admin-submit-btn, 
-#admin-cancel-btn { 
-  margin-top: 10px; 
-  background-color: hotpink; 
-  border: 3px dashed lime; 
-  padding: 8px 12px; 
-  cursor: pointer; 
-  border-radius: 8px; 
-  font-size: 1rem; 
-  transition: transform 0.2s; 
-} 
-
-#puzzle-container button:hover,
-#submit-code:hover,
-#admin-submit-btn:hover,
-#admin-cancel-btn:hover { 
-  transform: scale(1.05); 
-} 
-
-#confetti-container { 
-  position: fixed; 
-  top: 0; 
-  left: 0; 
-  width: 100vw; 
-  height: 100vh; 
-  pointer-events: none; 
-  z-index: 999; 
-} 
-
-.confetti { 
-  position: absolute; 
-  width: 10px; 
-  height: 10px; 
-  background-color: red; 
-  border-radius: 50%; 
-  animation: fall 3s linear forwards; 
-} 
-
-@keyframes fall { 
-  0% { transform: translateY(0) rotate(0deg); opacity: 1; } 
-  100% { transform: translateY(100vh) rotate(720deg); opacity: 0; } 
-} 
-
-#reward-popup { 
-  position: fixed; 
-  top: 50%; 
-  left: 50%; 
-  transform: translate(-50%, -50%); 
-  background: white; 
-  color: black; 
-  padding: 20px 30px; 
-  border-radius: 20px; 
-  font-size: 2em; 
-  z-index: 9999; 
-  box-shadow: 0 0 20px hotpink; 
-} 
-
-#blocker { 
-  position: fixed; 
-  top: 0; 
-  left: 0; 
-  width: 100vw; 
-  height: 100vh; 
-  background: black; 
-  color: red; 
-  font-size: 2em; 
-  display: flex; 
-  justify-content: center; 
-  align-items: center; 
-  z-index: 99999; 
-} 
-
-@keyframes glitch { 
-  0% { transform: translate(0); } 
-  20% { transform: translate(-5px, 5px); } 
-  40% { transform: translate(5px, -5px); } 
-  60% { transform: translate(-3px, 3px); } 
-  80% { transform: translate(3px, -3px); } 
-  100% { transform: translate(0); } 
-} 
-
-.glitching { 
-  animation: glitch 0.2s steps(2, end) 10; 
-}
-
-@keyframes blinkRotate { 
-  0% { opacity: 1; transform: rotate(0deg); color: red; } 
-  25% { opacity: 0.5; transform: rotate(5deg); color: yellow; } 
-  50% { opacity: 1; transform: rotate(-5deg); color: cyan; } 
-  75% { opacity: 0.5; transform: rotate(10deg); color: magenta; } 
-  100% { opacity: 1; transform: rotate(0deg); color: green; } 
-} 
-
-.inverted-upside-down { 
-  filter: invert(1); 
-  transform: rotate(180deg); 
-}
-
-/* --- Admin invisible button --- */
-#admin-invisible-btn {
+#header-container {
   position: fixed;
   top: 0;
-  left: 0;
-  width: 50px;
-  height: 50px;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  z-index: 20000;
-  opacity: 0; /* invisible */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90vw;
+  background: rgba(0, 0, 0, 0.85);
+  padding: 15px 20px;
+  border-radius: 15px;
+  z-index: 10000;
+  text-align: center;
 }
 
-/* Admin password popup styles */
-.popup {
+#crazy-title {
+  font-size: 3rem;
+  animation: blinkRotate 1s infinite;
+  color: hotpink;
+}
+
+#main-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+}
+
+#main-buttons button,
+#puzzle-container button {
+  min-width: 150px;
+  height: 40px;
+  font-size: 1.1rem;
+  padding: 8px 12px;
+  background-color: hotpink;
+  border: 3px dashed lime;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: transform 0.2s;
+}
+
+#main-buttons button:hover,
+#puzzle-container button:hover {
+  transform: scale(1.05);
+}
+
+#puzzle-container {
+  position: fixed;
+  bottom: 15px;
+  left: 15px;
+  background: rgba(0, 0, 0, 0.8);
+  border: 2px solid hotpink;
+  padding: 10px 15px;
+  border-radius: 15px;
+  max-width: 340px;
+  z-index: 10001;
+}
+
+#puzzle-container input[type="text"],
+#admin-popup input {
+  width: 100%;
+  padding: 6px 8px;
+  font-size: 1rem;
+  border-radius: 6px;
+  border: 2px solid hotpink;
+  background: black;
+  color: white;
+  margin-top: 10px;
+}
+
+#admin-popup {
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: #222;
-  padding: 25px 30px;
-  border-radius: 10px;
-  box-shadow: 0 0 15px #4caf50;
-  color: white;
-  z-index: 30000;
-  user-select: text;
+  background: white;
+  padding: 20px;
+  border-radius: 15px;
+  z-index: 100000;
+  color: black;
 }
 
-.popup-content {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+#reward-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  color: black;
+  padding: 20px 30px;
+  border-radius: 20px;
+  font-size: 2em;
+  z-index: 9999;
+  box-shadow: 0 0 20px hotpink;
 }
 
-.popup-content input {
-  padding: 8px;
-  font-size: 16px;
-  border-radius: 6px;
-  border: none;
-  background: #111;
-  color: white;
+.confetti {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background-color: red;
+  border-radius: 50%;
+  animation: fall 3s linear forwards;
 }
 
-.popup-content button {
-  padding: 8px 15px;
-  font-size: 16px;
-  border-radius: 6px;
-  border: none;
-  background-color: #4caf50;
-  color: white;
-  cursor: pointer;
-  user-select: none;
+@keyframes fall {
+  0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
 }
 
-.popup-content button:hover {
-  background-color: #45a049;
+@keyframes blinkRotate {
+  0% { opacity: 1; transform: rotate(0deg); color: red; }
+  25% { opacity: 0.5; transform: rotate(5deg); color: yellow; }
+  50% { opacity: 1; transform: rotate(-5deg); color: cyan; }
+  75% { opacity: 0.5; transform: rotate(10deg); color: magenta; }
+  100% { opacity: 1; transform: rotate(0deg); color: green; }
 }
+
+.inverted-upside-down {
+  filter: invert(1);
+  transform: rotate(180deg);
+}
+
 
 
 
