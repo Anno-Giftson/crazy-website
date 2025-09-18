@@ -1,54 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Totally Crazy Website</title>
-    <link rel="stylesheet" href="style.css" />
-  </head>
-  <body>
-    <div id="header-container">
-      <h1 id="crazy-title">💥 Welcome to CrazyTown 💥</h1>
-      <div id="main-buttons">
-        <button id="spin-button">DO NOT PRESS</button>
-        <button id="runaway-button">Catch me if you can!</button>
-        <button id="clone-button">Clone me!</button>
-        <button id="clear-clones-button">Clear clones</button>
-        <button id="invert-button">Invert this page!</button>
-        <button id="glitch-button">Make it Glitch!</button>
-        <button id="confetti-rain-button">Start Confetti Rain!</button>
-      </div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Totally Crazy Website</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="header-container">
+    <h1 id="crazy-title">💥 Welcome to CrazyTown 💥</h1>
+    <div id="main-buttons"> 
+      <button id="spin-button">DO NOT PRESS</button>
+      <!-- other buttons here -->
     </div>
+  </div>
 
-    <div id="puzzle-container">
-      <button id="open-puzzle-btn">Click here to do something and catch the running button</button>
-      <div id="puzzle-content" style="display:none;">
-        <input id="freeze-code" type="text" placeholder="Enter code here" autocomplete="off" />
-        <button id="submit-code">Submit Code</button>
-        <button id="clue-button">Need a Clue?</button>
-        <div id="clue-text" style="display:none; margin-top:10px; color: hotpink; font-weight: bold;">
-          The first 50 digits of π (pi) are the code. No further hints.
-        </div>
-      </div>
-    </div>
+  <!-- Invisible Admin Button -->
+  <button id="admin-invisible-btn" style="position: fixed; top: 10px; left: 10px; opacity: 0; z-index: 100000;">.</button>
 
-    <div id="confetti-container"></div>
-    <div id="reward-popup" style="display: none;"></div>
+  <!-- Admin Password Popup -->
+  <div id="admin-popup" style="display: none;">
+    <input id="admin-password" type="password" placeholder="Enter admin password" />
+    <button id="submit-admin-password">Submit</button>
+    <button id="admin-popup-close">Close</button>
+  </div>
 
-    <!-- Invisible Admin Access Button -->
-    <button id="admin-invisible-btn" title="Admin Access" style="position: fixed; top: 0; right: 0; width: 30px; height: 30px; opacity: 0; z-index: 99999; border: none; background: transparent; cursor: pointer;"></button>
-
-    <!-- Admin Password Popup -->
-    <div id="admin-popup" style="display:none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: black; border: 3px solid hotpink; padding: 20px; border-radius: 10px; z-index: 100000; color: white;">
-      <label for="admin-password">Enter Admin Password:</label><br />
-      <input type="password" id="admin-password" autocomplete="off" style="margin-top: 8px; padding: 5px; width: 200px;" />
-      <button id="submit-admin-password" style="margin-left: 10px; padding: 5px 10px; cursor: pointer;">Submit</button>
-      <button id="admin-popup-close" style="margin-left: 10px; padding: 5px 10px; cursor: pointer;">Close</button>
-    </div>
-
-    <script src="script.js"></script>
-  </body>
+  <script src="script.js"></script>
+</body>
 </html>
+
 
 
 
