@@ -1,196 +1,149 @@
-let touchBlocked = false;
-let clones = [];
 let isFrozen = false;
+let clones = [];
+let confettiInterval;
 
-function isMobileDevice() {
-  const ua = navigator.userAgent || navigator.vendor || window.opera;
-  return /android|iphone|ipad|ipod|mobile/i.test(ua);
-}
-
-window.addEventListener('DOMContentLoaded', () => {
-  const runawayBtn = document.getElementById("runaway-button");
-  runawayBtn.style.position = "fixed";
-  const headerHeight = document.getElementById('header-container').offsetHeight;
-  runawayBtn.style.top = (headerHeight + 100) + "px";
-  runawayBtn.style.left = "50%";
-  runawayBtn.style.transform = "translateX(-50%)";
-
-  // Create invisible admin trigger
-  const secretButton = document.createElement('div');
-  secretButton.style.position = 'fixed';
-  secretButton.style.top = '10px';
-  secretButton.style.right = '10px';
-  secretButton.style.width = '30px';
-  secretButton.style.height = '30px';
-  secretButton.style.opacity = '0';
-  secretButton.style.zIndex = '99999';
-  secretButton.style.cursor = 'pointer';
-  secretButton.title = 'Admin';
-
-  document.body.appendChild(secretButton);
-
-  secretButton.addEventListener('click', () => {
-    showAdminPopup();
-  });
-});
-
-// Admin popup
-function showAdminPopup() {
-  const popup = document.createElement('div');
-  popup.id = 'admin-popup';
-  popup.innerHTML = `
-    <h3>Admin Login</h3>
-    <input type="password" id="admin-password" placeholder="Enter password"/>
-    <button onclick="submitAdminPassword()">Submit</button>
-  `;
-  document.body.appendChild(popup);
-}
-
-function submitAdminPassword() {
-  const input = document.getElementById('admin-password');
-  if (input.value === 'totallycrazy') {
-    alert('Welcome, admin!');
-    document.getElementById('admin-popup').remove();
-    showAdminPanel();
-  } else {
-    alert('Wrong password!');
-  }
-}
-
-// Admin panel
-function showAdminPanel() {
-  alert('Admin panel is under construction');
-}
-
-// Spin button animation
 document.getElementById("spin-button").addEventListener("click", () => {
-  document.body.animate(
-    [
-      { transform: 'rotate(0deg)' },
-      { transform: 'rotate(360deg)' }
-    ],
-    {
-      duration: 1000,
-      iterations: 5,
-    }
-  );
+  alert("YOU PRESSED THE BUTTON. NOW YOU MUST DANCE. 💃🕺");
 });
 
-// Runaway button behavior
-document.getElementById("runaway-button").addEventListener("mouseenter", () => {
-  if (touchBlocked || isFrozen) return;
-  const button = document.getElementById("runaway-button");
-  const windowWidth = window.innerWidth;
-  const windowHeight = window.innerHeight;
-  const buttonWidth = button.offsetWidth;
-  const buttonHeight = button.offsetHeight;
+const runawayBtn = document.getElementById("runaway-button");
 
-  let newX = Math.random() * (windowWidth - buttonWidth);
-  let newY = Math.random() * (windowHeight - buttonHeight);
+function moveRandom(el) {
+  if (isFrozen) return;
+  const maxX = window.innerWidth - el.offsetWidth;
+  const maxY = window.innerHeight - el.offsetHeight;
+  el.style.position = "fixed";
+  el.style.left = Math.random() * maxX + "px";
+  el.style.top = Math.random() * maxY + "px";
+}
 
-  button.style.left = newX + "px";
-  button.style.top = newY + "px";
+runawayBtn.addEventListener("mouseenter", () => {
+  moveRandom(runawayBtn);
 });
 
-document.getElementById("runaway-button").addEventListener("click", () => {
-  alert("You caught me!");
+runawayBtn.addEventListener("click", () => {
+  if (isFrozen) {
+    showReward("🎉 You outsmarted the button! You win! 🎉");
+    spawnConfetti(window.innerWidth / 2, window.innerHeight / 2, 100);
+  }
 });
 
-// Clone button
 document.getElementById("clone-button").addEventListener("click", () => {
-  const clone = document.getElementById("runaway-button").cloneNode(true);
+  const clone = runawayBtn.cloneNode(true);
+  clone.textContent = "I'm a clone!";
   clone.style.position = "fixed";
-  clone.style.zIndex = 99999;
-  clone.style.backgroundColor = "hotpink";
-  clone.style.border = "3px dashed lime";
-  clone.style.color = "black";
-  clone.style.left = Math.random() * (window.innerWidth - clone.offsetWidth) + "px";
-  clone.style.top = Math.random() * (window.innerHeight - clone.offsetHeight) + "px";
-
+  clone.style.top = Math.random() * (window.innerHeight - 40) + "px";
+  clone.style.left = Math.random() * (window.innerWidth - 150) + "px";
+  clone.style.zIndex = 9999;
   clone.addEventListener("click", () => {
-    alert("You clicked a clone!");
+    alert("Clone clicked!");
   });
-
   document.body.appendChild(clone);
   clones.push(clone);
 });
 
-// Clear clones button
 document.getElementById("clear-clones-button").addEventListener("click", () => {
-  clones.forEach(clone => clone.remove());
+  clones.forEach(c => c.remove());
   clones = [];
 });
 
-// Invert button with smooth animation
 document.getElementById("invert-button").addEventListener("click", () => {
   document.body.classList.toggle("inverted-upside-down");
 });
 
-// Glitch button with animation
 document.getElementById("glitch-button").addEventListener("click", () => {
   document.body.classList.add("glitching");
   setTimeout(() => {
     document.body.classList.remove("glitching");
-  }, 3000);
+  }, 2000);
 });
 
-// Puzzle open
+document.getElementById("confetti-rain-button").addEventListener("click", () => {
+  startConfettiRain();
+  setTimeout(stopConfettiRain, 7000);
+});
+
+function getRandomColor() {
+  return `hsl(${Math.floor(Math.random() * 360)}, 100%, 50%)`;
+}
+
+setInterval(() => {
+  if (!document.body.classList.contains('inverted-upside-down')) {
+    document.body.style.backgroundColor = getRandomColor();
+  }
+}, 1000);
+
+function spawnConfetti(x, y, count = 10) {
+  for (let i = 0; i < count; i++) {
+    const confetti = document.createElement("div");
+    confetti.classList.add("confetti");
+    confetti.style.left = `${x}px`;
+    confetti.style.top = `${y}px`;
+    confetti.style.backgroundColor = getRandomColor();
+    confetti.style.width = confetti.style.height = `${Math.random() * 10 + 5}px`;
+    document.getElementById("confetti-container").appendChild(confetti);
+    setTimeout(() => confetti.remove(), 3000);
+  }
+}
+
+function startConfettiRain() {
+  confettiInterval = setInterval(() => {
+    const x = Math.random() * window.innerWidth;
+    spawnConfetti(x, 0, 15);
+  }, 300);
+}
+
+function stopConfettiRain() {
+  clearInterval(confettiInterval);
+}
+
 document.getElementById("open-puzzle-btn").addEventListener("click", () => {
-  const puzzleContent = document.getElementById("puzzle-content");
-  puzzleContent.style.display = puzzleContent.style.display === "none" ? "block" : "none";
+  const puzzle = document.getElementById("puzzle-content");
+  puzzle.style.display = puzzle.style.display === "none" ? "block" : "none";
 });
 
-// Clue button
 document.getElementById("clue-button").addEventListener("click", () => {
-  document.getElementById("clue-text").style.display = "block";
+  const clue = document.getElementById("clue-text");
+  clue.style.display = clue.style.display === "none" ? "block" : "none";
 });
 
-// Submit code
 document.getElementById("submit-code").addEventListener("click", () => {
-  const codeInput = document.getElementById("freeze-code").value.trim();
-  const pi50 = "3.14159265358979323846264338327950288419716939937510";
-  if (codeInput === pi50) {
+  const val = document.getElementById("freeze-code").value.trim();
+  const piCode = "3.14159265358979323846264338327950288419716939937510";
+  if (val === piCode) {
     isFrozen = true;
-    alert("You have frozen the running button! Now you can catch it!");
+    runawayBtn.textContent = "😳 You froze me!";
+    runawayBtn.style.backgroundColor = "lightblue";
+    runawayBtn.style.border = "3px solid blue";
   } else {
-    alert("Wrong code!");
+    alert("Wrong code! Try again.");
   }
 });
 
+function showReward(msg) {
+  const popup = document.getElementById("reward-popup");
+  popup.textContent = msg;
+  popup.style.display = "block";
+  setTimeout(() => popup.style.display = "none", 4000);
+}
 
+document.getElementById("admin-invisible-btn").addEventListener("click", () => {
+  const popup = document.createElement("div");
+  popup.id = "admin-popup";
+  popup.innerHTML = `
+    <h3>Admin Login</h3>
+    <input type="password" id="admin-password" placeholder="Enter password"/>
+    <button onclick="checkAdminPassword()">Submit</button>
+  `;
+  document.body.appendChild(popup);
+});
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+function checkAdminPassword() {
+  const pass = document.getElementById("admin-password").value;
+  if (pass === "totallycrazy") {
+    alert("Access granted! Welcome, admin.");
+    document.getElementById("admin-popup").remove();
+  } else {
+    alert("Wrong password!");
+  }
+}
