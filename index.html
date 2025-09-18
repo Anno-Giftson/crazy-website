@@ -2,56 +2,53 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Fun Interactive Page</title>
-  <link rel="stylesheet" href="styles.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Totally Crazy Website</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div id="header-container">
-    <h1>Welcome to the Fun Interactive Page</h1>
-
-    <!-- Visible buttons -->
-    <button id="spin-button">DO NOT PRESS</button>
-    <button id="runaway-button" title="Catch Me If You Can!">Catch Me If You Can!</button>
-    <button id="clone-button">Clone Me!</button>
-    <button id="clear-clones-button">Clear Clones</button>
-    <button id="invert-button">Invert Colors & Flip</button>
-    <button id="glitch-button">Glitch Effect</button>
-    <button id="confetti-rain-button">Confetti Rain</button>
-    <button id="open-puzzle-btn">Open Puzzle</button>
-    <button id="clue-button">Show Clue</button>
-  </div>
-
-  <!-- Invisible admin button -->
-  <button id="admin-invisible-btn" title="Admin Access"></button>
-
-  <!-- Password Popup -->
-  <div id="admin-password-popup" class="popup" style="display:none;">
-    <div class="popup-content">
-      <label for="admin-password-input">Enter Admin Password:</label>
-      <input type="password" id="admin-password-input" />
-      <button id="admin-submit-btn">Submit</button>
-      <button id="admin-cancel-btn">Cancel</button>
-      <p id="admin-error-msg" style="color:red; display:none;">Wrong password, try again.</p>
+    <h1 id="crazy-title">💥 Welcome to CrazyTown 💥</h1>
+    <div id="main-buttons"> 
+      <button id="spin-button">DO NOT PRESS</button>
+      <button id="runaway-button">Catch me if you can!</button>
+      <button id="clone-button">Clone me!</button>
+      <button id="clear-clones-button">Clear clones</button>
+      <button id="invert-button">Invert this page!</button>
+      <button id="glitch-button">Make it Glitch!</button>
+      <button id="confetti-rain-button">Start Confetti Rain!</button>
     </div>
   </div>
 
-  <div id="puzzle-content" style="display:none; margin: 20px;">
-    <input id="freeze-code" type="text" placeholder="Enter the secret code" />
-    <button id="submit-code">Submit Code</button>
+  <div id="puzzle-container"> 
+    <button id="open-puzzle-btn">Click here to do something and catch the running button</button> 
+    <div id="puzzle-content" style="display:none;"> 
+      <input id="freeze-code" type="text" placeholder="Enter code here" autocomplete="off" /> 
+      <button id="submit-code">Submit Code</button> 
+      <button id="clue-button">Need a Clue?</button> 
+      <div id="clue-text" style="display:none; margin-top:10px; color: hotpink; font-weight: bold;">
+        The first 50 digits of π (pi) are the code. No further hints. 
+      </div> 
+    </div> 
+  </div> 
+
+  <div id="confetti-container"></div> 
+  <div id="reward-popup" style="display: none;"></div>
+
+  <!-- Invisible Admin Access Button -->
+  <button id="admin-invisible-btn" style="position: fixed; top: 10px; left: 10px; opacity: 0; z-index: 100000;">.</button>
+
+  <!-- Admin Password Popup -->
+  <div id="admin-popup" style="display: none;">
+    <input id="admin-password" type="password" placeholder="Enter admin password" />
+    <button id="submit-admin-password">Submit</button>
+    <button id="admin-popup-close">Close</button>
   </div>
-
-  <div id="clue-text" style="display:none; margin: 10px; font-style: italic;">
-    Hint: It’s the first 50 digits of Pi!
-  </div>
-
-  <div id="reward-popup" style="display:none;"></div>
-
-  <div id="confetti-container"></div>
 
   <script src="script.js"></script>
 </body>
 </html>
+
 
 
 
